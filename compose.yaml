@@ -1,9 +1,4 @@
 services:
-  collector:
-    container_name: collector
-    build: ./requirements/collector
-    restart: always
-
   influxdb:
     container_name: influxdb
     image: influxdb:3.9.3-core
@@ -28,6 +23,13 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+
+  collector:
+    container_name: collector
+    build: ./requirements/collector
+    depends_on:
+      influxdb:
+        condition: service_healthy
 
   grafana:
     image: grafana/grafana
