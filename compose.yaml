@@ -1,0 +1,53 @@
+services:
+  scripts:
+    container_name: scripts
+    image: alpine:latest
+    volumes:
+      - ./script:/scripts
+
+  influxdb:
+    container_name: influxdb
+    image: influxdb:3.9.3-core
+    ports:
+      - 8181:8181
+    command:
+      - influxdb3
+      - serve
+      - --node-id=node0
+      - --object-store=file
+      - --data-dir=/var/lib/influxdb3/data
+      - --plugin-dir=/var/lib/influxdb3/plugins
+    volumes:
+      - type: bind
+        source: ~/.influxdb3/data
+        target: /var/lib/influxdb3/data
+      - type: bind
+        source: ~/.influxdb3/plugins
+        target: /var/lib/influxdb3/plugins
+    healthcheck:
+      test: ["CMD", "influxdb3", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    env_file:
+      - .requirements/grafana/.env
+    environment:
+      - GF_SECURITY_ADMIN_USER=${ADMIN}
+      - GF_SECURITY_ADMIN_PASSWORD=${PASSW}
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_SERVER_PROTOCOL=http
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+    depends_on:
+      influxdb:
+        condition: service_healthy
+
+volumes:
+  grafana_data:
+    name: grafana_data
