@@ -1,9 +1,8 @@
 services:
-  scripts:
-    container_name: scripts
-    image: alpine:latest
-    volumes:
-      - ./script:/scripts
+  collector:
+    container_name: collector
+    build: ./requirements/collector
+    restart: always
 
   influxdb:
     container_name: influxdb
