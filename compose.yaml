@@ -4,6 +4,8 @@ services:
     image: influxdb:3.9.3-core
     ports:
       - 8181:8181
+    env_file:
+      - .requirements/influxDB/.env
     command:
       - influxdb3
       - serve
@@ -31,6 +33,8 @@ services:
   collector:
     container_name: collector
     build: ./requirements/collector
+    env_file:
+      - requirements/influxDB/.env
     depends_on:
       influxdb:
         condition: service_healthy
@@ -40,6 +44,7 @@ services:
     container_name: grafana
     env_file:
       - .requirements/grafana/.env
+      - .requirements/influxDB/.env
     environment:
       - GF_SECURITY_ADMIN_USER=${ADMIN}
       - GF_SECURITY_ADMIN_PASSWORD=${PASSW}
