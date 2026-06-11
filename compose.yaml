@@ -19,10 +19,14 @@ services:
         source: ~/.influxdb3/plugins
         target: /var/lib/influxdb3/plugins
     healthcheck:
-      test: ["CMD", "influxdb3", "ping"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+      test:
+        [
+          "CMD-SHELL",
+          "curl -f -H 'Authorization: Bearer ${INFLUXDB_TOKEN}' http://localhost:8181/health || exit 1",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   collector:
     container_name: collector
