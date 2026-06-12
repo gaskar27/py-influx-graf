@@ -33,7 +33,7 @@ services:
     env_file:
       - requirements/influxDB/.env
     depends_on:
-      influxdb:
+      influxdb3:
         condition: service_healthy
 
   grafana:
@@ -52,7 +52,7 @@ services:
     volumes:
       - grafana_data:/var/lib/grafana
     depends_on:
-      influxdb:
+      influxdb3:
         condition: service_healthy
     restart: unless-stopped
 
