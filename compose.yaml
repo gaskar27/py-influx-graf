@@ -1,6 +1,6 @@
 services:
-  influxdb:
-    container_name: influxdb
+  influxdb3:
+    container_name: influxdb3
     image: influxdb:3.9.3-core
     ports:
       - 8181:8181
@@ -9,7 +9,7 @@ services:
     command:
       - influxdb3
       - serve
-      - --node-id=node0
+      - --node-id=${INFLUXDB_NODE_ID}
       - --object-store=file
       - --data-dir=/var/lib/influxdb3
     volumes:
