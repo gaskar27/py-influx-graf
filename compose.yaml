@@ -2,7 +2,6 @@ services:
   influxdb3:
     container_name: influxdb3
     image: influxdb:3.9.3-core
-    user: root
     ports:
       - 8181:8181
     command:
