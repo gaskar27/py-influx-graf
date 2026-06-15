@@ -15,6 +15,8 @@ services:
       - type: bind
         source: ~/.influxdb3/data
         target: /var/lib/influxdb3
+        bind:
+          selinux: Z
     healthcheck:
       test:
         [
