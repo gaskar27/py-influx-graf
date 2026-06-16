@@ -12,9 +12,9 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 # ==========================================
 # CONFIGURATION
 # ==========================================
-VCENTER_HOST = "vcenter.tondomaine.local"
-VCENTER_USER = "api-mon-user@vsphere.local"
-VCENTER_PASSWORD = "TonMotDePasseSecret"
+VCENTER_HOST = os.environ.get("VCENTER_HOST")
+VCENTER_USER = os.environ.get("VCENTER_USER")
+VCENTER_PASSWORD = os.environ.get("VCENTER_PASSWORD")
 
 INFLUXDB_URL = f"http://{os.environ.get('INFLUXDB_HOST', 'localhost')}:{os.environ.get('INFLUXDB_PORT', '8086')}"
 INFLUXDB_TOKEN = os.environ.get("INFLUXDB_TOKEN")
@@ -28,6 +28,9 @@ INFLUXDB_BUCKET = os.environ.get("INFLUXDB_BUCKET")
 def get_vcenter_session():
     """Authentification auprès du vCenter et récupération du token de session."""
     url = f"https://{VCENTER_HOST}/api/session"
+    if not VCENTER_USER or not VCENTER_PASSWORD:
+        print("❌ VCENTER_USER ou VCENTER_PASSWORD non définis")
+        return None
     try:
         response = requests.post(
             url, auth=(VCENTER_USER, VCENTER_PASSWORD), verify=False, timeout=10
