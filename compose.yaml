@@ -30,6 +30,8 @@ services:
   collector:
     container_name: collector
     build: ./requirements/collector
+    env_file:
+      - ./requirements/collector/.env
     depends_on:
       influxdb3:
         condition: service_healthy

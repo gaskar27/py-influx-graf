@@ -14,11 +14,9 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 # ==========================================
 VCENTER_HOST = "vcenter.tondomaine.local"
 VCENTER_USER = "api-mon-user@vsphere.local"
-VCENTER_PASSWORD = (
-    "TonMotDePasseSecret"  # À sécuriser via var d'environnement idéalement
-)
+VCENTER_PASSWORD = "TonMotDePasseSecret"
 
-INFLUXDB_URL = "http://localhost:8086"
+INFLUXDB_URL = f"http://{os.environ.get('INFLUXDB_HOST', 'localhost')}:{os.environ.get('INFLUXDB_PORT', '8086')}"
 INFLUXDB_TOKEN = os.environ.get("INFLUXDB_TOKEN")
 INFLUXDB_ORG = os.environ.get("INFLUXDB_ORG")
 INFLUXDB_BUCKET = os.environ.get("INFLUXDB_BUCKET")
@@ -62,6 +60,12 @@ def collect_vm_data(session_token):
 # ==========================================
 def send_to_influxdb(vms_list):
     """Formate et envoie les données des VMs vers InfluxDB."""
+    if not INFLUXDB_BUCKET:
+        print(
+            "❌ Erreur : INFLUXDB_BUCKET n'est pas défini (None). Impossible d'envoyer les données."
+        )
+        return
+
     if not vms_list:
         print("⚠ Aucune donnée à envoyer à InfluxDB.")
         return
