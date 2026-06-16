@@ -12,7 +12,7 @@ cat <<EOF > /var/spool/cron/crontabs/root
 */5 * * * * python3 /app/aria.py >> /var/log/cron.log 2>&1
 */5 * * * * python3 /app/powerstore.py >> /var/log/cron.log 2>&1
 */5 * * * * python3 /app/unity.py >> /var/log/cron.log 2>&1
-*/5 * * * * python3 /app/vmware.py >> /var/log/cron.log 2>&1
+*/5 * * * * python3 /app/vsphere.py >> /var/log/cron.log 2>&1
 EOF
 
 # 4. S'assurer des bonnes permissions pour le fichier crontab
