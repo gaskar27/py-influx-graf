@@ -19,9 +19,9 @@ VCENTER_PASSWORD = (
 )
 
 INFLUXDB_URL = "http://localhost:8086"
-INFLUXDB_TOKEN = "TonTokenInfluxDB"
-INFLUXDB_ORG = "MonOrganisation"
-INFLUXDB_BUCKET = "vmware_metrics"
+INFLUXDB_TOKEN = os.environ.get("INFLUXDB_TOKEN")
+INFLUXDB_ORG = os.environ.get("INFLUXDB_ORG")
+INFLUXDB_BUCKET = os.environ.get("INFLUXDB_BUCKET")
 
 
 # ==========================================
