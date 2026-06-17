@@ -57,6 +57,7 @@ if __name__ == "__main__":
 
         if vms:
             print(f"Number of VMs found: {len(vms)}")
+            print("Writing to InfluxDB...")
             writer.write_records(vms)
             writer.close()
 
