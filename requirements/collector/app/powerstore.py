@@ -1,1 +1,5 @@
-#!/usr/bin/env python3
+import os
+
+POWERSTORE_HOST = os.getenv("POWERSTORE_HOST")
+POWERSTORE_USER = os.getenv("POWERSTORE_USER")
+POWERSTORE_PASSWD = os.getenv("POWERSTORE_PASSWD")
