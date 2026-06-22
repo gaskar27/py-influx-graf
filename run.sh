@@ -17,7 +17,7 @@ case "$1" in
         ;;
 
     "stop" | "st")
-        docker compose stop
+        docker compose down
         ;;
 
     "down" | "d")
