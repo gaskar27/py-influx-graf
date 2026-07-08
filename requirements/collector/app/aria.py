@@ -8,11 +8,13 @@ from influx_writer import writer
 ARIA_HOST = os.environ.get("ARIA_HOST")
 ARIA_USER = os.environ.get("ARIA_USER")
 ARIA_PASSWD = os.environ.get("ARIA_PASSWD")
+ARIA_RESOURCE_ID1 = os.environ.get("ARIA_RESOURCE_ID1")
+ARIA_RESOURCE_ID2 = os.environ.get("ARIA_RESOURCE_ID2")
 
 
 def get_aria_token():
     url = f"https://{ARIA_HOST}/suite-api/api/auth/token/acquire"
-    data = {"username": ARIA_USER, "password": ARIA_PASSWD}
+    data = {"username": ARIA_USER, "authSource": "local", "password": ARIA_PASSWD}
     headers = {"Content-Type": "application/json", "Accept": "application/json"}
     try:
         response = requests.post(url, data=data, headers=headers)
@@ -23,13 +25,17 @@ def get_aria_token():
 
 
 def collect_aria_data(token):
-    url = f"https://{ARIA_HOST}/suite-api/api/resources/<OBJECT_UUID>/stats/latest"
+    url = f"https://{ARIA_HOST}/suite-api/api/resources/stats/latest"
     headers = {
         "Accept": "application/json",
-        "Authorization": f"vRealizeOpsToken {token}",
+        "Authorization": f"OpsToken {token}",
+    }
+    data = {
+        "resourceId": [ARIA_RESOURCE_ID1, ARIA_RESOURCE_ID2],
+        "statKey": ["summary|total_number_vms", "summary|number_running_vms"],
     }
     try:
-        response = requests.get(url, headers=headers)
+        response = requests.post(url, headers=headers, json=data)
         response.raise_for_status()
         return response.json()
     except requests.exceptions.RequestException as e:
@@ -47,7 +53,7 @@ if __name__ == "__main__":
 
         if data:
             print("Writing to InfluxDB...")
-            writer.write_point("aria", {"object_uuid": OBJECT_UUID}, data)
+            writer.write_records(data)
             writer.close()
         else:
             print("❌ No data collected.")
