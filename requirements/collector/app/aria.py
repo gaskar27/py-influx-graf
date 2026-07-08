@@ -7,6 +7,7 @@ from influx_writer import writer
 # Aria
 ARIA_HOST = os.environ.get("ARIA_HOST")
 ARIA_USER = os.environ.get("ARIA_USER")
+ARIA_AUTH_SOURCE = os.environ.get("ARIA_AUTH_SOURCE", "local")
 ARIA_PASSWD = os.environ.get("ARIA_PASSWD")
 ARIA_RESOURCE_ID1 = os.environ.get("ARIA_RESOURCE_ID1")
 ARIA_RESOURCE_ID2 = os.environ.get("ARIA_RESOURCE_ID2")
@@ -14,7 +15,11 @@ ARIA_RESOURCE_ID2 = os.environ.get("ARIA_RESOURCE_ID2")
 
 def get_aria_token():
     url = f"https://{ARIA_HOST}/suite-api/api/auth/token/acquire"
-    data = {"username": ARIA_USER, "authSource": "local", "password": ARIA_PASSWD}
+    data = {
+        "username": ARIA_USER,
+        "authSource": ARIA_AUTH_SOURCE,
+        "password": ARIA_PASSWD,
+    }
     headers = {"Content-Type": "application/json", "Accept": "application/json"}
     try:
         response = requests.post(url, data=data, headers=headers)
@@ -30,12 +35,16 @@ def collect_aria_data(token):
         "Accept": "application/json",
         "Authorization": f"OpsToken {token}",
     }
-    data = {
+    payload = {
         "resourceId": [ARIA_RESOURCE_ID1, ARIA_RESOURCE_ID2],
-        "statKey": ["summary|total_number_vms", "summary|number_running_vms"],
+        "statKey": [
+            "summary|total_number_hosts",
+            "summary|total_number_vms",
+            "summary|number_running_vms",
+        ],
     }
     try:
-        response = requests.post(url, headers=headers, json=data)
+        response = requests.post(url, headers=headers, json=payload)
         response.raise_for_status()
         return response.json()
     except requests.exceptions.RequestException as e:
