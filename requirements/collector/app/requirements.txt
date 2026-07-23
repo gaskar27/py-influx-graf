@@ -3,6 +3,7 @@ charset-normalizer==3.4.7
 idna==3.18
 influxdb-client==1.50.0
 python-dateutil==2.9.0.post0
+pyvmomi==9.1.0.0
 reactivex==4.1.0
 requests==2.34.2
 six==1.17.0
