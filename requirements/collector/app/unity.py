@@ -1,6 +1,8 @@
 import os
+from datetime import datetime
 import requests
-from influxdb_client import Point
+from influxdb_client.client.write.point import Point
+from influx_writer import writer as db
 
 UNITY_HOST = os.getenv("UNITY_HOST")
 UNITY_USER = os.getenv("UNITY_USER")
@@ -22,7 +24,7 @@ class UnityCollector:
         self.session.verify = False
         self.session.headers.update({"X-EMC-REST-CLIENT": "true", "Accept": "application/json"})
         self.token = None
-        self.points = [] # list of Point objects
+        self.points:list[Point] = [] # list of Point objects
         self.isAuthenticated = False
         if self.authenticate():
             self.isAuthenticated = True
@@ -68,3 +70,28 @@ class UnityCollector:
         fields = "name,sizeAllocated,sizeTotal,health"
         response = self.get_metrics("disk", fields)
         self.__influx_point(response)
+
+    def get_all_metrics(self)
+        self.get_system_metrics()
+        self.get_pool_metrics()
+        self.get_luns_metrics()
+        self.get_filesystem_metrics()
+        self.get_disk_metrics()
+
+if __name__ == "__main__":
+    print(f"--- Start collecting from DELL Unity ({datetime.now().strftime('%Y-%m-%d %H:%M:%S')}) ---")
+
+    unity = UnityCollector(UNITY_HOST, UNITY_USER, UNITY_PASSWD)
+
+    if not unity.isAuthenticated:
+        print("Unable to Authenticate")
+        exit()
+
+    unity.get_all_metrics()
+
+    print("Writing to InfluxDB...")
+    for point in unity.points:
+        db.write_point(point)
+
+    db.close()
+    print("--- End ---")

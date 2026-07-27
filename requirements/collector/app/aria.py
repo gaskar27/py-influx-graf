@@ -2,7 +2,7 @@ import os
 from datetime import datetime
 
 import requests
-# from influx_writer import writer
+from influx_writer import writer as db
 
 # Aria
 ARIA_HOST = os.environ.get("ARIA_HOST", None)
@@ -11,16 +11,13 @@ ARIA_AUTH_SOURCE = os.environ.get("ARIA_AUTH_SOURCE", "local")
 ARIA_PASSWD = os.environ.get("ARIA_PASSWD", None)
 ARIA_RESOURCE_ID1 = os.environ.get("ARIA_RESOURCE_ID1", None)
 ARIA_RESOURCE_ID2 = os.environ.get("ARIA_RESOURCE_ID2", None)
+MAP_ID1 = os.environ.get("MAP_ID1", None)
+MAP_ID2 = os.environ.get("MAP_ID2", None)
 
 
 class AriaCollector:
-    def __get_token(self):
-        url = f"https://{ARIA_HOST}/suite-api/api/auth/token/acquire"
-        payload = {
-            "username": ARIA_USER,
-            "authSource": ARIA_AUTH_SOURCE,
-            "password": ARIA_PASSWD,
-        }
+    def __get_token(self, payload: dict):
+        url = f"{self.base_url}/auth/token/acquire"
         headers = {"Content-Type": "application/json", "Accept": "application/json"}
         try:
             response = requests.post(url, json=payload, headers=headers)
@@ -30,12 +27,18 @@ class AriaCollector:
             print("❌ No authentication token obtained. Aborting...")
             raise SystemExit(e)
 
-    def __init__(self):
-        self.token = self.__get_token()
+# Voici un exemple de ce que doit ressembler la variable auth
+# auth = { "username": "user", "authSource": "local", "password": "password" }
+
+    def __init__(self, host: str, auth: dict):
+        self.base_url = f"https://{host}/suite-api/api"
+        self.token = self.__get_token(auth)
+        self.session = requests.Session()
+        self.session.headers.update({"Accept": "application/json", "Authorization": f"OpsToken {self.token}"})
         self.end = int(datetime.now().timestamp() * 1000)
         self.begin = self.end - (30 * 24 * 60 * 60 * 1000)
-        self.names_map = { ARIA_RESOURCE_ID1 : "vSphere ANALAKELY", ARIA_RESOURCE_ID2 : "vSphere GALAXY" }
-        self.lines = []
+        self.names_map = { ARIA_RESOURCE_ID1 : MAP_ID1, ARIA_RESOURCE_ID2 : MAP_ID2 }
+        self.lines = [] # list of influxDB line
 
     def __influx_line_protocol(self, data_json, measurement: str):
         lp = []
@@ -70,7 +73,7 @@ class AriaCollector:
         return lp
 
     def get_total_vms(self):
-        url = f"https://{ARIA_HOST}/suite-api/api/resources/stats/latest"
+        url = f"{self.base_url}/resources/stats/latest"
         headers = {
             "Accept": "application/json",
             "Authorization": f"OpsToken {self.token}",
@@ -90,11 +93,7 @@ class AriaCollector:
             raise SystemExit(e)
 
     def aria_vmop(self):
-        url = f"https://{ARIA_HOST}/suite-api/api/resources/stats/query"
-        headers = {
-            "Accept": "application/json",
-            "Authorization": f"OpsToken {self.token}",
-        }
+        url = f"{self.base_url}/resources/stats/query"
         payload = {
             "resourceId": [ARIA_RESOURCE_ID1, ARIA_RESOURCE_ID2],
             "statKey": [
@@ -108,7 +107,7 @@ class AriaCollector:
             "intervalQuantifier": 1
         }
         try:
-            response = requests.post(url, headers=headers, json=payload)
+            response = self.session.post(url, json=payload)
             response.raise_for_status()
             lp = self.__influx_line_protocol(response.json(), "vm_inventory")
             self.lines.extend(lp)
@@ -116,11 +115,7 @@ class AriaCollector:
             raise SystemExit(e)
 
     def aria_cpu_mem(self):
-        url = f"https://{ARIA_HOST}/suite-api/api/resources/stats/query"
-        headers = {
-            "Accept": "application/json",
-            "Authorization": f"OpsToken {self.token}",
-        }
+        url = f"{self.base_url}/resources/stats/query"
         payload = {
             "resourceId": [ARIA_RESOURCE_ID1, ARIA_RESOURCE_ID2],
             "statKey": [
@@ -134,7 +129,7 @@ class AriaCollector:
             "intervalQuantifier": 1
         }
         try:
-            response = requests.post(url, headers=headers, json=payload)
+            response = self.session.post(url, json=payload)
             response.raise_for_status()
             lp = self.__influx_line_protocol(response.json(), "system_metrics")
             self.lines.extend(lp)
@@ -148,22 +143,20 @@ class AriaCollector:
         self.aria_cpu_mem()
 
 
-aria = AriaCollector()
+if __name__ == "__main__":
+    print(f"--- Start collecting from VMware Aria ({datetime.now().strftime('%Y-%m-%d %H:%M:%S')}) ---")
 
-# if __name__ == "__main__":
-    # print(
-        # f"--- Start collecting from VMware Aria ({datetime.now().strftime('%Y-%m-%d %H:%M:%S')}) ---"
-    # )
+    auth = { "username": ARIA_USER, "authSource": ARIA_AUTH_SOURCE, "password": ARIA_PASSWD }
+    try:
+        aria = AriaCollector(str(ARIA_HOST), auth)
+        aria.collect()
+    except Exception as e:
+        print(f"❌ Error: {e}")
+        exit()
 
-    # token = get_aria_token()
-    # if token:
-        # data = aria_total_vms(token)
+    print("Writing to InfluxDB...")
+    for line in aria.lines:
+        db.write_line(line)
 
-        # if data:
-            # print("Writing to InfluxDB...")
-            # writer.write_records(data)
-            # writer.close()
-        # else:
-            # print("❌ No data collected.")
-
-        # print("--- End ---")
+    db.close()
+    print("--- End ---")

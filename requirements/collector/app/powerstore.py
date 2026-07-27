@@ -1,6 +1,8 @@
 import os
 import requests
-from influxdb_client import Point
+from datetime import datetime
+from influxdb_client.client.write.point import Point
+from influx_writer import writer as db
 
 POWERSTORE_HOST = os.getenv("POWERSTORE_HOST")
 POWERSTORE_USER = os.getenv("POWERSTORE_USER")
@@ -29,9 +31,9 @@ class PowerStoreCollector:
         self.volume_id = []
         self.volume_group_id = []
         self.isAuthenticated = False
-        self.points = []  # Liste pour stocker les points à envoyer à InfluxDB
-        if not self.isAuthenticated:
-            self.isAuthenticated = self.authenticate()
+        self.points:list[Point] = []  # Liste pour stocker les points à envoyer à InfluxDB
+        if self.authenticate():
+            self.isAuthenticated = True
 
     def get_ids(self, entity):
         url = f"{self.base_url}/{entity}"
@@ -151,8 +153,26 @@ class PowerStoreCollector:
                 if response:
                     self.__influx_point(id, response, "appliance_id")
 
+    def get_all_metrics(self):
+        self.space_metrics_cluster_p()
+        self.performance_metrics_node_p()
+        self.performance_metrics_appliance_p()
 
-# Exemple de test rapide :
-# ps = PowerStoreCollector("192.168.1.50", "admin", "Password")
-# if ps.authenticate():
-#     print(ps.get_metrics())
+
+if __name__ == "__main__":
+    print(f"--- Start collecting from DELL Powerstore ({datetime.now().strftime('%Y-%m-%d %H:%M:%S')}) ---")
+
+    ps = PowerStoreCollector(POWERSTORE_HOST, POWERSTORE_USER, POWERSTORE_PASSWD)
+
+    if not ps.isAuthenticated:
+        print("Unable to Authenticate")
+        exit()
+
+    ps.get_all_metrics()
+
+    print("Writing to InfluxDB...")
+    for point in ps.points:
+        db.write_point(point)
+
+    db.close()
+    print("--- End ---")

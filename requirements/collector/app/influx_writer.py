@@ -26,7 +26,7 @@ class InfluxDBWriter:
         self.client = InfluxDBClient(url=self.url, token=self.token, org=self.org)
         self.write_api = self.client.write_api(write_options=SYNCHRONOUS)
 
-    def write_point(self, measurement: str, tags: Dict[str, str], fields: Dict[str, Any], timestamp=None):
+    def create_write_point(self, measurement: str, tags: Dict[str, str], fields: Dict[str, Any], timestamp=None):
         """
         Writes a single measurement to InfluxDB.
 
@@ -52,6 +52,14 @@ class InfluxDBWriter:
 
         except Exception as e:
             logger.error(f"Failed to write point to InfluxDB: {e}")
+
+    def write_point(self, point:Point)
+        try:
+            self.write_api.write(bucket=self.bucket, org=self.org, record=point)
+            logger.debug(f"Data written successfully")
+        except Exception as e:
+            logger.error(f"Failed to write point to InfluxDB: {e}")
+
 
     def write_records(self, records: Union[List[Point], List[Dict], Point, Dict]):
         """
