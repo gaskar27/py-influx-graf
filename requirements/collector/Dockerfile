@@ -12,4 +12,4 @@ RUN chmod +x /usr/local/bin/entrypoint.sh
 
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
-CMD ["tail", "-f", "/var/log/cron.log"]
+CMD ["tail", "-f", "/var/log/logger.log"]
