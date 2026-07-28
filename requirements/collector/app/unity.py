@@ -4,6 +4,10 @@ import requests
 from influxdb_client.client.write.point import Point
 from influx_writer import writer as db
 
+import urllib3
+
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
 UNITY_HOST = os.getenv("UNITY_HOST")
 UNITY_USER = os.getenv("UNITY_USER")
 UNITY_PASSWD = os.getenv("UNITY_PASSWD")

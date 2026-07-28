@@ -4,6 +4,10 @@ from datetime import datetime
 from influxdb_client.client.write.point import Point
 from influx_writer import writer as db
 
+import urllib3
+
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
 POWERSTORE_HOST = os.getenv("POWERSTORE_HOST")
 POWERSTORE_USER = os.getenv("POWERSTORE_USER")
 POWERSTORE_PASSWD = os.getenv("POWERSTORE_PASSWD")
@@ -102,19 +106,6 @@ class PowerStoreCollector:
         response = self.session.post(url, json=payload)
         return response.json() if response.status_code == 200 else None
 
-
-    def __influx_point_test(self):
-        self.get_appliance_id()
-        for id in self.appliance_id:
-            response = self.space_metrics_cluster(id)
-            if response:
-                for item in response:
-                    point = Point("powerstore_performance").time(item["timestamp"]).tag("appliance_id", id).tag("response_definition", item["response_definition"]).tag("entity", item["entity"])
-                    for k, v in item.items():
-                        if k not in ["timestamp", "appliance_id", "response_definition", "entity"] and isinstance(v, (int, float)):
-                            point.field(k, v)
-                    self.points.append(point)
-
     def __influx_point(self, id, response, type_id):
         for item in response:
             point = Point("powerstore_performance").time(item["timestamp"]).tag(type_id, id).tag("response_definition", item["response_definition"]).tag("entity", item["entity"])
@@ -131,7 +122,7 @@ class PowerStoreCollector:
             for id in self.cluster_id:
                 response = self.get_metrics("space_metrics_by_cluster", id)
                 if response:
-                    self.__influx_point(id, response, "appliance_id")
+                    self.__influx_point(id, response, "cluster_id")
 
     def performance_metrics_node(self, entity_id):
         return self.get_metrics("performance_metrics_by_node", entity_id)

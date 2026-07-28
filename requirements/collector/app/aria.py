@@ -4,6 +4,10 @@ from datetime import datetime
 import requests
 from influx_writer import writer as db
 
+import urllib3
+
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
 # Aria
 ARIA_HOST = os.environ.get("ARIA_HOST", None)
 ARIA_USER = os.environ.get("ARIA_USER", None)
@@ -34,6 +38,7 @@ class AriaCollector:
         self.base_url = f"https://{host}/suite-api/api"
         self.token = self.__get_token(auth)
         self.session = requests.Session()
+        self.session.verify = False
         self.session.headers.update({"Accept": "application/json", "Authorization": f"OpsToken {self.token}"})
         self.end = int(datetime.now().timestamp() * 1000)
         self.begin = self.end - (30 * 24 * 60 * 60 * 1000)
@@ -85,7 +90,7 @@ class AriaCollector:
             ],
         }
         try:
-            response = requests.post(url, headers=headers, json=payload)
+            response = self.session.post(url, headers=headers, json=payload)
             response.raise_for_status()
             lp = self.__influx_line_protocol(response.json(), "vm_inventory")
             self.lines.extend(lp)
@@ -150,7 +155,7 @@ if __name__ == "__main__":
     try:
         aria = AriaCollector(str(ARIA_HOST), auth)
         aria.collect()
-    except Exception as e:
+    except BaseException as e:
         print(f"❌ Error: {e}")
         exit()
 
