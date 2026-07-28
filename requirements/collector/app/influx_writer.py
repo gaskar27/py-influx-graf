@@ -53,7 +53,7 @@ class InfluxDBWriter:
         except Exception as e:
             logger.error(f"Failed to write point to InfluxDB: {e}")
 
-    def write_point(self, point:Point)
+    def write_point(self, point:Point):
         try:
             self.write_api.write(bucket=self.bucket, org=self.org, record=point)
             logger.debug(f"Data written successfully")
