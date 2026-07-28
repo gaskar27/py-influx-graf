@@ -71,7 +71,7 @@ class UnityCollector:
         response = self.get_metrics("disk", fields)
         self.__influx_point(response)
 
-    def get_all_metrics(self)
+    def get_all_metrics(self):
         self.get_system_metrics()
         self.get_pool_metrics()
         self.get_luns_metrics()
