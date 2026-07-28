@@ -29,6 +29,8 @@ services:
   aria_collector:
     container_name: aria_collector
     build: ./requirements/collector
+    env_file:
+      - .env
     environment:
       - ARIA_HOST=IPtoAria
       - ARIA_USER=changeme
@@ -45,6 +47,8 @@ services:
   collector1:
     container_name: collector1
     build: ./requirements/collector
+    env_file:
+      - .env
     environment:
       - VCENTER_HOST=changeme
       - VCENTER_USER=user
@@ -62,6 +66,8 @@ services:
   collector2:
     container_name: collector2
     build: ./requirements/collector
+    env_file:
+      - .env
     environment:
       - VCENTER_HOST=changeme
       - VCENTER_USER=user
