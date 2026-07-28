@@ -3,14 +3,10 @@ set -e
 
 touch /var/log/logger.log
 
-cd /usr/local/bin/tools/
-
-ln -s all.sh /usr/local/bin/all
-ln -s aria.sh /usr/local/bin/aria
-ln -s powerstore.sh /usr/local/bin/powerstore
-ln -s unity.sh /usr/local/bin/unity
-ln -s vsphere.sh /usr/local/bin/vsphere
-
-cd -
+ln -s /usr/local/bin/tools/all.sh /usr/local/bin/all
+ln -s /usr/local/bin/tools/aria.sh /usr/local/bin/aria
+ln -s /usr/local/bin/tools/powerstore.sh /usr/local/bin/powerstore
+ln -s /usr/local/bin/tools/unity.sh /usr/local/bin/unity
+ln -s /usr/local/bin/tools/vsphere.sh /usr/local/bin/vsphere
 
 exec "$@"
