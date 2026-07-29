@@ -11,17 +11,13 @@ class InfluxDBWriter:
     A generic module to send collected metrics to InfluxDB.
     """
     def __init__(self):
-        self.host = os.environ.get("INFLUXDB_HOST", "localhost")
-        self.port = os.environ.get("INFLUXDB_HTTP_PORT", "8181")
-        self.url = f"http://{self.host}:{self.port}"
-
         self.token = os.getenv("INFLUXDB_TOKEN")
         self.database = os.environ.get("INFLUXDB_BUCKET", "local_system")
 
         if not self.token:
             logger.warning("INFLUXDB_TOKEN is not set. Writes may fail if authentication is required.")
 
-        self.client = InfluxDBClient3(url=self.url, database=self.database, token=str(self.token))
+        self.client = InfluxDBClient3(host="influxdb3", database=self.database, token=str(self.token))
 
     def write_point(self, point:Point):
         try:
