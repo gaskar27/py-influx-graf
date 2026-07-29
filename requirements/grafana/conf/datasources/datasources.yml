@@ -4,12 +4,10 @@ datasources:
   - name: InfluxDB-v3-SQL
     type: influxdb
     access: proxy
-    url: http://$INFLUXDB_HOST:8181
+    url: http://influxdb3:8181
     jsonData:
       version: SQL
       httpMode: POST
-    secureJsonData:
-      token: $INFLUXDB_TOKEN
-    database: $INFLUXDB_BUCKET
+    database: ${INFLUXDB_BUCKET}
     isDefault: true
     editable: true
