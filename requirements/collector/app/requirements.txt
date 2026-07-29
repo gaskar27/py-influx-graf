@@ -1,7 +1,8 @@
 certifi==2026.5.20
 charset-normalizer==3.4.7
 idna==3.18
-influxdb-client==1.50.0
+influxdb3-python==0.20.0
+pyarrow==25.0.0
 python-dateutil==2.9.0.post0
 pyvmomi==9.1.0.0
 reactivex==4.1.0

@@ -1,7 +1,7 @@
 import os
 from datetime import datetime
 import requests
-from influxdb_client.client.write.point import Point
+from influxdb_client_3 import Point
 from influx_writer import writer as db
 
 import urllib3
