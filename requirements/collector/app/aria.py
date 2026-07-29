@@ -9,23 +9,23 @@ import urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 # Aria
-ARIA_HOST = os.environ.get("ARIA_HOST", None)
-ARIA_USER = os.environ.get("ARIA_USER", None)
+ARIA_HOST = os.getenv("ARIA_HOST")
+ARIA_USER = os.getenv("ARIA_USER")
 ARIA_AUTH_SOURCE = os.environ.get("ARIA_AUTH_SOURCE", "local")
-ARIA_PASSWD = os.environ.get("ARIA_PASSWD", None)
-ARIA_RESOURCE_ID1 = os.environ.get("ARIA_RESOURCE_ID1", None)
-ARIA_RESOURCE_ID2 = os.environ.get("ARIA_RESOURCE_ID2", None)
-MAP_ID1 = os.environ.get("MAP_ID1", None)
-MAP_ID2 = os.environ.get("MAP_ID2", None)
+ARIA_PASSWD = os.getenv("ARIA_PASSWD")
+ARIA_RESOURCE_ID1 = os.getenv("ARIA_RESOURCE_ID1")
+ARIA_RESOURCE_ID2 = os.getenv("ARIA_RESOURCE_ID2")
+MAP_ID1 = os.getenv("MAP_ID1")
+MAP_ID2 = os.getenv("MAP_ID2")
 
 
 class AriaCollector:
     def __get_token(self, payload: dict):
         url = f"{self.base_url}/auth/token/acquire"
-        headers = {"Content-Type": "application/json", "Accept": "application/json"}
         try:
-            response = requests.post(url, json=payload, headers=headers)
+            response = self.session.post(url, json=payload)
             response.raise_for_status()
+            print("Successfully authenticated to Aria")
             return response.json()["token"]
         except requests.exceptions.RequestException as e:
             print("❌ No authentication token obtained. Aborting...")
@@ -36,10 +36,11 @@ class AriaCollector:
 
     def __init__(self, host: str, auth: dict):
         self.base_url = f"https://{host}/suite-api/api"
-        self.token = self.__get_token(auth)
         self.session = requests.Session()
+        self.session.headers.update({"Content-Type": "application/json", "Accept": "application/json"})
         self.session.verify = False
-        self.session.headers.update({"Accept": "application/json", "Authorization": f"OpsToken {self.token}"})
+        self.token = self.__get_token(auth)
+        self.session.headers.update({"Authorization": f"OpsToken {self.token}"})
         self.end = int(datetime.now().timestamp() * 1000)
         self.begin = self.end - (30 * 24 * 60 * 60 * 1000)
         self.names_map = { ARIA_RESOURCE_ID1 : MAP_ID1, ARIA_RESOURCE_ID2 : MAP_ID2 }

@@ -106,7 +106,7 @@ class PowerStoreCollector:
         response = self.session.post(url, json=payload)
         return response.json() if response.status_code == 200 else None
 
-    def __influx_point(self, id, response, type_id):
+    def __influx_point(self, id, response, type_id: str):
         for item in response:
             point = Point("powerstore_performance").time(item["timestamp"]).tag(type_id, id).tag("response_definition", item["response_definition"]).tag("entity", item["entity"])
             for k, v in item.items():

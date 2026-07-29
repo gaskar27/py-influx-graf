@@ -51,27 +51,27 @@ class UnityCollector:
             self.points.append(point)
 
     def get_system_metrics(self):
-        fields = "name,model,serialNumber,health"
+        fields = "name,model,serialNumber"
         response = self.get_metrics("system", fields)
         self.__influx_point(response)
 
     def get_pool_metrics(self):
-        fields = "name,sizeTotal,sizeUsed,sizeSubscribed,health"
+        fields = "name,sizeTotal,sizeUsed,sizeSubscribed"
         response = self.get_metrics("pool", fields)
         self.__influx_point(response)
 
     def get_luns_metrics(self):
-        fields = "name,sizeAllocated,sizeTotal,health,pool"
+        fields = "name,sizeAllocated,sizeTotal,pool"
         response = self.get_metrics("luns", fields)
         self.__influx_point(response)
 
     def get_filesystem_metrics(self):
-        fields = "name,sizeAllocated,sizeTotal,health"
+        fields = "name,sizeAllocated,sizeTotal"
         response = self.get_metrics("filesystem", fields)
         self.__influx_point(response)
 
     def get_disk_metrics(self):
-        fields = "name,sizeAllocated,sizeTotal,health"
+        fields = "name,sizeAllocated,sizeTotal"
         response = self.get_metrics("disk", fields)
         self.__influx_point(response)
 
