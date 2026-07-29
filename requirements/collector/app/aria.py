@@ -80,10 +80,6 @@ class AriaCollector:
 
     def get_total_vms(self):
         url = f"{self.base_url}/resources/stats/latest"
-        headers = {
-            "Accept": "application/json",
-            "Authorization": f"OpsToken {self.token}",
-        }
         payload = {
             "resourceId": [ARIA_RESOURCE_ID1, ARIA_RESOURCE_ID2],
             "statKey": [
@@ -91,7 +87,7 @@ class AriaCollector:
             ],
         }
         try:
-            response = self.session.post(url, headers=headers, json=payload)
+            response = self.session.post(url, json=payload)
             response.raise_for_status()
             lp = self.__influx_line_protocol(response.json(), "vm_inventory")
             self.lines.extend(lp)
