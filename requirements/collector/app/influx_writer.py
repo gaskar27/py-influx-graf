@@ -1,5 +1,6 @@
 import os
 import logging
+import requests
 from typing import Dict, List, Union
 from influxdb_client_3 import Point, InfluxDBClient3
 
@@ -17,11 +18,32 @@ class InfluxDBWriter:
         if not self.token:
             logger.warning("INFLUXDB_TOKEN is not set. Writes may fail if authentication is required.")
 
+        self._create_database_if_not_exists()
         self.client = InfluxDBClient3(host="http://influxdb3:8181", database=self.database, token=self.token)
+
+    def _create_database_if_not_exists(self):
+        url = "http://influxdb3:8181/api/v3/configure/database"
+        headers = {
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {self.token}"
+        }
+        data = {
+            "db": self.database,
+        }
+        try:
+            response = requests.post(url=url, headers=headers, json=data, timeout=5)
+            if response.status_code in (200, 201):
+                logger.info(f"Database '{self.database}' Created successfully.")
+            elif response.status_code == 409:
+                logger.info(f"Database '{self.database}' is already exists.")
+            else:
+                logger.debug(f"Info creation DB ({response.status_code}): {response.text}")
+        except Exception as e:
+            logger.warning(f"Unable to verify/create DB via API: {e}")
 
     def write_point(self, point:Point):
         try:
-            self.client.write(point)
+            self.client.write(record=point)
             logger.debug(f"Data written successfully")
         except Exception as e:
             logger.error(f"Failed to write point to InfluxDB: {e}")
