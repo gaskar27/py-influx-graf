@@ -20,17 +20,6 @@ MAP_ID2 = os.getenv("MAP_ID2")
 
 
 class AriaCollector:
-    def __get_token(self, payload: dict):
-        url = f"{self.base_url}/auth/token/acquire"
-        try:
-            response = self.session.post(url, json=payload)
-            response.raise_for_status()
-            print("Successfully authenticated to Aria")
-            return response.json()["token"]
-        except requests.exceptions.RequestException as e:
-            print("❌ No authentication token obtained. Aborting...")
-            raise SystemExit(e)
-
 # Voici un exemple de ce que doit ressembler la variable auth
 # auth = { "username": "user", "authSource": "local", "password": "password" }
 
@@ -45,6 +34,17 @@ class AriaCollector:
         self.begin = self.end - (30 * 24 * 60 * 60 * 1000)
         self.names_map = { ARIA_RESOURCE_ID1 : MAP_ID1, ARIA_RESOURCE_ID2 : MAP_ID2 }
         self.lines = [] # list of influxDB line
+
+    def __get_token(self, payload: dict):
+        url = f"{self.base_url}/auth/token/acquire"
+        try:
+            response = self.session.post(url, json=payload)
+            response.raise_for_status()
+            print("Successfully authenticated to Aria")
+            return response.json()["token"]
+        except requests.exceptions.RequestException as e:
+            print("❌ No authentication token obtained. Aborting...")
+            raise SystemExit(e)
 
     def __influx_line_protocol(self, data_json, measurement: str):
         lp = []
@@ -88,6 +88,8 @@ class AriaCollector:
         }
         try:
             response = self.session.post(url, json=payload)
+            if response.status_code == 403:
+                print(" Error 403:", response.text)
             response.raise_for_status()
             lp = self.__influx_line_protocol(response.json(), "vm_inventory")
             self.lines.extend(lp)
@@ -110,6 +112,8 @@ class AriaCollector:
         }
         try:
             response = self.session.post(url, json=payload)
+            if response.status_code == 403:
+                print(" Error 403:", response.text)
             response.raise_for_status()
             lp = self.__influx_line_protocol(response.json(), "vm_inventory")
             self.lines.extend(lp)
@@ -132,6 +136,8 @@ class AriaCollector:
         }
         try:
             response = self.session.post(url, json=payload)
+            if response.status_code == 403:
+                print(" Error 403:", response.text)
             response.raise_for_status()
             lp = self.__influx_line_protocol(response.json(), "system_metrics")
             self.lines.extend(lp)
