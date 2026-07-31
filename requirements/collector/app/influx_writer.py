@@ -3,6 +3,7 @@ import logging
 import requests
 from typing import Dict, List, Union
 from influxdb_client_3 import Point, InfluxDBClient3
+from influxdb_client_3.write_client.domain import write_precision
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -19,7 +20,7 @@ class InfluxDBWriter:
             logger.warning("INFLUXDB_TOKEN is not set. Writes may fail if authentication is required.")
 
         self._create_database_if_not_exists()
-        self.client = InfluxDBClient3(host="http://influxdb3:8181", database=self.database, token=self.token)
+        self.client = InfluxDBClient3(host="influxdb3:8181", database=self.database, token=self.token)
 
     def _create_database_if_not_exists(self):
         url = "http://influxdb3:8181/api/v3/configure/database"
@@ -43,8 +44,8 @@ class InfluxDBWriter:
 
     def write_point(self, point:Point):
         try:
-            self.client.write(record=point)
-            logger.debug(f"Data written successfully")
+            self.client.write(record=point, write_precision="ms")
+            logger.debug(f"Point written successfully")
         except Exception as e:
             logger.error(f"Failed to write point to InfluxDB: {e}")
 

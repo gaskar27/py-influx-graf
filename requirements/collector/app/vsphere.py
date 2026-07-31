@@ -6,20 +6,26 @@ from pyVmomi import vim
 from influxdb_client_3 import Point
 from influx_writer import writer as db
 
-VCENTER_HOST = os.environ.get("VCENTER_HOST")
-VCENTER_USER = os.environ.get("VCENTER_USER")
-VCENTER_PASSWORD = os.environ.get("VCENTER_PASSWORD")
+VCENTER_HOST = os.environ.get("VCENTER_HOST", "localhost")
+VCENTER_USER = os.environ.get("VCENTER_USER", "")
+VCENTER_PASSWORD = os.environ.get("VCENTER_PASSWORD", "")
 DS_FOLDER = os.getenv("DS_FOLDER")
 
 class VsphereCollector:
-    def __init__(self, host, user, password):
+    def __init__(self, host: str, user: str, password: str):
         self.ssl_context = ssl._create_unverified_context()
-        self.session = SmartConnect(host=host, user=user, pwd=password, sslContext=self.ssl_context)
+        try:
+            self.session = SmartConnect(host=host, user=user, pwd=password, sslContext=self.ssl_context)
+        except Exception as e:
+            raise ConnectionError(f"Unable to connect to vSphere ({host}): {e}")
+        if not self.session:
+            raise ConnectionError("SmartConnect return None.")
         self.content = self.session.RetrieveContent()
         self.points: list[Point] = []
 
     def __del__(self):
-        Disconnect(self.session)
+        if self.session:
+            Disconnect(self.session)
 
     def find_datastore_folder(self, folder_name: str):
         container = self.content.viewManager.CreateContainerView(
@@ -71,9 +77,13 @@ class VsphereCollector:
 if __name__ == "__main__":
     print(f"--- Start collecting from VMware vSphere Client ({datetime.now().strftime('%Y-%m-%d %H:%M:%S')}) ---")
 
-    vsphere = VsphereCollector(host=VCENTER_HOST, user=VCENTER_USER, password=VCENTER_PASSWORD)
+    try:
+        vsphere = VsphereCollector(host=VCENTER_HOST, user=VCENTER_USER, password=VCENTER_PASSWORD)
 
-    vsphere.get_ds_data(str(DS_FOLDER))
+        vsphere.get_ds_data(str(DS_FOLDER))
+    except Exception as e:
+        print(f"❌ Error: {e}")
+        exit()
 
     print("Writing to InfluxDB...")
     for point in vsphere.points:
