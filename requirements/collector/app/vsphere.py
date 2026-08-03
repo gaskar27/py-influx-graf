@@ -8,7 +8,7 @@ from influx_writer import writer as db
 
 VCENTER_HOST = os.environ.get("VCENTER_HOST", "localhost")
 VCENTER_USER = os.environ.get("VCENTER_USER", "")
-VCENTER_PASSWORD = os.environ.get("VCENTER_PASSWORD", "")
+VCENTER_PASSWORD = os.environ.get("VCENTER_PASSWD", "")
 DS_FOLDER = os.getenv("DS_FOLDER")
 
 class VsphereCollector:
