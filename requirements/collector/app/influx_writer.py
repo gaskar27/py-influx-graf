@@ -15,15 +15,18 @@ class InfluxDBWriter:
     def __init__(self):
         self.token = os.environ.get("INFLUXDB_TOKEN", "")
         self.database = os.environ.get("INFLUXDB_BUCKET", "local_system")
+        self.host = os.environ.get("INFLUXDB_HOST", "influxdb3")
+        self.port = int(os.environ.get("INFLUXDB_PORT", "8181"))
+        self.base_url = f"http://{self.host}:{self.port}"
 
         if not self.token:
             logger.warning("INFLUXDB_TOKEN is not set. Writes may fail if authentication is required.")
 
         self._create_database_if_not_exists()
-        self.client = InfluxDBClient3(host="influxdb3:8181", database=self.database, token=self.token)
+        self.client = InfluxDBClient3(host=self.base_url, database=self.database, token=self.token)
 
     def _create_database_if_not_exists(self):
-        url = "http://influxdb3:8181/api/v3/configure/database"
+        url = f"{self.base_url}/api/v3/configure/database"
         headers = {
             "Content-Type": "application/json",
             "Authorization": f"Bearer {self.token}"
