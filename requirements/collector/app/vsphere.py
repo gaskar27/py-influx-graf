@@ -16,6 +16,7 @@ class VsphereCollector:
         self.ssl_context = ssl._create_unverified_context()
         self.session = None
         try:
+            print(f"Host = {host}", f"User = {user}", f"Password = {password}")
             self.session = SmartConnect(host=host, user=user, pwd=password, sslContext=self.ssl_context)
         except Exception as e:
             raise ConnectionError(f"Unable to connect to vSphere ({host}): {e}")
