@@ -14,6 +14,7 @@ DS_FOLDER = os.getenv("DS_FOLDER")
 class VsphereCollector:
     def __init__(self, host: str, user: str, password: str):
         self.ssl_context = ssl._create_unverified_context()
+        self.session = None
         try:
             self.session = SmartConnect(host=host, user=user, pwd=password, sslContext=self.ssl_context)
         except Exception as e:
@@ -24,7 +25,7 @@ class VsphereCollector:
         self.points: list[Point] = []
 
     def __del__(self):
-        if self.session:
+        if getattr(self, "session", None):
             Disconnect(self.session)
 
     def find_datastore_folder(self, folder_name: str):
@@ -65,7 +66,7 @@ class VsphereCollector:
                 )
 
                 point = Point("datastore_usage").tag("datastore_data", ds.name).tag("type", ds.summary.type)
-                point.tag("datastore_folder", ds_folder).field("total_capacity", round(capacity_gb, 2))
+                point.tag("datastore_folder", folder_name).field("total_capacity", round(capacity_gb, 2))
                 point.field("free_space", round(free_space_gb, 2)).field("space_use", round(space_use_gb, 2))
                 point.field("percent_use", round(percent_use, 2))
 

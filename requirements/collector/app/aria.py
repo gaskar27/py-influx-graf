@@ -88,8 +88,8 @@ class AriaCollector:
         }
         try:
             response = self.session.post(url, json=payload)
-            if response.status_code == 403:
-                print(" Error 403:", response.text)
+            if response.status_code != 200:
+                print(f" Error {response.status_code}:", response.text)
             response.raise_for_status()
             lp = self.__influx_line_protocol(response.json(), "vm_inventory")
             self.lines.extend(lp)
@@ -112,8 +112,8 @@ class AriaCollector:
         }
         try:
             response = self.session.post(url, json=payload)
-            if response.status_code == 403:
-                print(" Error 403:", response.text)
+            if response.status_code != 200:
+                print(f" Error {response.status_code}:", response.text)
             response.raise_for_status()
             lp = self.__influx_line_protocol(response.json(), "vm_inventory")
             self.lines.extend(lp)
@@ -136,8 +136,8 @@ class AriaCollector:
         }
         try:
             response = self.session.post(url, json=payload)
-            if response.status_code == 403:
-                print(" Error 403:", response.text)
+            if response.status_code != 200:
+                print(f" Error {response.status_code}:", response.text)
             response.raise_for_status()
             lp = self.__influx_line_protocol(response.json(), "system_metrics")
             self.lines.extend(lp)
