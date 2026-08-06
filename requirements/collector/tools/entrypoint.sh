@@ -9,4 +9,6 @@ ln -s /usr/local/bin/tools/powerstore.sh /usr/local/bin/powerstore
 ln -s /usr/local/bin/tools/unity.sh /usr/local/bin/unity
 ln -s /usr/local/bin/tools/vsphere.sh /usr/local/bin/vsphere
 
+ln -sf /dev/stdout /var/log/logger.log
+
 exec "$@"

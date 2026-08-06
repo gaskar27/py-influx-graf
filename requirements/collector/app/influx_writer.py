@@ -1,12 +1,21 @@
-import os
 import logging
-import requests
+import os
 from typing import Dict, List, Union
-from influxdb_client_3 import Point, InfluxDBClient3
-from influxdb_client_3.write_client.domain import write_precision
+
+import requests
+from influxdb_client_3 import Point, InfluxDBClient3, write_client_options, WriteOptions, InfluxDBError
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+def success(self, data: str):
+    print(f"Success writing batch: {data}")
+
+def error(self, data: str, err: InfluxDBError):
+    print(f"Error writing batch: {err}")
+
+def retry(self, data: str, err: InfluxDBError):
+    print(f"Retry error writing batch: {err}")
 
 class InfluxDBWriter:
     """
@@ -23,7 +32,21 @@ class InfluxDBWriter:
             logger.warning("INFLUXDB_TOKEN is not set. Writes may fail if authentication is required.")
 
         self._create_database_if_not_exists()
-        self.client = InfluxDBClient3(host=self.base_url, database=self.database, token=self.token)
+        self.write_options = WriteOptions(batch_size=500,
+                             flush_interval=10_000,
+                             jitter_interval=2_000,
+                             retry_interval=5_000,
+                             max_retries=5,
+                             max_retry_delay=30_000,
+                             exponential_base=2)
+        self.wco = write_client_options(success_callback=success,
+                                   error_callback=error,
+                                   retry_callback=retry,
+                                   write_options=self.write_options)
+        self.client = InfluxDBClient3(host=self.base_url,
+                                      database=self.database,
+                                      token=self.token,
+                                      write_client_options=self.wco)
 
     def _create_database_if_not_exists(self):
         url = f"{self.base_url}/api/v3/configure/database"
