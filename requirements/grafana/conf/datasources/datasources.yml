@@ -7,7 +7,8 @@ datasources:
     url: http://influxdb3:8181
     jsonData:
       version: SQL
+      dbName: ${INFLUXDB_BUCKET}
       httpMode: POST
-    database: ${INFLUXDB_BUCKET}
+      insecureGrpc: true
     isDefault: true
     editable: true
