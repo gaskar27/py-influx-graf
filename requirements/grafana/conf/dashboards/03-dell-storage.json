@@ -182,7 +182,7 @@
             "type": "influxdb",
             "uid": "influxdb"
           },
-          "query": "SELECT name, sizeTotal, sizeUsed, sizeSubscribed, (sizeUsed / sizeTotal * 100) as percent_used FROM unity_metrics WHERE time >= now() - interval '1 hour' AND sizeTotal IS NOT NULL ORDER BY percent_used DESC",
+          "rawSql": "SELECT name, sizeTotal, sizeUsed, sizeSubscribed, (sizeUsed / sizeTotal * 100) as percent_used FROM unity_metrics WHERE time >= now() - interval '1 hour' AND sizeTotal IS NOT NULL ORDER BY percent_used DESC",
           "refId": "A"
         }
       ],
@@ -251,7 +251,7 @@
             "type": "influxdb",
             "uid": "influxdb"
           },
-          "query": "SELECT name, sizeTotal FROM unity_metrics WHERE time >= now() - interval '1 hour' AND sizeTotal IS NOT NULL",
+          "rawSql": "SELECT name, sizeTotal FROM unity_metrics WHERE time >= now() - interval '1 hour' AND sizeTotal IS NOT NULL",
           "refId": "A"
         }
       ],
@@ -359,7 +359,7 @@
             "type": "influxdb",
             "uid": "influxdb"
           },
-          "query": "SELECT name, sizeAllocated, sizeTotal, pool FROM unity_metrics WHERE time >= now() - interval '1 hour' AND sizeAllocated IS NOT NULL AND pool IS NOT NULL ORDER BY sizeAllocated DESC LIMIT 20",
+          "rawSql": "SELECT name, sizeAllocated, sizeTotal, pool FROM unity_metrics WHERE time >= now() - interval '1 hour' AND sizeAllocated IS NOT NULL AND pool IS NOT NULL ORDER BY sizeAllocated DESC LIMIT 20",
           "refId": "A"
         }
       ],
@@ -467,7 +467,7 @@
             "type": "influxdb",
             "uid": "influxdb"
           },
-          "query": "SELECT name, sizeAllocated, sizeTotal FROM unity_metrics WHERE time >= now() - interval '1 hour' AND sizeAllocated IS NOT NULL AND pool IS NULL ORDER BY sizeAllocated DESC LIMIT 20",
+          "rawSql": "SELECT name, sizeAllocated, sizeTotal FROM unity_metrics WHERE time >= now() - interval '1 hour' AND sizeAllocated IS NOT NULL AND pool IS NULL ORDER BY sizeAllocated DESC LIMIT 20",
           "refId": "A"
         }
       ],
@@ -571,7 +571,7 @@
             "type": "influxdb",
             "uid": "influxdb"
           },
-          "query": "SELECT * FROM powerstore_performance WHERE entity = '$entity' AND time >= $__from AND time <= $__to ORDER BY time",
+          "rawSql": "SELECT * FROM powerstore_performance WHERE entity = '$entity' AND time >= $__from AND time <= $__to ORDER BY time",
           "refId": "A"
         }
       ],
@@ -634,7 +634,7 @@
             "type": "influxdb",
             "uid": "influxdb"
           },
-          "query": "SELECT * FROM powerstore_performance WHERE entity = '$entity' AND time >= now() - interval '1 hour' ORDER BY time DESC LIMIT 100",
+          "rawSql": "SELECT * FROM powerstore_performance WHERE entity = '$entity' AND time >= now() - interval '1 hour' ORDER BY time DESC LIMIT 100",
           "refId": "A"
         }
       ],
@@ -694,7 +694,7 @@
             "type": "influxdb",
             "uid": "influxdb"
           },
-          "query": "SELECT COUNT(DISTINCT cluster_id) as clusters FROM powerstore_performance WHERE entity = 'space_metrics_by_cluster' AND time >= now() - interval '1 hour'",
+          "rawSql": "SELECT COUNT(DISTINCT cluster_id) as clusters FROM powerstore_performance WHERE entity = 'space_metrics_by_cluster' AND time >= now() - interval '1 hour'",
           "refId": "A"
         }
       ],
@@ -754,7 +754,7 @@
             "type": "influxdb",
             "uid": "influxdb"
           },
-          "query": "SELECT COUNT(DISTINCT node_id) as nodes FROM powerstore_performance WHERE entity = 'performance_metrics_by_node' AND time >= now() - interval '1 hour'",
+          "rawSql": "SELECT COUNT(DISTINCT node_id) as nodes FROM powerstore_performance WHERE entity = 'performance_metrics_by_node' AND time >= now() - interval '1 hour'",
           "refId": "A"
         }
       ],
@@ -814,7 +814,7 @@
             "type": "influxdb",
             "uid": "influxdb"
           },
-          "query": "SELECT COUNT(DISTINCT appliance_id) as appliances FROM powerstore_performance WHERE entity = 'performance_metrics_by_appliance' AND time >= now() - interval '1 hour'",
+          "rawSql": "SELECT COUNT(DISTINCT appliance_id) as appliances FROM powerstore_performance WHERE entity = 'performance_metrics_by_appliance' AND time >= now() - interval '1 hour'",
           "refId": "A"
         }
       ],
@@ -845,7 +845,7 @@
         "multi": false,
         "name": "entity",
         "options": [],
-        "query": "SELECT DISTINCT entity FROM powerstore_performance WHERE time >= now() - interval '1 hour'",
+        "rawSql": "SELECT DISTINCT entity FROM powerstore_performance WHERE time >= now() - interval '1 hour'",
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,

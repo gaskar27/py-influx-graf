@@ -187,7 +187,7 @@
             "type": "influxdb",
             "uid": "influxdb"
           },
-          "query": "SELECT datastore_data, type, datastore_folder, total_capacity, space_use, free_space, percent_use FROM datastore_usage WHERE time >= now() - interval '1 hour' AND datastore_folder = '$folder' AND type LIKE '%$type%' ORDER BY percent_use DESC",
+          "rawSql": "SELECT datastore_data, type, datastore_folder, total_capacity, space_use, free_space, percent_use FROM datastore_usage WHERE time >= now() - interval '1 hour' AND datastore_folder = '$folder' AND type LIKE '%$type%' ORDER BY percent_use DESC",
           "refId": "A"
         }
       ],
@@ -287,7 +287,7 @@
             "type": "influxdb",
             "uid": "influxdb"
           },
-          "query": "SELECT time, datastore_data, percent_use FROM datastore_usage WHERE datastore_folder = '$folder' AND type LIKE '%$type%' AND time >= $__from AND time <= $__to ORDER BY time",
+          "rawSql": "SELECT time, datastore_data, percent_use FROM datastore_usage WHERE datastore_folder = '$folder' AND type LIKE '%$type%' AND time >= $__from AND time <= $__to ORDER BY time",
           "refId": "A"
         }
       ],
@@ -358,7 +358,7 @@
             "type": "influxdb",
             "uid": "influxdb"
           },
-          "query": "SELECT datastore_data, percent_use FROM datastore_usage WHERE time >= now() - interval '1 hour' AND datastore_folder = '$folder' AND type LIKE '%$type%' ORDER BY datastore_data",
+          "rawSql": "SELECT datastore_data, percent_use FROM datastore_usage WHERE time >= now() - interval '1 hour' AND datastore_folder = '$folder' AND type LIKE '%$type%' ORDER BY datastore_data",
           "refId": "A"
         }
       ],
@@ -428,7 +428,7 @@
             "type": "influxdb",
             "uid": "influxdb"
           },
-          "query": "SELECT datastore_data, total_capacity FROM datastore_usage WHERE time >= now() - interval '1 hour' AND datastore_folder = '$folder' AND type LIKE '%$type%'",
+          "rawSql": "SELECT datastore_data, total_capacity FROM datastore_usage WHERE time >= now() - interval '1 hour' AND datastore_folder = '$folder' AND type LIKE '%$type%'",
           "refId": "A"
         }
       ],
@@ -559,7 +559,7 @@
             "type": "influxdb",
             "uid": "influxdb"
           },
-          "query": "SELECT datastore_data, type, percent_use, free_space FROM datastore_usage WHERE percent_use > 80 AND time >= now() - interval '1 hour' ORDER BY percent_use DESC",
+          "rawSql": "SELECT datastore_data, type, percent_use, free_space FROM datastore_usage WHERE percent_use > 80 AND time >= now() - interval '1 hour' ORDER BY percent_use DESC",
           "refId": "A"
         }
       ],
@@ -590,7 +590,7 @@
         "multi": false,
         "name": "folder",
         "options": [],
-        "query": "SELECT DISTINCT datastore_folder FROM datastore_usage WHERE time >= now() - interval '1 hour'",
+        "rawSql": "SELECT DISTINCT datastore_folder FROM datastore_usage WHERE time >= now() - interval '1 hour'",
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
@@ -614,7 +614,7 @@
         "multi": false,
         "name": "type",
         "options": [],
-        "query": "SELECT DISTINCT type FROM datastore_usage WHERE time >= now() - interval '1 hour'",
+        "rawSql": "SELECT DISTINCT type FROM datastore_usage WHERE time >= now() - interval '1 hour'",
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
