@@ -86,7 +86,7 @@
             "type": "influxdb",
             "uid": "influxdb"
           },
-          "rawSql": "SELECT summary_total_number_vms FROM vm_inventory WHERE time >= now() - interval '1 hour' ORDER BY time DESC LIMIT 1",
+          "rawSql": "SELECT summary_total_number_vms FROM vm_inventory WHERE time >= now() - INTERVAL '1 hour' ORDER BY time DESC LIMIT 1",
           "refId": "A"
         }
       ],
@@ -146,7 +146,7 @@
             "type": "influxdb",
             "uid": "influxdb"
           },
-          "rawSql": "SELECT SUM(vmop_inventoryChange_numCreate_latest) as created FROM vm_inventory WHERE time >= now() - interval '30 days'",
+          "rawSql": "SELECT SUM(vmop_inventoryChange_numCreate_latest) as created FROM vm_inventory WHERE time >= now() - INTERVAL '30 days'",
           "refId": "A"
         }
       ],
@@ -206,7 +206,7 @@
             "type": "influxdb",
             "uid": "influxdb"
           },
-          "rawSql": "SELECT SUM(vmop_inventoryChange_numDestroy_latest) as destroyed FROM vm_inventory WHERE time >= now() - interval '30 days'",
+          "rawSql": "SELECT SUM(vmop_inventoryChange_numDestroy_latest) as destroyed FROM vm_inventory WHERE time >= now() - INTERVAL '30 days'",
           "refId": "A"
         }
       ],
@@ -293,7 +293,7 @@
             "type": "influxdb",
             "uid": "influxdb"
           },
-          "rawSql": "SELECT time, datacenter, cpu_workload, mem_workload FROM system_metrics WHERE time >= now() - interval '7 days' ORDER BY time",
+          "rawSql": "SELECT time, datacenter, cpu_workload, mem_workload FROM system_metrics WHERE time >= now() - INTERVAL '7 days' ORDER BY time",
           "refId": "A"
         }
       ],
@@ -366,7 +366,7 @@
             "type": "influxdb",
             "uid": "influxdb"
           },
-          "rawSql": "SELECT COUNT(DISTINCT datastore_data) as count FROM datastore_usage WHERE time >= now() - interval '1 hour'",
+          "rawSql": "SELECT COUNT(DISTINCT datastore_data) as count FROM datastore_usage WHERE time >= now() - INTERVAL '1 hour'",
           "refId": "A"
         }
       ],
@@ -427,7 +427,7 @@
             "type": "influxdb",
             "uid": "influxdb"
           },
-          "rawSql": "SELECT SUM(total_capacity) * 1073741824 as total_bytes FROM datastore_usage WHERE time >= now() - interval '1 hour'",
+          "rawSql": "SELECT SUM(total_capacity) * 1073741824 as total_bytes FROM datastore_usage WHERE time >= now() - INTERVAL '1 hour'",
           "refId": "A"
         }
       ],
@@ -495,7 +495,7 @@
             "type": "influxdb",
             "uid": "influxdb"
           },
-          "rawSql": "SELECT AVG(percent_use) as avg_percent FROM datastore_usage WHERE time >= now() - interval '1 hour'",
+          "rawSql": "SELECT AVG(percent_use) as avg_percent FROM datastore_usage WHERE time >= now() - INTERVAL '1 hour'",
           "refId": "A"
         }
       ],
@@ -589,7 +589,7 @@
             "type": "influxdb",
             "uid": "influxdb"
           },
-          "rawSql": "SELECT datastore_data, percent_use FROM datastore_usage WHERE time >= now() - interval '1 hour' ORDER BY percent_use DESC LIMIT 10",
+          "rawSql": "SELECT datastore_data, percent_use FROM datastore_usage WHERE time >= now() - INTERVAL '1 hour' ORDER BY percent_use DESC LIMIT 10",
           "refId": "A"
         }
       ],
@@ -715,7 +715,7 @@
             "type": "influxdb",
             "uid": "influxdb"
           },
-          "rawSql": "SELECT datastore_data, type, total_capacity, space_use, free_space, percent_use FROM datastore_usage WHERE time >= now() - interval '1 hour' ORDER BY percent_use DESC",
+          "rawSql": "SELECT datastore_data, type, total_capacity, space_use, free_space, percent_use FROM datastore_usage WHERE time >= now() - INTERVAL '1 hour' ORDER BY percent_use DESC",
           "refId": "A"
         }
       ],
@@ -788,7 +788,7 @@
             "type": "influxdb",
             "uid": "influxdb"
           },
-          "rawSql": "SELECT COUNT(DISTINCT name) as count FROM unity_metrics WHERE time >= now() - interval '1 hour' AND sizeTotal IS NOT NULL",
+          "rawSql": "SELECT COUNT(DISTINCT name) as count FROM unity_metrics WHERE time >= now() - INTERVAL '1 hour' AND sizeTotal IS NOT NULL",
           "refId": "A"
         }
       ],
@@ -848,7 +848,7 @@
             "type": "influxdb",
             "uid": "influxdb"
           },
-          "rawSql": "SELECT COUNT(DISTINCT cluster_id) as count FROM powerstore_performance WHERE time >= now() - interval '1 hour' AND entity = 'space_metrics_by_cluster'",
+          "rawSql": "SELECT COUNT(DISTINCT cluster_id) as count FROM powerstore_performance WHERE time >= now() - INTERVAL '1 hour' AND entity = 'space_metrics_by_cluster'",
           "refId": "A"
         }
       ],
@@ -908,7 +908,7 @@
             "type": "influxdb",
             "uid": "influxdb"
           },
-          "rawSql": "SELECT COUNT(DISTINCT node_id) as count FROM powerstore_performance WHERE time >= now() - interval '1 hour' AND entity = 'performance_metrics_by_node'",
+          "rawSql": "SELECT COUNT(DISTINCT node_id) as count FROM powerstore_performance WHERE time >= now() - INTERVAL '1 hour' AND entity = 'performance_metrics_by_node'",
           "refId": "A"
         }
       ],
@@ -968,7 +968,7 @@
             "type": "influxdb",
             "uid": "influxdb"
           },
-          "rawSql": "SELECT COUNT(DISTINCT appliance_id) as count FROM powerstore_performance WHERE time >= now() - interval '1 hour' AND entity = 'performance_metrics_by_appliance'",
+          "rawSql": "SELECT COUNT(DISTINCT appliance_id) as count FROM powerstore_performance WHERE time >= now() - INTERVAL '1 hour' AND entity = 'performance_metrics_by_appliance'",
           "refId": "A"
         }
       ],

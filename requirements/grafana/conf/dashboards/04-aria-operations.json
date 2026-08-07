@@ -86,7 +86,7 @@
             "type": "influxdb",
             "uid": "influxdb"
           },
-          "rawSql": "SELECT summary_total_number_vms FROM vm_inventory WHERE datacenter = '$datacenter' AND time >= now() - interval '1 hour' ORDER BY time DESC LIMIT 1",
+          "rawSql": "SELECT summary_total_number_vms FROM vm_inventory WHERE datacenter = '$datacenter' AND time >= now() - INTERVAL '1 hour' ORDER BY time DESC LIMIT 1",
           "refId": "A"
         }
       ],
@@ -146,7 +146,7 @@
             "type": "influxdb",
             "uid": "influxdb"
           },
-          "rawSql": "SELECT SUM(vmop_inventoryChange_numCreate_latest) as created FROM vm_inventory WHERE datacenter = '$datacenter' AND time >= now() - interval '30 days'",
+          "rawSql": "SELECT SUM(vmop_inventoryChange_numCreate_latest) as created FROM vm_inventory WHERE datacenter = '$datacenter' AND time >= now() - INTERVAL '30 days'",
           "refId": "A"
         }
       ],
@@ -206,7 +206,7 @@
             "type": "influxdb",
             "uid": "influxdb"
           },
-          "rawSql": "SELECT SUM(vmop_inventoryChange_numDestroy_latest) as destroyed FROM vm_inventory WHERE datacenter = '$datacenter' AND time >= now() - interval '30 days'",
+          "rawSql": "SELECT SUM(vmop_inventoryChange_numDestroy_latest) as destroyed FROM vm_inventory WHERE datacenter = '$datacenter' AND time >= now() - INTERVAL '30 days'",
           "refId": "A"
         }
       ],
@@ -431,7 +431,7 @@
             "type": "influxdb",
             "uid": "influxdb"
           },
-          "rawSql": "SELECT datacenter, SUM(vmop_inventoryChange_numCreate_latest) as created, SUM(vmop_inventoryChange_numDestroy_latest) as destroyed FROM vm_inventory WHERE time >= now() - interval '30 days' GROUP BY datacenter",
+          "rawSql": "SELECT datacenter, SUM(vmop_inventoryChange_numCreate_latest) as created, SUM(vmop_inventoryChange_numDestroy_latest) as destroyed FROM vm_inventory WHERE time >= now() - INTERVAL '30 days' GROUP BY datacenter",
           "refId": "A"
         }
       ],
@@ -519,7 +519,7 @@
             "type": "influxdb",
             "uid": "influxdb"
           },
-          "rawSql": "SELECT datacenter, summary_total_number_vms FROM vm_inventory WHERE time >= now() - interval '1 hour' ORDER BY summary_total_number_vms DESC",
+          "rawSql": "SELECT datacenter, summary_total_number_vms FROM vm_inventory WHERE time >= now() - INTERVAL '1 hour' ORDER BY summary_total_number_vms DESC",
           "refId": "A"
         }
       ],
@@ -840,7 +840,7 @@
             "type": "influxdb",
             "uid": "influxdb"
           },
-          "rawSql": "SELECT cpu_workload FROM system_metrics WHERE datacenter = '$datacenter' AND time >= now() - interval '1 hour' ORDER BY time DESC LIMIT 1",
+          "rawSql": "SELECT cpu_workload FROM system_metrics WHERE datacenter = '$datacenter' AND time >= now() - INTERVAL '1 hour' ORDER BY time DESC LIMIT 1",
           "refId": "A"
         }
       ],
@@ -908,7 +908,7 @@
             "type": "influxdb",
             "uid": "influxdb"
           },
-          "rawSql": "SELECT mem_workload FROM system_metrics WHERE datacenter = '$datacenter' AND time >= now() - interval '1 hour' ORDER BY time DESC LIMIT 1",
+          "rawSql": "SELECT mem_workload FROM system_metrics WHERE datacenter = '$datacenter' AND time >= now() - INTERVAL '1 hour' ORDER BY time DESC LIMIT 1",
           "refId": "A"
         }
       ],
@@ -932,14 +932,14 @@
           "type": "influxdb",
           "uid": "influxdb"
         },
-        "definition": "SELECT DISTINCT datacenter FROM vm_inventory WHERE time >= now() - interval '1 hour'",
+        "definition": "SELECT DISTINCT datacenter FROM vm_inventory WHERE time >= now() - INTERVAL '1 hour'",
         "hide": 0,
         "includeAll": true,
         "label": "Datacenter",
         "multi": false,
         "name": "datacenter",
         "options": [],
-        "rawSql": "SELECT DISTINCT datacenter FROM vm_inventory WHERE time >= now() - interval '1 hour'",
+        "rawSql": "SELECT DISTINCT datacenter FROM vm_inventory WHERE time >= now() - INTERVAL '1 hour'",
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
