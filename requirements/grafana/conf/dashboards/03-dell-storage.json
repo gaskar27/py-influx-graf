@@ -182,7 +182,7 @@
             "type": "influxdb",
             "uid": "influxdb"
           },
-          "rawSql": "SELECT datacenter, name, sizeTotal, sizeUsed, sizeSubscribed, (sizeUsed / sizeTotal * 100) as percent_used FROM unity_metrics WHERE time >= now() - INTERVAL '1 hour' AND sizeTotal IS NOT NULL ORDER BY percent_used DESC",
+          "rawSql": "SELECT datacenter, name, unity_metrics.\"sizeTotal\", unity_metrics.\"sizeUsed\", unity_metrics.\"sizeSubscribed\", (unity_metrics.\"sizeUsed\" / unity_metrics.\"sizeTotal\" * 100) as percent_used FROM unity_metrics WHERE time >= now() - INTERVAL '1 hour' AND unity_metrics.\"sizeTotal\" IS NOT NULL ORDER BY percent_used DESC",
           "refId": "A"
         }
       ],
@@ -251,7 +251,7 @@
             "type": "influxdb",
             "uid": "influxdb"
           },
-          "rawSql": "SELECT datacenter, name, sizeTotal FROM unity_metrics WHERE time >= now() - INTERVAL '1 hour' AND sizeTotal IS NOT NULL",
+          "rawSql": "SELECT datacenter, name, unity_metrics.\"sizeTotal\" FROM unity_metrics WHERE time >= now() - INTERVAL '1 hour' AND unity_metrics.\"sizeTotal\" IS NOT NULL",
           "refId": "A"
         }
       ],
@@ -359,7 +359,7 @@
             "type": "influxdb",
             "uid": "influxdb"
           },
-          "rawSql": "SELECT datacenter, name, sizeAllocated, sizeTotal, pool FROM unity_metrics WHERE time >= now() - INTERVAL '1 hour' AND sizeAllocated IS NOT NULL AND pool IS NOT NULL ORDER BY sizeAllocated DESC LIMIT 20",
+          "rawSql": "SELECT datacenter, name, unity_metrics.\"sizeAllocated\", unity_metrics.\"sizeTotal\" FROM unity_metrics WHERE time >= now() - INTERVAL '1 hour' AND unity_metrics.\"sizeAllocated\" IS NOT NULL ORDER BY unity_metrics.\"sizeAllocated\" DESC LIMIT 20",
           "refId": "A"
         }
       ],
@@ -467,7 +467,7 @@
             "type": "influxdb",
             "uid": "influxdb"
           },
-          "rawSql": "SELECT datacenter, name, sizeAllocated, sizeTotal FROM unity_metrics WHERE time >= now() - INTERVAL '1 hour' AND sizeAllocated IS NOT NULL AND pool IS NULL ORDER BY sizeAllocated DESC LIMIT 20",
+          "rawSql": "SELECT datacenter, name, unity_metrics.\"sizeAllocated\", unity_metrics.\"sizeTotal\" FROM unity_metrics WHERE time >= now() - INTERVAL '1 hour' AND unity_metrics.\"sizeAllocated\" IS NOT NULL ORDER BY unity_metrics.\"sizeAllocated\" DESC LIMIT 20",
           "refId": "A"
         }
       ],

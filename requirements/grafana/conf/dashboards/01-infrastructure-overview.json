@@ -788,7 +788,7 @@
             "type": "influxdb",
             "uid": "influxdb"
           },
-          "rawSql": "SELECT COUNT(DISTINCT name) as count FROM unity_metrics WHERE time >= now() - INTERVAL '1 hour' AND sizeTotal IS NOT NULL",
+          "rawSql": "SELECT COUNT(DISTINCT name) as count FROM unity_metrics WHERE time >= now() - INTERVAL '1 hour' AND unity_metrics.\"sizeTotal\" IS NOT NULL",
           "refId": "A"
         }
       ],
