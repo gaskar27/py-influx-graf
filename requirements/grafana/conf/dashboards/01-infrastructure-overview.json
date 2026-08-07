@@ -366,7 +366,7 @@
             "type": "influxdb",
             "uid": "influxdb"
           },
-          "rawSql": "SELECT COUNT(DISTINCT datastore_data) as count FROM datastore_usage WHERE time >= now() - INTERVAL '1 hour'",
+          "rawSql": "SELECT COUNT(DISTINCT datastore_data) as count FROM datastore_usage WHERE datastore_usage.time >= now() - INTERVAL '1 hour'",
           "refId": "A"
         }
       ],
@@ -427,7 +427,7 @@
             "type": "influxdb",
             "uid": "influxdb"
           },
-          "rawSql": "SELECT SUM(total_capacity) * 1073741824 as total_bytes FROM datastore_usage WHERE time >= now() - INTERVAL '1 hour'",
+          "rawSql": "SELECT SUM(total_capacity) * 1073741824 as total_bytes FROM datastore_usage WHERE datastore_usage.time >= now() - INTERVAL '1 hour'",
           "refId": "A"
         }
       ],
@@ -495,7 +495,7 @@
             "type": "influxdb",
             "uid": "influxdb"
           },
-          "rawSql": "SELECT AVG(percent_use) as avg_percent FROM datastore_usage WHERE time >= now() - INTERVAL '1 hour'",
+          "rawSql": "SELECT AVG(percent_use) as avg_percent FROM datastore_usage WHERE datastore_usage.time >= now() - INTERVAL '1 hour'",
           "refId": "A"
         }
       ],
