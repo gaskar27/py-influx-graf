@@ -11,6 +11,7 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 UNITY_HOST = os.getenv("UNITY_HOST")
 UNITY_USER = os.getenv("UNITY_USER")
 UNITY_PASSWD = os.getenv("UNITY_PASSWD")
+DC_NAME = os.getenv("DC_NAME")
 
 class UnityCollector:
     def authenticate(self):
@@ -44,7 +45,10 @@ class UnityCollector:
             return
         for item in response:
             content = item.get("content", {})
-            point = Point("unity_metrics").time(item["updated"]).tag("name", content["name"]).tag("id", content["id"])
+            point = (Point("unity_metrics").time(item["updated"])
+                     .tag("name", content["name"])
+                     .tag("id", content["id"])
+                     .tag("datacenter", DC_NAME))
             for k, v in content.items():
                 if k not in ["name", "id"]:
                     point.field(k, v)

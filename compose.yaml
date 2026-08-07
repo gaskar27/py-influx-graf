@@ -60,6 +60,7 @@ services:
       - POWERSTORE_HOST=changeme
       - POWERSTORE_USER=changeme
       - POWERSTORE_PASSWD=changeme
+      - DC_NAME=DataCenterName
     depends_on:
       influxdb3:
         condition: service_healthy
@@ -80,6 +81,7 @@ services:
       - POWERSTORE_HOST=changeme
       - POWERSTORE_USER=changeme
       - POWERSTORE_PASSWD=changeme
+      - DC_NAME=DataCenterName
     depends_on:
       influxdb3:
         condition: service_healthy

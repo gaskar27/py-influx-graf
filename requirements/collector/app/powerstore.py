@@ -11,6 +11,7 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 POWERSTORE_HOST = os.getenv("POWERSTORE_HOST")
 POWERSTORE_USER = os.getenv("POWERSTORE_USER")
 POWERSTORE_PASSWD = os.getenv("POWERSTORE_PASSWD")
+DC_NAME = os.getenv("DC_NAME")
 
 class PowerStoreCollector:
     def authenticate(self):
@@ -108,7 +109,10 @@ class PowerStoreCollector:
 
     def __influx_point(self, id, response, type_id: str):
         for item in response:
-            point = Point("powerstore_performance").time(item["timestamp"]).tag(type_id, id).tag("response_definition", item["response_definition"]).tag("entity", item["entity"])
+            point = (Point("powerstore_performance").time(item["timestamp"]).tag(type_id, id)
+                     .tag("response_definition", item["response_definition"])
+                     .tag("entity", item["entity"])
+                     .tag("datacenter", DC_NAME))
             for k, v in item.items():
                 if k not in ["timestamp", type_id, "response_definition", "entity"] and isinstance(v, (int, float)):
                     point.field(k, v)
