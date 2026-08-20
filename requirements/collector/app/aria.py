@@ -81,7 +81,7 @@ class AriaCollector:
     def get_total_vms(self):
         url = f"{self.base_url}/resources/stats/latest?resourceId={ARIA_RESOURCE_ID1}&resourceId={ARIA_RESOURCE_ID2}&statKey=summary|total_number_vms"
         try:
-            response = self.session.post(url)
+            response = self.session.get(url)
             if response.status_code != 200:
                 print(f" Error {response.status_code}:", response.text)
             response.raise_for_status()
