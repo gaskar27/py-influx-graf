@@ -10,6 +10,7 @@ VCENTER_HOST = os.environ.get("VCENTER_HOST", "localhost")
 VCENTER_USER = os.environ.get("VCENTER_USER", "")
 VCENTER_PASSWORD = os.environ.get("VCENTER_PASSWD", "")
 DS_FOLDER = os.getenv("DS_FOLDER")
+DC_NAME = os.getenv("DC_NAME")
 
 class VsphereCollector:
     def __init__(self, host: str, user: str, password: str):
@@ -67,9 +68,9 @@ class VsphereCollector:
                 )
 
                 point = Point("datastore_usage").tag("datastore_data", ds.name).tag("type", ds.summary.type)
-                point.tag("datastore_folder", folder_name).field("total_capacity", round(capacity_gb, 2))
-                point.field("free_space", round(free_space_gb, 2)).field("space_use", round(space_use_gb, 2))
-                point.field("percent_use", round(percent_use, 2))
+                point.tag("datastore_folder", folder_name).tag("datacenter", DC_NAME)
+                point.field("total_capacity", round(capacity_gb, 2)).field("free_space", round(free_space_gb, 2))
+                point.field("space_use", round(space_use_gb, 2)).field("percent_use", round(percent_use, 2))
 
                 self.points.append(point)
 
