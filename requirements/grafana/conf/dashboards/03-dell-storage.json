@@ -4,12 +4,12 @@
   "metadata": {
     "name": "dell-storage",
     "namespace": "default",
-    "uid": "8d25b238-8b52-4a10-b181-511d8d296b00",
-    "resourceVersion": "1786954569308012",
+    "uid": "a739ebd4-c635-4754-96e7-6ac68f61c44c",
+    "resourceVersion": "1787304215900990",
     "generation": 2,
-    "creationTimestamp": "2026-08-17T08:09:12Z",
+    "creationTimestamp": "2026-08-21T09:15:57Z",
     "labels": {
-      "grafana.app/deprecatedInternalID": "4096633395134464"
+      "grafana.app/deprecatedInternalID": "1059383600910336"
     },
     "annotations": {
       "grafana.app/createdBy": "access-policy:service",
@@ -17,13 +17,13 @@
       "grafana.app/managedBy": "classic-file-provisioning",
       "grafana.app/managerAllowsEdits": "true",
       "grafana.app/managerId": "Default",
-      "grafana.app/message": "Update and fix SQL influxDB query",
+      "grafana.app/message": "quick fix",
       "grafana.app/saved-from-ui": "Grafana v13.1.1 (a9cee6e172)",
-      "grafana.app/sourceChecksum": "7bb989c8191980d36f4e1e59957fc5bc",
+      "grafana.app/sourceChecksum": "28dac0f36e94482a538b84b997122297",
       "grafana.app/sourcePath": "/etc/grafana/provisioning/dashboards/03-dell-storage.json",
-      "grafana.app/sourceTimestamp": "1786947113000",
-      "grafana.app/updatedBy": "user:ffvfq0glmy0aoe",
-      "grafana.app/updatedTimestamp": "2026-08-17T08:16:09Z"
+      "grafana.app/sourceTimestamp": "1787303716000",
+      "grafana.app/updatedBy": "user:bfvu5sfcvaps0a",
+      "grafana.app/updatedTimestamp": "2026-08-21T09:23:35Z"
     }
   },
   "spec": {
@@ -77,7 +77,7 @@
                         "editorMode": "code",
                         "format": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT COUNT(DISTINCT node_id) as nodes FROM powerstore_performance WHERE entity = 'performance_metrics_by_node' AND time >= now() - INTERVAL '1 hour'",
+                        "rawSql": "SELECT COUNT(DISTINCT node_id) as nodes FROM powerstore_performance WHERE entity = '$entity' AND time >= now() - INTERVAL '1 hour'",
                         "sql": {
                           "columns": [
                             {
@@ -176,7 +176,7 @@
                         "editorMode": "code",
                         "format": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT COUNT(DISTINCT appliance_id) as appliances FROM powerstore_performance WHERE entity = 'performance_metrics_by_appliance' AND time >= now() - INTERVAL '1 hour'",
+                        "rawSql": "SELECT COUNT(DISTINCT appliance_id) as appliances FROM powerstore_performance WHERE entity = '$entity' AND time >= now() - INTERVAL '1 hour'",
                         "sql": {
                           "columns": [
                             {
@@ -275,7 +275,7 @@
                         "editorMode": "code",
                         "format": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT datacenter, name, unity_metrics.\"sizeTotal\", unity_metrics.\"sizeUsed\", unity_metrics.\"sizeSubscribed\", (unity_metrics.\"sizeUsed\" / unity_metrics.\"sizeTotal\" * 100) as percent_used FROM unity_metrics WHERE time >= now() - INTERVAL '1 hour' AND unity_metrics.\"sizeTotal\" IS NOT NULL ORDER BY percent_used DESC",
+                        "rawSql": "SELECT datacenter, name, unity_metrics.\"sizeTotal\", unity_metrics.\"sizeUsed\", unity_metrics.\"sizeSubscribed\", (unity_metrics.\"sizeUsed\" / unity_metrics.\"sizeTotal\" * 100) as percent_used FROM unity_metrics WHERE datacenter LIKE '$datacenter' AND time >= now() - INTERVAL '1 hour' AND unity_metrics.\"sizeTotal\" IS NOT NULL ORDER BY percent_used DESC",
                         "sql": {
                           "columns": [
                             {
@@ -462,7 +462,7 @@
                         "editorMode": "code",
                         "format": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT datacenter, name, unity_metrics.\"sizeTotal\" FROM unity_metrics WHERE time >= now() - INTERVAL '1 hour' AND unity_metrics.\"sizeTotal\" IS NOT NULL",
+                        "rawSql": "SELECT datacenter, name, unity_metrics.\"sizeTotal\" FROM unity_metrics WHERE datacenter = '$datacenter' AND time >= now() - INTERVAL '1 hour' AND unity_metrics.\"sizeTotal\" IS NOT NULL",
                         "sql": {
                           "columns": [
                             {
@@ -571,7 +571,7 @@
                         "editorMode": "code",
                         "format": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT datacenter, name, unity_metrics.\"sizeAllocated\", unity_metrics.\"sizeTotal\" FROM unity_metrics WHERE time >= now() - INTERVAL '1 hour' AND unity_metrics.\"sizeAllocated\" IS NOT NULL ORDER BY unity_metrics.\"sizeAllocated\" DESC LIMIT 20",
+                        "rawSql": "SELECT datacenter, name, unity_metrics.\"sizeAllocated\", unity_metrics.\"sizeTotal\" FROM unity_metrics WHERE datacenter LIKE '$datacenter' AND time >= now() - INTERVAL '1 hour' AND unity_metrics.\"sizeAllocated\" IS NOT NULL ORDER BY unity_metrics.\"sizeAllocated\" DESC LIMIT 20",
                         "sql": {
                           "columns": [
                             {
@@ -712,7 +712,7 @@
                         "editorMode": "code",
                         "format": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT datacenter, name, unity_metrics.\"sizeAllocated\", unity_metrics.\"sizeTotal\" FROM unity_metrics WHERE time >= now() - INTERVAL '1 hour' AND unity_metrics.\"sizeAllocated\" IS NOT NULL ORDER BY unity_metrics.\"sizeAllocated\" DESC LIMIT 20",
+                        "rawSql": "SELECT datacenter, name, unity_metrics.\"sizeAllocated\", unity_metrics.\"sizeTotal\" FROM unity_metrics WHERE datacenter LIKE '$datacenter' AND time >= now() - INTERVAL '1 hour' AND unity_metrics.\"sizeAllocated\" IS NOT NULL ORDER BY unity_metrics.\"sizeAllocated\" DESC LIMIT 20",
                         "sql": {
                           "columns": [
                             {
@@ -853,7 +853,7 @@
                         "editorMode": "code",
                         "format": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT * FROM powerstore_performance WHERE entity IN ('performance_metrics_by_node', 'performance_metrics_by_appliance') AND $__timeFilter(time) ORDER BY time",
+                        "rawSql": "SELECT * FROM powerstore_performance WHERE entity = '$entity' AND $__timeFilter(time) ORDER BY time",
                         "sql": {
                           "columns": [
                             {
@@ -991,7 +991,7 @@
                         "editorMode": "code",
                         "format": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT time, datacenter, cluster_id, node_id, appliance_id, entity, response_definition FROM powerstore_performance WHERE entity IN ('performance_metrics_by_node', 'performance_metrics_by_appliance') AND time >= now() - INTERVAL '1 hour' ORDER BY time DESC LIMIT 100",
+                        "rawSql": "SELECT time, datacenter, cluster_id, node_id, appliance_id, entity, response_definition FROM powerstore_performance WHERE datacenter LIKE '$datacenter' AND entity LIKE '$entity' AND time >= now() - INTERVAL '1 hour' ORDER BY time DESC LIMIT 100",
                         "sql": {
                           "columns": [
                             {
@@ -1085,7 +1085,7 @@
                         "editorMode": "code",
                         "format": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT COUNT(DISTINCT cluster_id) as clusters FROM powerstore_performance WHERE entity = 'space_metrics_by_cluster' AND time >= now() - INTERVAL '1 hour'",
+                        "rawSql": "SELECT COUNT(DISTINCT cluster_id) as clusters FROM powerstore_performance WHERE entity = '$entity' AND time >= now() - INTERVAL '1 hour'",
                         "sql": {
                           "columns": [
                             {
@@ -1345,6 +1345,41 @@
       {
         "kind": "QueryVariable",
         "spec": {
+          "name": "datacenter",
+          "current": {
+            "text": "All",
+            "value": "$__all"
+          },
+          "label": "Datacenter",
+          "hide": "dontHide",
+          "refresh": "onDashboardLoad",
+          "skipUrlSync": false,
+          "query": {
+            "kind": "DataQuery",
+            "group": "influxdb",
+            "version": "v0",
+            "datasource": {
+              "name": "influxdb"
+            },
+            "spec": {
+              "query": "SELECT DISTINCT datacenter\nFROM unity_metrics\nORDER BY datacenter",
+              "refId": "InfluxVariableQueryEditor-VariableQuery"
+            }
+          },
+          "regex": "",
+          "regexApplyTo": "value",
+          "sort": "disabled",
+          "definition": "SELECT DISTINCT datacenter\nFROM unity_metrics\nORDER BY datacenter",
+          "options": [],
+          "multi": false,
+          "includeAll": true,
+          "allValue": "%",
+          "allowCustomValue": false
+        }
+      },
+      {
+        "kind": "QueryVariable",
+        "spec": {
           "name": "entity",
           "current": {
             "text": "space_metrics_by_cluster",
@@ -1361,16 +1396,19 @@
             "datasource": {
               "name": "influxdb"
             },
-            "spec": {}
+            "spec": {
+              "query": "SELECT DISTINCT entity\nFROM powerstore_performance\nORDER BY entity",
+              "refId": "InfluxVariableQueryEditor-VariableQuery"
+            }
           },
           "regex": "",
           "regexApplyTo": "value",
           "sort": "alphabeticalAsc",
-          "definition": "SELECT DISTINCT entity FROM powerstore_performance WHERE time >= now() - INTERVAL '1 hour'",
+          "definition": "SELECT DISTINCT entity\nFROM powerstore_performance\nORDER BY entity",
           "options": [],
           "multi": false,
           "includeAll": false,
-          "allowCustomValue": true
+          "allowCustomValue": false
         }
       }
     ]

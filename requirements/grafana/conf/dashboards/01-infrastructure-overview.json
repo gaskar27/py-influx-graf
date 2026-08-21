@@ -4,12 +4,12 @@
   "metadata": {
     "name": "infrastructure-overview",
     "namespace": "default",
-    "uid": "48e0a5a4-ba15-4a72-9dcf-6044e4b16b11",
-    "resourceVersion": "1786947928457008",
+    "uid": "979bc5bb-b119-4d94-bec9-33b70a025edf",
+    "resourceVersion": "1787296846914003",
     "generation": 2,
-    "creationTimestamp": "2026-08-17T06:12:43Z",
+    "creationTimestamp": "2026-08-21T07:15:25Z",
     "labels": {
-      "grafana.app/deprecatedInternalID": "4067317813129216"
+      "grafana.app/deprecatedInternalID": "1029049677926400"
     },
     "annotations": {
       "grafana.app/createdBy": "access-policy:service",
@@ -17,13 +17,13 @@
       "grafana.app/managedBy": "classic-file-provisioning",
       "grafana.app/managerAllowsEdits": "true",
       "grafana.app/managerId": "Default",
-      "grafana.app/message": "Update SQL query InfluxDB",
+      "grafana.app/message": "fix infra overview aria SQL query",
       "grafana.app/saved-from-ui": "Grafana v13.1.1 (a9cee6e172)",
-      "grafana.app/sourceChecksum": "f4267141ec5ceaefcc6b4cf58f012aa8",
+      "grafana.app/sourceChecksum": "ec8ee42ad7c9b718adf1ca8e631b4ed4",
       "grafana.app/sourcePath": "/etc/grafana/provisioning/dashboards/01-infrastructure-overview.json",
-      "grafana.app/sourceTimestamp": "1786947113000",
-      "grafana.app/updatedBy": "user:afvffmdchk3k0c",
-      "grafana.app/updatedTimestamp": "2026-08-17T06:25:28Z"
+      "grafana.app/sourceTimestamp": "1787296464000",
+      "grafana.app/updatedBy": "user:afvtv1caelwxsf",
+      "grafana.app/updatedTimestamp": "2026-08-21T07:20:46Z"
     }
   },
   "spec": {
@@ -759,7 +759,27 @@
                         "name": "influxdb"
                       },
                       "spec": {
-                        "rawSql": "SELECT summary_total_number_vms FROM vm_inventory WHERE time >= now() - INTERVAL '1 hour' ORDER BY time DESC LIMIT 1"
+                        "dataset": "iox",
+                        "editorMode": "code",
+                        "format": "table",
+                        "rawQuery": true,
+                        "rawSql": "SELECT datacenter, summary_total_number_vms\r\nFROM vm_inventory\r\nWHERE time >= now() - INTERVAL '1 hour'\r\n",
+                        "sql": {
+                          "columns": [
+                            {
+                              "parameters": [],
+                              "type": "function"
+                            }
+                          ],
+                          "groupBy": [
+                            {
+                              "property": {
+                                "type": "string"
+                              },
+                              "type": "groupBy"
+                            }
+                          ]
+                        }
                       }
                     },
                     "refId": "A",
@@ -773,37 +793,25 @@
           },
           "vizConfig": {
             "kind": "VizConfig",
-            "group": "gauge",
+            "group": "stat",
             "version": "13.1.1",
             "spec": {
               "options": {
-                "barShape": "flat",
-                "barWidthFactor": 0.5,
-                "effects": {
-                  "barGlow": false,
-                  "centerGlow": false,
-                  "gradient": false
-                },
-                "endpointMarker": "point",
-                "minVizHeight": 75,
-                "minVizWidth": 75,
+                "colorMode": "value",
+                "graphMode": "area",
+                "justifyMode": "auto",
                 "orientation": "auto",
+                "percentChangeColorMode": "standard",
                 "reduceOptions": {
                   "calcs": [
                     "lastNotNull"
                   ],
                   "fields": "",
-                  "values": false
+                  "values": true
                 },
-                "segmentCount": 1,
-                "segmentSpacing": 0.3,
-                "shape": "gauge",
-                "showThresholdLabels": false,
-                "showThresholdMarkers": true,
-                "sizing": "auto",
-                "sparkline": false,
-                "text": {},
-                "textMode": "auto"
+                "showPercentChange": false,
+                "textMode": "auto",
+                "wideLayout": true
               },
               "fieldConfig": {
                 "defaults": {
@@ -849,7 +857,27 @@
                         "name": "influxdb"
                       },
                       "spec": {
-                        "rawSql": "SELECT SUM(vmop_inventoryChange_numCreate_latest) as created FROM vm_inventory WHERE time >= now() - INTERVAL '30 days'"
+                        "dataset": "iox",
+                        "editorMode": "code",
+                        "format": "table",
+                        "rawQuery": true,
+                        "rawSql": "SELECT SUM(\"vmop_inventoryChange_numCreate_latest\") as created FROM vm_inventory WHERE time >= now() - INTERVAL '30 days'",
+                        "sql": {
+                          "columns": [
+                            {
+                              "parameters": [],
+                              "type": "function"
+                            }
+                          ],
+                          "groupBy": [
+                            {
+                              "property": {
+                                "type": "string"
+                              },
+                              "type": "groupBy"
+                            }
+                          ]
+                        }
                       }
                     },
                     "refId": "A",
@@ -928,7 +956,27 @@
                         "name": "influxdb"
                       },
                       "spec": {
-                        "rawSql": "SELECT SUM(vmop_inventoryChange_numDestroy_latest) as destroyed FROM vm_inventory WHERE time >= now() - INTERVAL '30 days'"
+                        "dataset": "iox",
+                        "editorMode": "code",
+                        "format": "table",
+                        "rawQuery": true,
+                        "rawSql": "SELECT SUM(\"vmop_inventoryChange_numDestroy_latest\") as destroyed FROM vm_inventory WHERE time >= now() - INTERVAL '30 days'",
+                        "sql": {
+                          "columns": [
+                            {
+                              "parameters": [],
+                              "type": "function"
+                            }
+                          ],
+                          "groupBy": [
+                            {
+                              "property": {
+                                "type": "string"
+                              },
+                              "type": "groupBy"
+                            }
+                          ]
+                        }
                       }
                     },
                     "refId": "A",
@@ -1007,7 +1055,27 @@
                         "name": "influxdb"
                       },
                       "spec": {
-                        "rawSql": "SELECT time, datacenter, cpu_workload, mem_workload FROM system_metrics WHERE time >= now() - INTERVAL '7 days' ORDER BY time"
+                        "dataset": "iox",
+                        "editorMode": "code",
+                        "format": "table",
+                        "rawQuery": true,
+                        "rawSql": "SELECT time, datacenter, cpu_workload, mem_workload FROM system_metrics WHERE time >= now() - INTERVAL '7 days' ORDER BY time",
+                        "sql": {
+                          "columns": [
+                            {
+                              "parameters": [],
+                              "type": "function"
+                            }
+                          ],
+                          "groupBy": [
+                            {
+                              "property": {
+                                "type": "string"
+                              },
+                              "type": "groupBy"
+                            }
+                          ]
+                        }
                       }
                     },
                     "refId": "A",
