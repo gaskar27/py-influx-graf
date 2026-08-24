@@ -5,12 +5,11 @@ from pyVim.connect import Disconnect, SmartConnect
 from pyVmomi import vim
 from influxdb_client_3 import Point
 from influx_writer import writer as db
+from utils import get_secrets
 
-VCENTER_HOST = os.environ.get("VCENTER_HOST", "localhost")
-VCENTER_USER = os.environ.get("VCENTER_USER", "")
-VCENTER_PASSWORD = os.environ.get("VCENTER_PASSWD", "")
 DS_FOLDER = os.getenv("DS_FOLDER")
 DC_NAME = os.getenv("DC_NAME")
+NAME = os.getenv("NAME")
 
 class VsphereCollector:
     def __init__(self, host: str, user: str, password: str):
@@ -78,10 +77,11 @@ class VsphereCollector:
         return True
 
 if __name__ == "__main__":
+    s = get_secrets(NAME)
     print(f"--- Start collecting from VMware vSphere Client ({datetime.now().strftime('%Y-%m-%d %H:%M:%S')}) ---")
 
     try:
-        vsphere = VsphereCollector(host=VCENTER_HOST, user=VCENTER_USER, password=VCENTER_PASSWORD)
+        vsphere = VsphereCollector(host=s.get("VCENTER_HOST"), user=s.get("VCENTER_USER"), password=s.get("VCENTER_PASSWORD"))
 
         vsphere.get_ds_data(str(DS_FOLDER))
     except Exception as e:

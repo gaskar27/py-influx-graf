@@ -3,15 +3,14 @@ import requests
 from datetime import datetime
 from influxdb_client_3 import Point
 from influx_writer import writer as db
+from utils import get_secrets
 
 import urllib3
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-POWERSTORE_HOST = os.getenv("POWERSTORE_HOST")
-POWERSTORE_USER = os.getenv("POWERSTORE_USER")
-POWERSTORE_PASSWD = os.getenv("POWERSTORE_PASSWD")
 DC_NAME = os.getenv("DC_NAME")
+NAME = os.getenv("NAME")
 
 class PowerStoreCollector:
     def authenticate(self):
@@ -155,9 +154,10 @@ class PowerStoreCollector:
 
 
 if __name__ == "__main__":
+    s = get_secrets(NAME)
     print(f"--- Start collecting from DELL Powerstore ({datetime.now().strftime('%Y-%m-%d %H:%M:%S')}) ---")
 
-    ps = PowerStoreCollector(POWERSTORE_HOST, POWERSTORE_USER, POWERSTORE_PASSWD)
+    ps = PowerStoreCollector(s.get("POWERSTORE_HOST"), s.get("POWERSTORE_USER"), s.get("POWERSTORE_PASSWD"))
 
     if not ps.isAuthenticated:
         print("Unable to Authenticate")

@@ -3,16 +3,13 @@ from datetime import datetime
 
 import requests
 from influx_writer import writer as db
+from utils import get_secrets
 
 import urllib3
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 # Aria
-ARIA_HOST = os.getenv("ARIA_HOST")
-ARIA_USER = os.getenv("ARIA_USER")
-ARIA_AUTH_SOURCE = os.environ.get("ARIA_AUTH_SOURCE", "local")
-ARIA_PASSWD = os.getenv("ARIA_PASSWD")
 ARIA_RESOURCE_ID1 = os.getenv("ARIA_RESOURCE_ID1")
 ARIA_RESOURCE_ID2 = os.getenv("ARIA_RESOURCE_ID2")
 MAP_ID1 = os.getenv("MAP_ID1")
@@ -20,8 +17,6 @@ MAP_ID2 = os.getenv("MAP_ID2")
 
 
 class AriaCollector:
-# Voici un exemple de ce que doit ressembler la variable auth
-# auth = { "username": "user", "authSource": "local", "password": "password" }
 
     def __init__(self, host: str, auth: dict):
         self.base_url = f"https://{host}/suite-api/api"
@@ -146,11 +141,12 @@ class AriaCollector:
 
 
 if __name__ == "__main__":
+    s = get_secrets("aria")
     print(f"--- Start collecting from VMware Aria ({datetime.now().strftime('%Y-%m-%d %H:%M:%S')}) ---")
 
-    auth = { "username": ARIA_USER, "authSource": ARIA_AUTH_SOURCE, "password": ARIA_PASSWD }
+    auth = { "username": s.get("ARIA_USER"), "authSource": s.get("ARIA_AUTH_SOURCE"), "password": s.get("ARIA_PASSWD")}
     try:
-        aria = AriaCollector(str(ARIA_HOST), auth)
+        aria = AriaCollector(s.get("ARIA_HOST"), auth)
         aria.collect()
     except BaseException as e:
         print(f"❌ Error: {e}")

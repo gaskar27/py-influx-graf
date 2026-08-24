@@ -3,15 +3,14 @@ from datetime import datetime
 import requests
 from influxdb_client_3 import Point
 from influx_writer import writer as db
+from utils import get_secrets
 
 import urllib3
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-UNITY_HOST = os.getenv("UNITY_HOST")
-UNITY_USER = os.getenv("UNITY_USER")
-UNITY_PASSWD = os.getenv("UNITY_PASSWD")
 DC_NAME = os.getenv("DC_NAME")
+NAME = os.getenv("NAME")
 
 class UnityCollector:
     def authenticate(self):
@@ -87,9 +86,10 @@ class UnityCollector:
         self.get_disk_metrics()
 
 if __name__ == "__main__":
+    s = get_secrets(NAME)
     print(f"--- Start collecting from DELL Unity ({datetime.now().strftime('%Y-%m-%d %H:%M:%S')}) ---")
 
-    unity = UnityCollector(UNITY_HOST, UNITY_USER, UNITY_PASSWD)
+    unity = UnityCollector(s.get("UNITY_HOST"), s.get("UNITY_USER"), s.get("UNITY_PASSWD"))
 
     if not unity.isAuthenticated:
         print("Unable to Authenticate")
