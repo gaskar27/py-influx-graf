@@ -141,7 +141,7 @@ class AriaCollector:
 
 
 if __name__ == "__main__":
-    s = get_secrets("aria")
+    s = get_secrets("aria_s")
     print(f"--- Start collecting from VMware Aria ({datetime.now().strftime('%Y-%m-%d %H:%M:%S')}) ---")
 
     auth = { "username": s.get("ARIA_USER"), "authSource": s.get("ARIA_AUTH_SOURCE"), "password": s.get("ARIA_PASSWD")}

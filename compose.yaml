@@ -50,7 +50,7 @@ services:
     environment:
       - DS_FOLDER=ds_folder
       - DC_NAME=DataCenterName
-      - NAME=one
+      - NAME=one_s
     secrets:
       - one_s
     depends_on:
@@ -65,7 +65,7 @@ services:
     environment:
       - DS_FOLDER=ds_folder
       - DC_NAME=DataCenterName
-      - NAME=two
+      - NAME=two_s
     secrets:
       - two_s
     depends_on:
