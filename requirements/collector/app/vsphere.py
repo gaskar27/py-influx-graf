@@ -81,7 +81,7 @@ if __name__ == "__main__":
     print(f"--- Start collecting from VMware vSphere Client ({datetime.now().strftime('%Y-%m-%d %H:%M:%S')}) ---")
 
     try:
-        vsphere = VsphereCollector(host=s.get("VCENTER_HOST"), user=s.get("VCENTER_USER"), password=s.get("VCENTER_PASSWORD"))
+        vsphere = VsphereCollector(host=s.get("VCENTER_HOST"), user=s.get("VCENTER_USER"), password=s.get("VCENTER_PASSWD"))
 
         vsphere.get_ds_data(str(DS_FOLDER))
     except Exception as e:
