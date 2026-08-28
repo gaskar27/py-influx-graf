@@ -113,7 +113,7 @@ class AriaCollector:
                     is_deleted = True
                     break
 
-            if not is_deleted:
+            if is_deleted:
                 destroyed_at = self.__get_vm_destroy_date(vm_id)
             point = (Point("vm_lifecycle").time(created_at).tag("datacenter", resource_name)
                      .tag("name", vm_name).tag("id", vm_id).field("is_deleted", is_deleted)
