@@ -94,7 +94,7 @@ class InfluxDBWriter:
         :param line: The line protocol string to write.
         """
         try:
-            self.client.write(record=line, write_precision="ns")
+            self.client.write(record=line, write_precision="ms")
             logger.debug("Line written successfully.")
         except Exception as e:
             logger.error(f"Failed to write line to InfluxDB: {e}")

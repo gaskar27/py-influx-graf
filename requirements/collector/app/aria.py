@@ -138,21 +138,65 @@ class AriaCollector:
                      .field("created_at", created_at)).field("destroyed_at", destroyed_at)
             self.points.append(point_object)
 
-    def cluster_data(self, datacenter_id, cluster_name, cluster_id, ):
+    def cluster_workload(self, datacenter_id, cluster_name, cluster_id, ):
         url = f"{self.base_url}/resources/stats/query"
         payload = {
             "resourceId": [ cluster_id ],
             "statKey": [
                 "cpu|capacity_usagepct_average",
                 "mem|host_usagePct",
+            ],
+            "begin": self.begin,
+            "end": self.end,
+            "rollUpType": "MAX",
+            "intervalType": "DAYS",
+            "intervalQuantifier": 1
+        }
+        try:
+            response = self.session.post(url, json=payload)
+            if response.status_code != 200:
+                print(f" Error {response.status_code}:", response.text)
+            response.raise_for_status()
+            lp = self.__influx_line_protocol(response.json(), "cluster_metrics", datacenter_id, cluster_name, cluster_id)
+            self.lines.extend(lp)
+        except requests.exceptions.RequestException as exception:
+            raise SystemExit(exception)
+
+    def cluster_vms(self, datacenter_id, cluster_name, cluster_id, ):
+        url = f"{self.base_url}/resources/stats/query"
+        payload = {
+            "resourceId": [ cluster_id ],
+            "statKey": [
                 "summary|total_number_vms",
-                "summary|number_running_vms",
+                "summary|number_running_vms"
+            ],
+            "begin": self.begin,
+            "end": self.end,
+            "rollUpType": "LATEST",
+            "intervalType": "DAYS",
+            "intervalQuantifier": 1
+        }
+        try:
+            response = self.session.post(url, json=payload)
+            if response.status_code != 200:
+                print(f" Error {response.status_code}:", response.text)
+            response.raise_for_status()
+            lp = self.__influx_line_protocol(response.json(), "cluster_metrics", datacenter_id, cluster_name, cluster_id)
+            self.lines.extend(lp)
+        except requests.exceptions.RequestException as exception:
+            raise SystemExit(exception)
+
+    def cluster_vmop(self, datacenter_id, cluster_name, cluster_id, ):
+        url = f"{self.base_url}/resources/stats/query"
+        payload = {
+            "resourceId": [ cluster_id ],
+            "statKey": [
                 "vmop|inventoryChange|numCreate_latest",
                 "vmop|inventoryChange|numDestroy_latest"
             ],
             "begin": self.begin,
             "end": self.end,
-            "rollUpType": "LATEST",
+            "rollUpType": "SUM",
             "intervalType": "DAYS",
             "intervalQuantifier": 1
         }
@@ -177,7 +221,9 @@ class AriaCollector:
                 name = resource.get("resourceKey", {}).get("name")
                 identifier = resource.get("identifier")
 
-                self.cluster_data(resource_id, name, identifier)
+                self.cluster_workload(resource_id, name, identifier)
+                self.cluster_vms(resource_id, name, identifier)
+                self.cluster_vmop(resource_id, name, identifier)
 
         except requests.exceptions.RequestException as exception:
             raise SystemExit(exception)
