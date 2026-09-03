@@ -52,7 +52,7 @@ class UnityCollector:
 
         if response.ok:
             data = response.json()
-            return data.get("entries", []) if isinstance(data, dict) else None
+            return data.get("entries", []) if response.json() else None
         return None
 
     def __influx_point(self, response):
@@ -71,10 +71,30 @@ class UnityCollector:
                     point.field(k, v)
             self.points.append(point)
 
+    def __influx_point_sp(self, response):
+        if not response:
+            return
+        for item in response:
+            content = item.get("content", {})
+            name = content.get("name", "unknown")
+            id_val = content.get("id", "unknown")
+            point = (Point("unity_metrics").time(item["updated"])
+                     .tag("name", name)
+                     .tag("id", id_val)
+                     .tag("datacenter", DC_NAME))
+            for k, v in content.items():
+                if k == "values":
+                    for ke, va in content[k].items():
+                        point.field(ke, v)
+                    continue
+                if k not in ["name", "id"]:
+                    point.field(k, v)
+            self.points.append(point)
+
     def get_storage_processor_metrics(self):
         params = "path eq \"sp.*.cpu.summary.utilization\""
         response = self.get_metrics("metricValue", filter=params)
-        self.__influx_point(response)
+        self.__influx_point_sp(response)
 
     def get_system_metrics(self):
         fields = "name,model,serialNumber"
