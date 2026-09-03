@@ -33,25 +33,48 @@ class UnityCollector:
         if self.authenticate():
             self.isAuthenticated = True
 
-    def get_metrics(self, type, fields):
+    # def get_metrics(self, type, fields):
+        # url = f"{self.base_url}/types/{type}/instances"
+        # params = {"fields": fields}
+        # response = self.session.get(url, params=params)
+        # return response.json().get("entries", []) if response.json() else None
+
+    def get_metrics(self, type, fields= None, filter=None):
         url = f"{self.base_url}/types/{type}/instances"
-        params = {"fields": fields}
-        response = self.session.get(url, params=params)
-        return response.json().get("entries", []) if response.json() else None
+
+        params = {}
+        if fields is not None:
+            params["fields"] = fields
+        if filter is not None:
+            params["filter"] = filter
+
+        response = self.session.get(url, params=params if params else None)
+
+        if response.ok:
+            data = response.json()
+            return data.get("entries", []) if isinstance(data, dict) else None
+        return None
 
     def __influx_point(self, response):
         if not response:
             return
         for item in response:
             content = item.get("content", {})
+            name = content.get("name", "unknown")
+            id_val = content.get("id", "unknown")
             point = (Point("unity_metrics").time(item["updated"])
-                     .tag("name", content["name"])
-                     .tag("id", content["id"])
+                     .tag("name", name)
+                     .tag("id", id_val)
                      .tag("datacenter", DC_NAME))
             for k, v in content.items():
                 if k not in ["name", "id"]:
                     point.field(k, v)
             self.points.append(point)
+
+    def get_storage_processor_metrics(self):
+        params = "path eq \"sp.*.cpu.summary.utilization\""
+        response = self.get_metrics("metricValue", filter=params)
+        self.__influx_point(response)
 
     def get_system_metrics(self):
         fields = "name,model,serialNumber"
@@ -79,6 +102,7 @@ class UnityCollector:
         self.__influx_point(response)
 
     def get_all_metrics(self):
+        self.get_storage_processor_metrics()
         self.get_system_metrics()
         self.get_pool_metrics()
         self.get_luns_metrics()
