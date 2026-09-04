@@ -85,7 +85,10 @@ class UnityCollector:
             for k, v in content.items():
                 if k == "values":
                     for ke, va in content[k].items():
-                        point.field(ke, v)
+                        point.field(ke, va)
+                    continue
+                if k == "timestamp":
+                    point.time(v)
                     continue
                 if k not in ["name", "id"]:
                     point.field(k, v)
