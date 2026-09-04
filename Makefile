@@ -34,6 +34,9 @@ t_unity:
 
 collector: aria one two
 
+run:
+	$(MAKE) start && $(MAKE) collector
+
 stop st:
 	docker compose down
 
@@ -45,6 +48,7 @@ help:
 	@echo ""
 	@echo "Commandes disponibles :"
 	@echo "  start, s   : Démarrer l'application"
+	@echo "  run        : Démarrer l'application et exécuter le collecteur"
 	@echo "  stop, st   : Arrêter l'application"
 	@echo "  down, d    : Arrêter l'application et supprimer les données"
 	@echo "  help       : Afficher ce message d'aide"
