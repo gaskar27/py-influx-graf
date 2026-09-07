@@ -41,7 +41,7 @@ stop st:
 	docker compose down
 
 clean: stop
-	docker volume rm influxdb_data grafana_data
+	docker volume rm -f influxdb_data grafana_data
 
 help:
 	@echo "Usage: make [command]"
