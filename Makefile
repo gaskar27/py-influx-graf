@@ -1,4 +1,4 @@
-.PHONY: start s stop st down d help
+.PHONY: start s run stop st clean help
 
 .DEFAULT_GOAL := help
 
@@ -40,8 +40,8 @@ run:
 stop st:
 	docker compose down
 
-down d:
-	docker compose down -v
+clean: stop
+	docker volume rm influxdb_data grafana_data
 
 help:
 	@echo "Usage: make [command]"
@@ -50,5 +50,5 @@ help:
 	@echo "  start, s   : Démarrer l'application"
 	@echo "  run        : Démarrer l'application et exécuter le collecteur"
 	@echo "  stop, st   : Arrêter l'application"
-	@echo "  down, d    : Arrêter l'application et supprimer les données"
+	@echo "  clean      : Supprimer les données"
 	@echo "  help       : Afficher ce message d'aide"

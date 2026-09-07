@@ -56,6 +56,7 @@ class InfluxDBWriter:
         }
         data = {
             "db": self.database,
+            "retention_period": "90d"
         }
         try:
             response = requests.post(url=url, headers=headers, json=data, timeout=5)

@@ -94,7 +94,9 @@ services:
 
 volumes:
   influxdb_data:
+    name: influxdb_data
   grafana_data:
+    name: grafana_data
 
 secrets:
   aria_s:
