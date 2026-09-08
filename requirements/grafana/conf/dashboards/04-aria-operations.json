@@ -4,12 +4,12 @@
   "metadata": {
     "name": "aria-operations",
     "namespace": "default",
-    "uid": "a33dc66a-b330-49bb-a7eb-1c5e89638a7b",
-    "resourceVersion": "1787302078304980",
-    "generation": 2,
-    "creationTimestamp": "2026-08-21T08:42:57Z",
+    "uid": "fba67df3-e282-48ec-8c45-b0b7e6579bec",
+    "resourceVersion": "1788851019430983",
+    "generation": 7,
+    "creationTimestamp": "2026-09-08T06:38:25Z",
     "labels": {
-      "grafana.app/deprecatedInternalID": "1051077847257088"
+      "grafana.app/deprecatedInternalID": "3039122006376448"
     },
     "annotations": {
       "grafana.app/createdBy": "access-policy:service",
@@ -17,13 +17,12 @@
       "grafana.app/managedBy": "classic-file-provisioning",
       "grafana.app/managerAllowsEdits": "true",
       "grafana.app/managerId": "Default",
-      "grafana.app/message": "delete all value for datacenter value",
       "grafana.app/saved-from-ui": "Grafana v13.1.1 (a9cee6e172)",
-      "grafana.app/sourceChecksum": "f0f30cb63f8ac0460dccb438e4927122",
+      "grafana.app/sourceChecksum": "d77b0b68c7fe9559a64fea989ed721bc",
       "grafana.app/sourcePath": "/etc/grafana/provisioning/dashboards/04-aria-operations.json",
-      "grafana.app/sourceTimestamp": "1787301735000",
-      "grafana.app/updatedBy": "user:dfvu2ufnmmn0ga",
-      "grafana.app/updatedTimestamp": "2026-08-21T08:47:58Z"
+      "grafana.app/sourceTimestamp": "1788849407000",
+      "grafana.app/updatedBy": "user:ffxlzxvsby9kwf",
+      "grafana.app/updatedTimestamp": "2026-09-08T07:03:39Z"
     }
   },
   "spec": {
@@ -55,7 +54,7 @@
         "kind": "Panel",
         "spec": {
           "id": 10,
-          "title": "Memory Workload (30-day avg)",
+          "title": "Memory memory(30-day avg)",
           "description": "",
           "links": [],
           "data": {
@@ -77,7 +76,7 @@
                         "editorMode": "code",
                         "format": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT time, datacenter, mem_workload FROM system_metrics WHERE datacenter = '$datacenter' AND $__timeFilter(time) ORDER BY time",
+                        "rawSql": "SELECT \r\n  time AS \"time\", \r\n  cluster_metrics.\"mem_host_usagePct\" AS \"Memory Usage\",\r\n  name AS \"metric\"\r\nFROM cluster_metrics \r\nWHERE name = '$name' \r\n  AND datacenter = '$datacenter'\r\n  AND $__timeFilter(time)\r\nORDER BY time",
                         "sql": {
                           "columns": [
                             {
@@ -117,10 +116,10 @@
                 },
                 "legend": {
                   "calcs": [
+                    "last",
                     "min",
-                    "max",
-                    "mean",
-                    "last"
+                    "median",
+                    "max"
                   ],
                   "displayMode": "table",
                   "enableFacetedFilter": false,
@@ -218,11 +217,11 @@
           }
         }
       },
-      "panel-11": {
+      "panel-13": {
         "kind": "Panel",
         "spec": {
-          "id": 11,
-          "title": "Current CPU Workload",
+          "id": 13,
+          "title": "VM lifecycle",
           "description": "",
           "links": [],
           "data": {
@@ -244,7 +243,7 @@
                         "editorMode": "code",
                         "format": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT cpu_workload FROM system_metrics WHERE datacenter = '$datacenter' AND time >= now() - INTERVAL '1 hour' ORDER BY time DESC LIMIT 1",
+                        "rawSql": "WITH ranked_vms AS (\r\n    SELECT *,\r\n           ROW_NUMBER() OVER (PARTITION BY id ORDER BY created_at DESC) as rn\r\n    FROM vm_lifecycle\r\n    WHERE datacenter = '$datacenter'\r\n)\r\nSELECT name, id, is_deleted, created_at, destroyed_at\r\nFROM ranked_vms\r\nWHERE rn = 1;",
                         "sql": {
                           "columns": [
                             {
@@ -274,43 +273,17 @@
           },
           "vizConfig": {
             "kind": "VizConfig",
-            "group": "gauge",
+            "group": "table",
             "version": "13.1.1",
             "spec": {
               "options": {
-                "barShape": "flat",
-                "barWidthFactor": 0.5,
-                "effects": {
-                  "barGlow": false,
-                  "centerGlow": false,
-                  "gradient": false
-                },
-                "endpointMarker": "point",
-                "minVizHeight": 75,
-                "minVizWidth": 75,
-                "orientation": "auto",
-                "reduceOptions": {
-                  "calcs": [
-                    "lastNotNull"
-                  ],
-                  "fields": "",
-                  "values": false
-                },
-                "segmentCount": 1,
-                "segmentSpacing": 0.3,
-                "shape": "gauge",
-                "showThresholdLabels": false,
-                "showThresholdMarkers": true,
-                "sizing": "auto",
-                "sparkline": false,
-                "text": {},
-                "textMode": "auto"
+                "cellHeight": "sm",
+                "enablePagination": true,
+                "showHeader": true,
+                "sortBy": []
               },
               "fieldConfig": {
                 "defaults": {
-                  "unit": "percent",
-                  "min": 0,
-                  "max": 100,
                   "thresholds": {
                     "mode": "absolute",
                     "steps": [
@@ -319,149 +292,91 @@
                         "color": "green"
                       },
                       {
-                        "value": 70,
-                        "color": "yellow"
-                      },
-                      {
-                        "value": 85,
+                        "value": 80,
                         "color": "red"
                       }
                     ]
                   },
                   "color": {
                     "mode": "thresholds"
-                  }
-                },
-                "overrides": []
-              }
-            }
-          }
-        }
-      },
-      "panel-12": {
-        "kind": "Panel",
-        "spec": {
-          "id": 12,
-          "title": "Current Memory Workload",
-          "description": "",
-          "links": [],
-          "data": {
-            "kind": "QueryGroup",
-            "spec": {
-              "queries": [
-                {
-                  "kind": "PanelQuery",
-                  "spec": {
-                    "query": {
-                      "kind": "DataQuery",
-                      "group": "influxdb",
-                      "version": "v0",
-                      "datasource": {
-                        "name": "influxdb"
-                      },
-                      "spec": {
-                        "dataset": "iox",
-                        "editorMode": "code",
-                        "format": "table",
-                        "rawQuery": true,
-                        "rawSql": "SELECT mem_workload FROM system_metrics WHERE datacenter = '$datacenter' AND time >= now() - INTERVAL '1 hour' ORDER BY time DESC LIMIT 1",
-                        "sql": {
-                          "columns": [
-                            {
-                              "parameters": [],
-                              "type": "function"
-                            }
-                          ],
-                          "groupBy": [
-                            {
-                              "property": {
-                                "type": "string"
-                              },
-                              "type": "groupBy"
-                            }
-                          ]
-                        }
-                      }
+                  },
+                  "custom": {
+                    "align": "left",
+                    "cellOptions": {
+                      "type": "auto"
                     },
-                    "refId": "A",
-                    "hidden": false
+                    "filterable": true,
+                    "footer": {
+                      "reducers": []
+                    },
+                    "inspect": false,
+                    "wrapHeaderText": false,
+                    "wrapText": true
                   }
-                }
-              ],
-              "transformations": [],
-              "queryOptions": {}
-            }
-          },
-          "vizConfig": {
-            "kind": "VizConfig",
-            "group": "gauge",
-            "version": "13.1.1",
-            "spec": {
-              "options": {
-                "barShape": "flat",
-                "barWidthFactor": 0.5,
-                "effects": {
-                  "barGlow": false,
-                  "centerGlow": false,
-                  "gradient": false
                 },
-                "endpointMarker": "point",
-                "minVizHeight": 75,
-                "minVizWidth": 75,
-                "orientation": "auto",
-                "reduceOptions": {
-                  "calcs": [
-                    "lastNotNull"
-                  ],
-                  "fields": "",
-                  "values": false
-                },
-                "segmentCount": 1,
-                "segmentSpacing": 0.3,
-                "shape": "gauge",
-                "showThresholdLabels": false,
-                "showThresholdMarkers": true,
-                "sizing": "auto",
-                "sparkline": false,
-                "text": {},
-                "textMode": "auto"
-              },
-              "fieldConfig": {
-                "defaults": {
-                  "unit": "percent",
-                  "min": 0,
-                  "max": 100,
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
+                "overrides": [
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "scope": "series",
+                      "options": "name"
+                    },
+                    "properties": [
                       {
-                        "value": 0,
-                        "color": "green"
-                      },
-                      {
-                        "value": 70,
-                        "color": "yellow"
-                      },
-                      {
-                        "value": 85,
-                        "color": "red"
+                        "id": "custom.width",
+                        "value": 328
                       }
                     ]
                   },
-                  "color": {
-                    "mode": "thresholds"
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "scope": "series",
+                      "options": "id"
+                    },
+                    "properties": [
+                      {
+                        "id": "custom.width",
+                        "value": 345
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "scope": "series",
+                      "options": "created_at"
+                    },
+                    "properties": [
+                      {
+                        "id": "unit",
+                        "value": "dateTimeAsIso"
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "scope": "series",
+                      "options": "destroyed_at"
+                    },
+                    "properties": [
+                      {
+                        "id": "unit",
+                        "value": "dateTimeAsIso"
+                      }
+                    ]
                   }
-                },
-                "overrides": []
+                ]
               }
             }
           }
         }
       },
-      "panel-2": {
+      "panel-17": {
         "kind": "Panel",
         "spec": {
-          "id": 2,
+          "id": 17,
           "title": "Total VMs",
           "description": "",
           "links": [],
@@ -484,7 +399,7 @@
                         "editorMode": "code",
                         "format": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT summary_total_number_vms FROM vm_inventory WHERE datacenter = '$datacenter' AND time >= now() - INTERVAL '1 hour' ORDER BY time DESC LIMIT 1",
+                        "rawSql": "SELECT COUNT(*) AS nb_vm\r\nFROM (\r\n    SELECT DISTINCT ON (id)\r\n        id,\r\n        is_deleted\r\n    FROM vm_lifecycle\r\n    WHERE datacenter = '$datacenter'\r\n    ORDER BY id, created_at DESC\r\n) t\r\nWHERE is_deleted = false;",
                         "sql": {
                           "columns": [
                             {
@@ -568,10 +483,10 @@
           }
         }
       },
-      "panel-3": {
+      "panel-18": {
         "kind": "Panel",
         "spec": {
-          "id": 3,
+          "id": 18,
           "title": "VMs Created (30 days)",
           "description": "",
           "links": [],
@@ -594,7 +509,7 @@
                         "editorMode": "code",
                         "format": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT SUM(\"vmop_inventoryChange_numCreate_latest\") as created FROM vm_inventory WHERE datacenter = '$datacenter' AND time >= now() - INTERVAL '30 days'",
+                        "rawSql": "SELECT COUNT(*) AS created\r\nFROM (\r\n    SELECT\r\n        id,\r\n        MAX(created_at) AS first_seen,\r\n        (ARRAY_AGG(is_deleted ORDER BY created_at DESC))[1] AS is_deleted\r\n    FROM vm_lifecycle\r\n    WHERE datacenter = '$datacenter'\r\n    GROUP BY id\r\n) t\r\nWHERE is_deleted = false\r\n  AND first_seen >= EXTRACT(EPOCH FROM (NOW() - INTERVAL '30 days')) * 1000;",
                         "sql": {
                           "columns": [
                             {
@@ -667,10 +582,10 @@
           }
         }
       },
-      "panel-4": {
+      "panel-19": {
         "kind": "Panel",
         "spec": {
-          "id": 4,
+          "id": 19,
           "title": "VMs Destroyed (30 days)",
           "description": "",
           "links": [],
@@ -693,7 +608,7 @@
                         "editorMode": "code",
                         "format": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT SUM(\"vmop_inventoryChange_numDestroy_latest\") as destroyed FROM vm_inventory WHERE datacenter = '$datacenter' AND time >= now() - INTERVAL '30 days'",
+                        "rawSql": "SELECT COUNT(*) AS destroyed\r\nFROM (\r\n    SELECT DISTINCT ON (id)\r\n        id,\r\n        destroyed_at\r\n    FROM vm_lifecycle\r\n    WHERE datacenter = '$datacenter'\r\n    ORDER BY id, created_at DESC\r\n) t\r\nWHERE destroyed_at >= EXTRACT(EPOCH FROM (NOW() - INTERVAL '30 days')) * 1000;",
                         "sql": {
                           "columns": [
                             {
@@ -766,10 +681,132 @@
           }
         }
       },
-      "panel-5": {
+      "panel-20": {
         "kind": "Panel",
         "spec": {
-          "id": 5,
+          "id": 20,
+          "title": "VM Count by Datacenter",
+          "description": "",
+          "links": [],
+          "data": {
+            "kind": "QueryGroup",
+            "spec": {
+              "queries": [
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
+                      "datasource": {
+                        "name": "influxdb"
+                      },
+                      "spec": {
+                        "dataset": "iox",
+                        "editorMode": "code",
+                        "format": "table",
+                        "rawQuery": true,
+                        "rawSql": "SELECT DISTINCT ON (name)\r\n  datacenter,\r\n  name AS \"cluster\",\r\n  summary_total_number_vms AS \"Total VMs\"\r\nFROM cluster_metrics \r\nWHERE datacenter = '$datacenter'\r\n  AND $__timeFilter(time)\r\nORDER BY name, time DESC;",
+                        "sql": {
+                          "columns": [
+                            {
+                              "parameters": [],
+                              "type": "function"
+                            }
+                          ],
+                          "groupBy": [
+                            {
+                              "property": {
+                                "type": "string"
+                              },
+                              "type": "groupBy"
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    "refId": "A",
+                    "hidden": false
+                  }
+                }
+              ],
+              "transformations": [],
+              "queryOptions": {}
+            }
+          },
+          "vizConfig": {
+            "kind": "VizConfig",
+            "group": "table",
+            "version": "13.1.1",
+            "spec": {
+              "options": {
+                "cellHeight": "sm",
+                "showHeader": true,
+                "sortBy": []
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": 0,
+                        "color": "green"
+                      }
+                    ]
+                  },
+                  "color": {
+                    "mode": "thresholds"
+                  },
+                  "custom": {
+                    "align": "auto",
+                    "cellOptions": {
+                      "type": "auto"
+                    },
+                    "footer": {
+                      "reducers": [
+                        "sum"
+                      ]
+                    },
+                    "inspect": false
+                  }
+                },
+                "overrides": [
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "summary_total_number_vms"
+                    },
+                    "properties": [
+                      {
+                        "id": "displayName",
+                        "value": "Total VMs"
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "datacenter"
+                    },
+                    "properties": [
+                      {
+                        "id": "displayName",
+                        "value": "Datacenter"
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "panel-21": {
+        "kind": "Panel",
+        "spec": {
+          "id": 21,
           "title": "VM Operations Timeline (30 days)",
           "description": "",
           "links": [],
@@ -792,7 +829,7 @@
                         "editorMode": "code",
                         "format": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT time, \"vmop_inventoryChange_numCreate_latest\" as created, \"vmop_inventoryChange_numDestroy_latest\" as destroyed FROM vm_inventory WHERE datacenter = '$datacenter' AND $__timeFilter(time) ORDER BY time",
+                        "rawSql": "SELECT time, \"vmop_inventoryChange_numCreate_latest\" as created, \"vmop_inventoryChange_numDestroy_latest\" as destroyed \r\nFROM cluster_metrics \r\nWHERE datacenter = '$datacenter' \r\nAND time >= now() - INTERVAL '30 days' \r\nAND name LIKE '%$name%' \r\nORDER BY time",
                         "sql": {
                           "columns": [
                             {
@@ -970,7 +1007,7 @@
                         "editorMode": "code",
                         "format": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT datacenter, SUM(\"vmop_inventoryChange_numCreate_latest\") as created, SUM(\"vmop_inventoryChange_numDestroy_latest\") as destroyed FROM vm_inventory WHERE time >= now() - INTERVAL '30 days' GROUP BY datacenter",
+                        "rawSql": "SELECT datacenter, SUM(\"vmop_inventoryChange_numCreate_latest\") as created, SUM(\"vmop_inventoryChange_numDestroy_latest\") as destroyed \r\nFROM cluster_metrics \r\nWHERE $__timeFilter(time) \r\nGROUP BY datacenter",
                         "sql": {
                           "columns": [
                             {
@@ -1077,132 +1114,11 @@
           }
         }
       },
-      "panel-7": {
-        "kind": "Panel",
-        "spec": {
-          "id": 7,
-          "title": "VM Count by Datacenter",
-          "description": "",
-          "links": [],
-          "data": {
-            "kind": "QueryGroup",
-            "spec": {
-              "queries": [
-                {
-                  "kind": "PanelQuery",
-                  "spec": {
-                    "query": {
-                      "kind": "DataQuery",
-                      "group": "influxdb",
-                      "version": "v0",
-                      "datasource": {
-                        "name": "influxdb"
-                      },
-                      "spec": {
-                        "dataset": "iox",
-                        "editorMode": "code",
-                        "format": "table",
-                        "rawQuery": true,
-                        "rawSql": "SELECT datacenter, summary_total_number_vms FROM vm_inventory WHERE time >= now() - INTERVAL '1 hour' ORDER BY summary_total_number_vms DESC",
-                        "sql": {
-                          "columns": [
-                            {
-                              "parameters": [],
-                              "type": "function"
-                            }
-                          ],
-                          "groupBy": [
-                            {
-                              "property": {
-                                "type": "string"
-                              },
-                              "type": "groupBy"
-                            }
-                          ]
-                        }
-                      }
-                    },
-                    "refId": "A",
-                    "hidden": false
-                  }
-                }
-              ],
-              "transformations": [],
-              "queryOptions": {}
-            }
-          },
-          "vizConfig": {
-            "kind": "VizConfig",
-            "group": "table",
-            "version": "13.1.1",
-            "spec": {
-              "options": {
-                "cellHeight": "sm",
-                "showHeader": true
-              },
-              "fieldConfig": {
-                "defaults": {
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "value": 0,
-                        "color": "green"
-                      }
-                    ]
-                  },
-                  "color": {
-                    "mode": "thresholds"
-                  },
-                  "custom": {
-                    "align": "auto",
-                    "cellOptions": {
-                      "type": "auto"
-                    },
-                    "footer": {
-                      "reducers": [
-                        "sum"
-                      ]
-                    },
-                    "inspect": false
-                  }
-                },
-                "overrides": [
-                  {
-                    "matcher": {
-                      "id": "byName",
-                      "options": "summary_total_number_vms"
-                    },
-                    "properties": [
-                      {
-                        "id": "displayName",
-                        "value": "Total VMs"
-                      }
-                    ]
-                  },
-                  {
-                    "matcher": {
-                      "id": "byName",
-                      "options": "datacenter"
-                    },
-                    "properties": [
-                      {
-                        "id": "displayName",
-                        "value": "Datacenter"
-                      }
-                    ]
-                  }
-                ]
-              }
-            }
-          }
-        }
-      },
       "panel-9": {
         "kind": "Panel",
         "spec": {
           "id": 9,
-          "title": "CPU Workload (30-day avg)",
+          "title": "CPU Usage (30-day avg)",
           "description": "",
           "links": [],
           "data": {
@@ -1224,7 +1140,7 @@
                         "editorMode": "code",
                         "format": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT time, datacenter, cpu_workload FROM system_metrics WHERE datacenter = '$datacenter' AND $__timeFilter(time) ORDER BY time",
+                        "rawSql": "SELECT \r\n  time AS \"time\", \r\n  cluster_metrics.cpu_capacity_usagepct_average AS \"CPU Usage\",\r\n  name AS \"metric\"\r\nFROM cluster_metrics \r\nWHERE name = '$name' \r\n  AND datacenter = '$datacenter'\r\n  AND $__timeFilter(time)\r\nORDER BY time",
                         "sql": {
                           "columns": [
                             {
@@ -1264,10 +1180,10 @@
                 },
                 "legend": {
                   "calcs": [
+                    "last",
                     "min",
-                    "max",
-                    "mean",
-                    "last"
+                    "median",
+                    "max"
                   ],
                   "displayMode": "table",
                   "enableFacetedFilter": false,
@@ -1339,27 +1255,7 @@
                     }
                   }
                 },
-                "overrides": [
-                  {
-                    "matcher": {
-                      "id": "byName",
-                      "options": "cpu_workload"
-                    },
-                    "properties": [
-                      {
-                        "id": "displayName",
-                        "value": "CPU Workload"
-                      },
-                      {
-                        "id": "color",
-                        "value": {
-                          "fixedColor": "blue",
-                          "mode": "fixed"
-                        }
-                      }
-                    ]
-                  }
-                ]
+                "overrides": []
               }
             }
           }
@@ -1388,7 +1284,7 @@
                         "height": 8,
                         "element": {
                           "kind": "ElementReference",
-                          "name": "panel-2"
+                          "name": "panel-17"
                         }
                       }
                     },
@@ -1401,7 +1297,7 @@
                         "height": 8,
                         "element": {
                           "kind": "ElementReference",
-                          "name": "panel-3"
+                          "name": "panel-18"
                         }
                       }
                     },
@@ -1414,7 +1310,7 @@
                         "height": 8,
                         "element": {
                           "kind": "ElementReference",
-                          "name": "panel-4"
+                          "name": "panel-19"
                         }
                       }
                     },
@@ -1424,10 +1320,10 @@
                         "x": 0,
                         "y": 8,
                         "width": 24,
-                        "height": 8,
+                        "height": 9,
                         "element": {
                           "kind": "ElementReference",
-                          "name": "panel-5"
+                          "name": "panel-13"
                         }
                       }
                     },
@@ -1435,9 +1331,22 @@
                       "kind": "GridLayoutItem",
                       "spec": {
                         "x": 0,
-                        "y": 16,
-                        "width": 12,
+                        "y": 17,
+                        "width": 24,
                         "height": 8,
+                        "element": {
+                          "kind": "ElementReference",
+                          "name": "panel-21"
+                        }
+                      }
+                    },
+                    {
+                      "kind": "GridLayoutItem",
+                      "spec": {
+                        "x": 0,
+                        "y": 25,
+                        "width": 12,
+                        "height": 10,
                         "element": {
                           "kind": "ElementReference",
                           "name": "panel-6"
@@ -1448,12 +1357,12 @@
                       "kind": "GridLayoutItem",
                       "spec": {
                         "x": 12,
-                        "y": 16,
+                        "y": 25,
                         "width": 12,
-                        "height": 8,
+                        "height": 10,
                         "element": {
                           "kind": "ElementReference",
-                          "name": "panel-7"
+                          "name": "panel-20"
                         }
                       }
                     }
@@ -1494,32 +1403,6 @@
                         "element": {
                           "kind": "ElementReference",
                           "name": "panel-10"
-                        }
-                      }
-                    },
-                    {
-                      "kind": "GridLayoutItem",
-                      "spec": {
-                        "x": 0,
-                        "y": 8,
-                        "width": 12,
-                        "height": 6,
-                        "element": {
-                          "kind": "ElementReference",
-                          "name": "panel-11"
-                        }
-                      }
-                    },
-                    {
-                      "kind": "GridLayoutItem",
-                      "spec": {
-                        "x": 12,
-                        "y": 8,
-                        "width": 12,
-                        "height": 6,
-                        "element": {
-                          "kind": "ElementReference",
-                          "name": "panel-12"
                         }
                       }
                     }
@@ -1582,18 +1465,52 @@
               "name": "influxdb"
             },
             "spec": {
-              "query": "SELECT DISTINCT datacenter\nFROM unity_metrics\nORDER BY datacenter",
+              "query": "SELECT DISTINCT datacenter\nFROM vm_lifecycle\nORDER BY datacenter",
               "refId": "InfluxVariableQueryEditor-VariableQuery"
             }
           },
           "regex": "",
           "regexApplyTo": "value",
           "sort": "alphabeticalAsc",
-          "definition": "SELECT DISTINCT datacenter\nFROM unity_metrics\nORDER BY datacenter",
+          "definition": "SELECT DISTINCT datacenter\nFROM vm_lifecycle\nORDER BY datacenter",
           "options": [],
           "multi": false,
           "includeAll": false,
-          "allValue": "",
+          "allowCustomValue": false
+        }
+      },
+      {
+        "kind": "QueryVariable",
+        "spec": {
+          "name": "name",
+          "current": {
+            "text": "AMD-ANA-Cluster",
+            "value": "AMD-ANA-Cluster"
+          },
+          "label": "Cluster name",
+          "hide": "dontHide",
+          "refresh": "onDashboardLoad",
+          "skipUrlSync": false,
+          "query": {
+            "kind": "DataQuery",
+            "group": "influxdb",
+            "version": "v0",
+            "datasource": {
+              "name": "influxdb"
+            },
+            "spec": {
+              "query": "SELECT DISTINCT name\nFROM cluster_metrics\nORDER BY name",
+              "refId": "InfluxVariableQueryEditor-VariableQuery"
+            }
+          },
+          "regex": "",
+          "regexApplyTo": "value",
+          "sort": "disabled",
+          "definition": "SELECT DISTINCT name\nFROM cluster_metrics\nORDER BY name",
+          "options": [],
+          "multi": false,
+          "includeAll": true,
+          "allValue": "%",
           "allowCustomValue": false
         }
       }

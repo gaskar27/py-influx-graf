@@ -4,12 +4,12 @@
   "metadata": {
     "name": "infrastructure-overview",
     "namespace": "default",
-    "uid": "979bc5bb-b119-4d94-bec9-33b70a025edf",
-    "resourceVersion": "1787296846914003",
+    "uid": "367e9d1b-dd09-446c-8b3d-371dcc756811",
+    "resourceVersion": "1787909268720017",
     "generation": 2,
-    "creationTimestamp": "2026-08-21T07:15:25Z",
+    "creationTimestamp": "2026-08-28T06:06:56Z",
     "labels": {
-      "grafana.app/deprecatedInternalID": "1029049677926400"
+      "grafana.app/deprecatedInternalID": "3548531371229184"
     },
     "annotations": {
       "grafana.app/createdBy": "access-policy:service",
@@ -17,13 +17,13 @@
       "grafana.app/managedBy": "classic-file-provisioning",
       "grafana.app/managerAllowsEdits": "true",
       "grafana.app/managerId": "Default",
-      "grafana.app/message": "fix infra overview aria SQL query",
+      "grafana.app/message": "fix time error",
       "grafana.app/saved-from-ui": "Grafana v13.1.1 (a9cee6e172)",
-      "grafana.app/sourceChecksum": "ec8ee42ad7c9b718adf1ca8e631b4ed4",
+      "grafana.app/sourceChecksum": "cfe27c400736ed8e29262b69da0f50af",
       "grafana.app/sourcePath": "/etc/grafana/provisioning/dashboards/01-infrastructure-overview.json",
-      "grafana.app/sourceTimestamp": "1787296464000",
-      "grafana.app/updatedBy": "user:afvtv1caelwxsf",
-      "grafana.app/updatedTimestamp": "2026-08-21T07:20:46Z"
+      "grafana.app/sourceTimestamp": "1787554412000",
+      "grafana.app/updatedBy": "user:dfwio49t0pse8e",
+      "grafana.app/updatedTimestamp": "2026-08-28T09:27:48Z"
     }
   },
   "spec": {
@@ -77,7 +77,7 @@
                         "editorMode": "code",
                         "format": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT datastore_data, percent_use FROM datastore_usage WHERE time >= now() - INTERVAL '1 hour' ORDER BY percent_use DESC LIMIT 10",
+                        "rawSql": "SELECT datastore_data, percent_use FROM datastore_usage WHERE $__timeFilter(time) ORDER BY percent_use DESC LIMIT 10",
                         "sql": {
                           "columns": [
                             {
@@ -210,7 +210,7 @@
                         "editorMode": "code",
                         "format": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT datastore_data, type, total_capacity, space_use, free_space, percent_use FROM datastore_usage WHERE time >= now() - INTERVAL '1 hour' ORDER BY percent_use DESC",
+                        "rawSql": "SELECT datastore_data, type, total_capacity, space_use, free_space, percent_use FROM datastore_usage WHERE $__timeFilter(time) ORDER BY percent_use DESC",
                         "sql": {
                           "columns": [
                             {
@@ -367,7 +367,7 @@
                         "editorMode": "code",
                         "format": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT COUNT(DISTINCT name) as count FROM unity_metrics WHERE time >= now() - INTERVAL '1 hour' AND unity_metrics.\"sizeTotal\" IS NOT NULL",
+                        "rawSql": "SELECT COUNT(DISTINCT name) as count FROM unity_metrics WHERE $__timeFilter(time) AND unity_metrics.\"sizeTotal\" IS NOT NULL",
                         "sql": {
                           "columns": [
                             {
@@ -466,7 +466,7 @@
                         "editorMode": "code",
                         "format": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT COUNT(DISTINCT cluster_id) as count FROM powerstore_performance WHERE time >= now() - INTERVAL '1 hour' AND entity = 'space_metrics_by_cluster'",
+                        "rawSql": "SELECT COUNT(DISTINCT cluster_id) as count FROM powerstore_performance WHERE $__timeFilter(time) AND entity = 'space_metrics_by_cluster'",
                         "sql": {
                           "columns": [
                             {
@@ -565,7 +565,7 @@
                         "editorMode": "code",
                         "format": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT COUNT(DISTINCT node_id) as count FROM powerstore_performance WHERE time >= now() - INTERVAL '1 hour' AND entity = 'performance_metrics_by_node'",
+                        "rawSql": "SELECT COUNT(DISTINCT node_id) as count FROM powerstore_performance WHERE $__timeFilter(time) AND entity = 'performance_metrics_by_node'",
                         "sql": {
                           "columns": [
                             {
@@ -664,7 +664,7 @@
                         "editorMode": "code",
                         "format": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT COUNT(DISTINCT appliance_id) as count FROM powerstore_performance WHERE time >= now() - INTERVAL '1 hour' AND entity = 'performance_metrics_by_appliance'",
+                        "rawSql": "SELECT COUNT(DISTINCT appliance_id) as count FROM powerstore_performance WHERE $__timeFilter(time) AND entity = 'performance_metrics_by_appliance'",
                         "sql": {
                           "columns": [
                             {
@@ -763,7 +763,7 @@
                         "editorMode": "code",
                         "format": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT datacenter, summary_total_number_vms\r\nFROM vm_inventory\r\nWHERE time >= now() - INTERVAL '1 hour'\r\n",
+                        "rawSql": "SELECT datacenter, summary_total_number_vms\r\nFROM vm_inventory\r\nWHERE $__timeFilter(time)\r\nORDER BY time\r\nLIMIT 2\r\n",
                         "sql": {
                           "columns": [
                             {
@@ -1193,7 +1193,7 @@
                         "editorMode": "code",
                         "format": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT COUNT(DISTINCT datastore_data) as count FROM datastore_usage WHERE time >= now() - INTERVAL '1 hour'",
+                        "rawSql": "SELECT COUNT(DISTINCT datastore_data) as count FROM datastore_usage WHERE $__timeFilter(time)",
                         "sql": {
                           "columns": [
                             {
@@ -1292,7 +1292,7 @@
                         "editorMode": "code",
                         "format": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT SUM(total_capacity) * 1073741824 as total_bytes FROM datastore_usage WHERE time >= now() - INTERVAL '1 hour'",
+                        "rawSql": "SELECT SUM(total_capacity) * 1073741824 as total_bytes FROM datastore_usage WHERE $__timeFilter(time)",
                         "sql": {
                           "columns": [
                             {
@@ -1392,7 +1392,7 @@
                         "editorMode": "code",
                         "format": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT AVG(percent_use) as avg_percent FROM datastore_usage WHERE time >= now() - INTERVAL '1 hour'",
+                        "rawSql": "SELECT AVG(percent_use) as avg_percent FROM datastore_usage WHERE $__timeFilter(time)",
                         "sql": {
                           "columns": [
                             {

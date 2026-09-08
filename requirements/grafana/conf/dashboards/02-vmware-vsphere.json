@@ -4,12 +4,12 @@
   "metadata": {
     "name": "vmware-vsphere",
     "namespace": "default",
-    "uid": "4b839f26-7fd1-4fa7-9f6b-8f3f4571a995",
-    "resourceVersion": "1787304604688018",
-    "generation": 2,
-    "creationTimestamp": "2026-08-21T09:15:57Z",
+    "uid": "197d14f6-8286-488d-8972-d5be64d703db",
+    "resourceVersion": "1788770114742998",
+    "generation": 6,
+    "creationTimestamp": "2026-09-07T05:42:10Z",
     "labels": {
-      "grafana.app/deprecatedInternalID": "1059383378612224"
+      "grafana.app/deprecatedInternalID": "2662575723900928"
     },
     "annotations": {
       "grafana.app/createdBy": "access-policy:service",
@@ -17,13 +17,12 @@
       "grafana.app/managedBy": "classic-file-provisioning",
       "grafana.app/managerAllowsEdits": "true",
       "grafana.app/managerId": "Default",
-      "grafana.app/message": "quick fix",
       "grafana.app/saved-from-ui": "Grafana v13.1.1 (a9cee6e172)",
-      "grafana.app/sourceChecksum": "e470eaeda21f7961531567a6498ec291",
+      "grafana.app/sourceChecksum": "3c24764fcbbe7ac2cdd1787ec67f1102",
       "grafana.app/sourcePath": "/etc/grafana/provisioning/dashboards/02-vmware-vsphere.json",
-      "grafana.app/sourceTimestamp": "1787303716000",
-      "grafana.app/updatedBy": "user:bfvu5sfcvaps0a",
-      "grafana.app/updatedTimestamp": "2026-08-21T09:30:04Z"
+      "grafana.app/sourceTimestamp": "1788501265000",
+      "grafana.app/updatedBy": "user:dfxiagso0e800a",
+      "grafana.app/updatedTimestamp": "2026-09-07T08:35:14Z"
     }
   },
   "spec": {
@@ -77,7 +76,7 @@
                         "editorMode": "code",
                         "format": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT datacenter, datastore_data, type, datastore_folder, total_capacity, space_use, free_space, percent_use FROM datastore_usage WHERE time >= now() - INTERVAL '1 hour' AND datacenter LIKE '$datacenter' AND type LIKE '%$type%' ORDER BY percent_use DESC",
+                        "rawSql": "SELECT datacenter, datastore_data, type, datastore_folder, total_capacity, space_use, free_space, percent_use \r\nFROM datastore_usage \r\nWHERE $__timeFilter(time) AND datacenter LIKE '$datacenter' AND type LIKE '%$type%' \r\nORDER BY percent_use DESC",
                         "sql": {
                           "columns": [
                             {
@@ -113,12 +112,7 @@
               "options": {
                 "cellHeight": "sm",
                 "showHeader": true,
-                "sortBy": [
-                  {
-                    "desc": false,
-                    "displayName": "Used"
-                  }
-                ]
+                "sortBy": []
               },
               "fieldConfig": {
                 "defaults": {
@@ -148,7 +142,9 @@
                       "type": "auto"
                     },
                     "footer": {
-                      "reducers": []
+                      "reducers": [
+                        "sum"
+                      ]
                     },
                     "inspect": false
                   }
@@ -358,7 +354,7 @@
                         "editorMode": "code",
                         "format": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT time, datastore_data, percent_use FROM datastore_usage WHERE datacenter = '$datacenter' AND type LIKE '%$type%' AND $__timeFilter(time) ORDER BY time",
+                        "rawSql": "SELECT time, datastore_data, percent_use \r\nFROM datastore_usage \r\nWHERE datacenter = '$datacenter' AND type LIKE '%$type%' AND $__timeFilter(time) \r\nORDER BY time",
                         "sql": {
                           "columns": [
                             {
@@ -505,7 +501,7 @@
                         "editorMode": "code",
                         "format": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT datastore_data, percent_use FROM datastore_usage WHERE time >= now() - INTERVAL '1 hour' AND datacenter = '$datacenter' AND type LIKE '%$type%' ORDER BY datastore_data",
+                        "rawSql": "SELECT datastore_data, percent_use \r\nFROM datastore_usage \r\nWHERE $__timeFilter(time) AND datacenter = '$datacenter' AND type LIKE '%$type%' \r\nORDER BY datastore_data",
                         "sql": {
                           "columns": [
                             {
@@ -622,7 +618,7 @@
                         "editorMode": "code",
                         "format": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT datastore_data, total_capacity FROM datastore_usage WHERE time >= now() - INTERVAL '1 hour' AND datacenter = '$datacenter' AND type LIKE '%$type%'",
+                        "rawSql": "SELECT datastore_data, total_capacity \r\nFROM datastore_usage \r\nWHERE $__timeFilter(time) AND datacenter = '$datacenter' AND type LIKE '%$type%'",
                         "sql": {
                           "columns": [
                             {
@@ -732,7 +728,7 @@
                         "editorMode": "code",
                         "format": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT datacenter, datastore_data, type, percent_use, free_space FROM datastore_usage WHERE percent_use > 80 AND time >= now() - INTERVAL '1 hour' ORDER BY percent_use DESC",
+                        "rawSql": "SELECT datacenter, datastore_data, type, percent_use, free_space \r\nFROM datastore_usage \r\nWHERE percent_use > 80 AND $__timeFilter(time) \r\nORDER BY percent_use DESC",
                         "sql": {
                           "columns": [
                             {
