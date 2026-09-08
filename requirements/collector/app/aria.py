@@ -113,7 +113,7 @@ class AriaCollector:
             timestamps = stats[0].get("timestamps", [])
             if not timestamps:
                 return None
-            return timestamps[0]
+            return int(timestamps[0])
 
         except requests.exceptions.RequestException as exception:
             raise SystemExit(exception)
@@ -126,6 +126,7 @@ class AriaCollector:
             is_deleted = False
             vm_id = item.get("identifier")
             destroyed_at = None
+
             for state in item.get("resourceStatusStates", []):
                 if state.get("resourceState") == "NOT_EXISTING":
                     is_deleted = True
@@ -133,9 +134,22 @@ class AriaCollector:
 
             if is_deleted:
                 destroyed_at = self.__get_vm_destroy_date(vm_id)
-            point_object = (Point("vm_lifecycle").time(created_at).tag("datacenter", resource_name)
-                     .tag("name", vm_name).tag("id", vm_id).field("is_deleted", is_deleted)
-                     .field("created_at", created_at)).field("destroyed_at", destroyed_at)
+
+            point_object = Point("vm_lifecycle").field("is_deleted", is_deleted)
+
+            if created_at is not None:
+                point_object.field("created_at", int(created_at))
+
+            if resource_name:
+                point_object.tag("datacenter", resource_name)
+            if vm_name:
+                point_object.tag("name", vm_name)
+            if vm_id:
+                point_object.tag("id", vm_id)
+
+            if destroyed_at is not None:
+                point_object.field("destroyed_at", int(destroyed_at))
+
             self.points.append(point_object)
 
     def cluster_workload(self, datacenter_id, cluster_name, cluster_id, ):
