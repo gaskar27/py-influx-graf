@@ -13,7 +13,7 @@ Stack Docker d'infrastructure monitoring combinant InfluxDB 3, Grafana et des co
 ### 1. Cloner le dépôt
 
 ```bash
-git clone https://github.com/<votre-user>/py-influx-graf.git
+git clone https://github.com/gaskar27/py-influx-graf.git
 cd py-influx-graf
 ```
 
