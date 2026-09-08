@@ -69,8 +69,6 @@ class AriaCollector:
                 data_points = stat.get("data", [])
 
                 for ts, val in zip(timestamps, data_points):
-                    #if val is None or val == 0:
-                    #    continue
 
                     timestamp_ms = int(ts)
 

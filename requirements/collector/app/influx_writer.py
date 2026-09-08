@@ -70,6 +70,11 @@ class InfluxDBWriter:
             logger.warning(f"Unable to verify/create DB via API: {e}")
 
     def write_point(self, point:Point):
+        """
+        Writes one Point to InfluxDB.
+
+        :param point: A Point object to write in InfluxDB.
+        """
         try:
             self.client.write(record=point, write_precision="ms")
             logger.debug(f"Point written successfully")

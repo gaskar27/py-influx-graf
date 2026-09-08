@@ -33,12 +33,6 @@ class UnityCollector:
         if self.authenticate():
             self.isAuthenticated = True
 
-    # def get_metrics(self, type, fields):
-        # url = f"{self.base_url}/types/{type}/instances"
-        # params = {"fields": fields}
-        # response = self.session.get(url, params=params)
-        # return response.json().get("entries", []) if response.json() else None
-
     def get_metrics(self, type, fields= None, filter=None):
         url = f"{self.base_url}/types/{type}/instances"
 
