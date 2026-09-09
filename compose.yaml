@@ -32,10 +32,10 @@ services:
     env_file:
       - .env
     environment:
-      - ARIA_RESOURCE_ID1=resourceIdVcenterServer1
-      - MAP_ID1=nameOfResourceId1
-      - ARIA_RESOURCE_ID2=resourceIdVcenterServer1
-      - MAP_ID2=nameOfResourceId2
+      - ARIA_RESOURCE_ID1=${ARIA_RESOURCE_ID1}
+      - MAP_ID1=${MAP_ID1}
+      - ARIA_RESOURCE_ID2=${ARIA_RESOURCE_ID2}
+      - MAP_ID2=${MAP_ID2}
     secrets:
       - aria_s
     depends_on:
@@ -48,8 +48,8 @@ services:
     env_file:
       - .env
     environment:
-      - DS_FOLDER=ds_folder
-      - DC_NAME=DataCenterName
+      - DS_FOLDER=${DS_FOLDER1}
+      - DC_NAME=${DC_NAME1}
       - NAME=one_s
     secrets:
       - one_s
@@ -63,8 +63,8 @@ services:
     env_file:
       - .env
     environment:
-      - DS_FOLDER=ds_folder
-      - DC_NAME=DataCenterName
+      - DS_FOLDER=${DS_FOLDER2}
+      - DC_NAME=${DC_NAME2}
       - NAME=two_s
     secrets:
       - two_s

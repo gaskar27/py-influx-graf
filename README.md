@@ -87,7 +87,8 @@ cp .env.example .env
 cp secrets/aria.txt.example secrets/aria.txt
 cp secrets/one.txt.example secrets/one.txt
 cp secrets/two.txt.example secrets/two.txt
-
+```
+```bash
 # 2. Éditer les fichiers .env et secrets/ avec vos identifiants
 
 # 3. Démarrer et collecter
