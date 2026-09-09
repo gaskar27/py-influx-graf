@@ -33,6 +33,14 @@ Modifier `.env` :
 | `INFLUXDB_BUCKET` | Nom de la base de données (défaut : `local_system`) |
 | `ADMIN` | Utilisateur admin Grafana |
 | `PASSW` | Mot de passe admin Grafana |
+| `ARIA_RESOURCE_ID1` | ID de la vCenter (collecteur Aria) |
+| `MAP_ID1` | Nom de la vCenter correspondant à `ARIA_RESOURCE_ID1` |
+| `ARIA_RESOURCE_ID2` | ID de la vCenter (collecteur Aria) |
+| `MAP_ID2` | Nom de la vCenter correspondant à `ARIA_RESOURCE_ID2` |
+| `DS_FOLDER1` | Dossier datastore Unity 500 (collector1) |
+| `DC_NAME1` | Nom du datacenter (collector1) |
+| `DS_FOLDER2` | Dossier datastore Unity 500 (collector2) |
+| `DC_NAME2` | Nom du datacenter (collector2) |
 
 ### 3. Configurer les secrets
 
