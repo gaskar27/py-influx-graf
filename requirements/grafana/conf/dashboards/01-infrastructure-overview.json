@@ -4,12 +4,12 @@
   "metadata": {
     "name": "infrastructure-overview",
     "namespace": "default",
-    "uid": "367e9d1b-dd09-446c-8b3d-371dcc756811",
-    "resourceVersion": "1787909268720017",
-    "generation": 2,
-    "creationTimestamp": "2026-08-28T06:06:56Z",
+    "uid": "4e00646f-67a1-4727-8ef4-47c94b3b2dec",
+    "resourceVersion": "1789023897274012",
+    "generation": 12,
+    "creationTimestamp": "2026-09-10T06:56:28Z",
     "labels": {
-      "grafana.app/deprecatedInternalID": "3548531371229184"
+      "grafana.app/deprecatedInternalID": "3768439419244544"
     },
     "annotations": {
       "grafana.app/createdBy": "access-policy:service",
@@ -17,13 +17,12 @@
       "grafana.app/managedBy": "classic-file-provisioning",
       "grafana.app/managerAllowsEdits": "true",
       "grafana.app/managerId": "Default",
-      "grafana.app/message": "fix time error",
       "grafana.app/saved-from-ui": "Grafana v13.1.1 (a9cee6e172)",
-      "grafana.app/sourceChecksum": "cfe27c400736ed8e29262b69da0f50af",
+      "grafana.app/sourceChecksum": "17a19864a8cf7ff053241cfdc4bd872a",
       "grafana.app/sourcePath": "/etc/grafana/provisioning/dashboards/01-infrastructure-overview.json",
-      "grafana.app/sourceTimestamp": "1787554412000",
-      "grafana.app/updatedBy": "user:dfwio49t0pse8e",
-      "grafana.app/updatedTimestamp": "2026-08-28T09:27:48Z"
+      "grafana.app/sourceTimestamp": "1789023305000",
+      "grafana.app/updatedBy": "user:ffxt6gnafyznkf",
+      "grafana.app/updatedTimestamp": "2026-09-10T07:04:57Z"
     }
   },
   "spec": {
@@ -77,7 +76,7 @@
                         "editorMode": "code",
                         "format": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT datastore_data, percent_use FROM datastore_usage WHERE $__timeFilter(time) ORDER BY percent_use DESC LIMIT 10",
+                        "rawSql": "SELECT datastore_data, percent_use \r\nFROM datastore_usage \r\nWHERE $__timeFilter(time) \r\nORDER BY percent_use DESC LIMIT 10",
                         "sql": {
                           "columns": [
                             {
@@ -210,7 +209,7 @@
                         "editorMode": "code",
                         "format": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT datastore_data, type, total_capacity, space_use, free_space, percent_use FROM datastore_usage WHERE $__timeFilter(time) ORDER BY percent_use DESC",
+                        "rawSql": "SELECT datastore_data, type, total_capacity, space_use, free_space, percent_use \r\nFROM datastore_usage \r\nWHERE $__timeFilter(time) \r\nORDER BY percent_use DESC",
                         "sql": {
                           "columns": [
                             {
@@ -367,7 +366,7 @@
                         "editorMode": "code",
                         "format": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT COUNT(DISTINCT name) as count FROM unity_metrics WHERE $__timeFilter(time) AND unity_metrics.\"sizeTotal\" IS NOT NULL",
+                        "rawSql": "SELECT COUNT(DISTINCT name) as count \r\nFROM unity_metrics \r\nWHERE $__timeFilter(time) AND unity_metrics.\"sizeTotal\" IS NOT NULL",
                         "sql": {
                           "columns": [
                             {
@@ -466,7 +465,7 @@
                         "editorMode": "code",
                         "format": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT COUNT(DISTINCT cluster_id) as count FROM powerstore_performance WHERE $__timeFilter(time) AND entity = 'space_metrics_by_cluster'",
+                        "rawSql": "SELECT COUNT(DISTINCT cluster_id) as count \r\nFROM powerstore_performance \r\nWHERE $__timeFilter(time) AND entity = 'space_metrics_by_cluster'",
                         "sql": {
                           "columns": [
                             {
@@ -565,7 +564,7 @@
                         "editorMode": "code",
                         "format": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT COUNT(DISTINCT node_id) as count FROM powerstore_performance WHERE $__timeFilter(time) AND entity = 'performance_metrics_by_node'",
+                        "rawSql": "SELECT COUNT(DISTINCT node_id) as count \r\nFROM powerstore_performance \r\nWHERE $__timeFilter(time) AND entity = 'performance_metrics_by_node'",
                         "sql": {
                           "columns": [
                             {
@@ -664,7 +663,7 @@
                         "editorMode": "code",
                         "format": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT COUNT(DISTINCT appliance_id) as count FROM powerstore_performance WHERE $__timeFilter(time) AND entity = 'performance_metrics_by_appliance'",
+                        "rawSql": "SELECT COUNT(DISTINCT appliance_id) as count \r\nFROM powerstore_performance \r\nWHERE $__timeFilter(time) AND entity = 'performance_metrics_by_appliance'",
                         "sql": {
                           "columns": [
                             {
@@ -737,10 +736,10 @@
           }
         }
       },
-      "panel-2": {
+      "panel-17": {
         "kind": "Panel",
         "spec": {
-          "id": 2,
+          "id": 17,
           "title": "Total VMs",
           "description": "",
           "links": [],
@@ -763,7 +762,7 @@
                         "editorMode": "code",
                         "format": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT datacenter, summary_total_number_vms\r\nFROM vm_inventory\r\nWHERE $__timeFilter(time)\r\nORDER BY time\r\nLIMIT 2\r\n",
+                        "rawSql": "SELECT COUNT(*) AS nb_vm\r\nFROM (\r\n    SELECT DISTINCT ON (id)\r\n        id,\r\n        is_deleted\r\n    FROM vm_lifecycle\r\n    WHERE datacenter = '${dc1}'\r\n    ORDER BY id, created_at DESC\r\n) t\r\nWHERE is_deleted = false;",
                         "sql": {
                           "columns": [
                             {
@@ -783,6 +782,44 @@
                       }
                     },
                     "refId": "A",
+                    "hidden": false
+                  }
+                },
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
+                      "datasource": {
+                        "name": "influxdb"
+                      },
+                      "spec": {
+                        "dataset": "iox",
+                        "editorMode": "code",
+                        "format": "table",
+                        "rawQuery": true,
+                        "rawSql": "SELECT COUNT(*) AS nb_vm\r\nFROM (\r\n    SELECT DISTINCT ON (id)\r\n        id,\r\n        is_deleted\r\n    FROM vm_lifecycle\r\n    WHERE datacenter = '$dc2'\r\n    ORDER BY id, created_at DESC\r\n) t\r\nWHERE is_deleted = false;",
+                        "sql": {
+                          "columns": [
+                            {
+                              "parameters": [],
+                              "type": "function"
+                            }
+                          ],
+                          "groupBy": [
+                            {
+                              "property": {
+                                "type": "string"
+                              },
+                              "type": "groupBy"
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    "refId": "B",
                     "hidden": false
                   }
                 }
@@ -829,16 +866,41 @@
                     "mode": "thresholds"
                   }
                 },
-                "overrides": []
+                "overrides": [
+                  {
+                    "matcher": {
+                      "id": "byFrameRefID",
+                      "options": "A"
+                    },
+                    "properties": [
+                      {
+                        "id": "displayName",
+                        "value": "$dc1"
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byFrameRefID",
+                      "options": "B"
+                    },
+                    "properties": [
+                      {
+                        "id": "displayName",
+                        "value": "$dc2"
+                      }
+                    ]
+                  }
+                ]
               }
             }
           }
         }
       },
-      "panel-3": {
+      "panel-18": {
         "kind": "Panel",
         "spec": {
-          "id": 3,
+          "id": 18,
           "title": "VMs Created (30d)",
           "description": "",
           "links": [],
@@ -861,7 +923,7 @@
                         "editorMode": "code",
                         "format": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT SUM(\"vmop_inventoryChange_numCreate_latest\") as created FROM vm_inventory WHERE time >= now() - INTERVAL '30 days'",
+                        "rawSql": "SELECT COUNT(*) AS created\r\nFROM (\r\n    SELECT\r\n        id,\r\n        MAX(created_at) AS first_seen,\r\n        (ARRAY_AGG(is_deleted ORDER BY created_at DESC))[1] AS is_deleted\r\n    FROM vm_lifecycle\r\n    WHERE datacenter = '$dc1'\r\n    GROUP BY id\r\n) t\r\nWHERE is_deleted = false\r\n  AND first_seen >= EXTRACT(EPOCH FROM (NOW() - INTERVAL '30 days')) * 1000;",
                         "sql": {
                           "columns": [
                             {
@@ -881,6 +943,44 @@
                       }
                     },
                     "refId": "A",
+                    "hidden": false
+                  }
+                },
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
+                      "datasource": {
+                        "name": "influxdb"
+                      },
+                      "spec": {
+                        "dataset": "iox",
+                        "editorMode": "code",
+                        "format": "table",
+                        "rawQuery": true,
+                        "rawSql": "SELECT COUNT(*) AS created\r\nFROM (\r\n    SELECT\r\n        id,\r\n        MAX(created_at) AS first_seen,\r\n        (ARRAY_AGG(is_deleted ORDER BY created_at DESC))[1] AS is_deleted\r\n    FROM vm_lifecycle\r\n    WHERE datacenter = '$dc2'\r\n    GROUP BY id\r\n) t\r\nWHERE is_deleted = false\r\n  AND first_seen >= EXTRACT(EPOCH FROM (NOW() - INTERVAL '30 days')) * 1000;",
+                        "sql": {
+                          "columns": [
+                            {
+                              "parameters": [],
+                              "type": "function"
+                            }
+                          ],
+                          "groupBy": [
+                            {
+                              "property": {
+                                "type": "string"
+                              },
+                              "type": "groupBy"
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    "refId": "B",
                     "hidden": false
                   }
                 }
@@ -928,16 +1028,41 @@
                     "mode": "thresholds"
                   }
                 },
-                "overrides": []
+                "overrides": [
+                  {
+                    "matcher": {
+                      "id": "byFrameRefID",
+                      "options": "A"
+                    },
+                    "properties": [
+                      {
+                        "id": "displayName",
+                        "value": "$dc1"
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byFrameRefID",
+                      "options": "B"
+                    },
+                    "properties": [
+                      {
+                        "id": "displayName",
+                        "value": "$dc2"
+                      }
+                    ]
+                  }
+                ]
               }
             }
           }
         }
       },
-      "panel-4": {
+      "panel-19": {
         "kind": "Panel",
         "spec": {
-          "id": 4,
+          "id": 19,
           "title": "VMs Destroyed (30d)",
           "description": "",
           "links": [],
@@ -960,7 +1085,7 @@
                         "editorMode": "code",
                         "format": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT SUM(\"vmop_inventoryChange_numDestroy_latest\") as destroyed FROM vm_inventory WHERE time >= now() - INTERVAL '30 days'",
+                        "rawSql": "SELECT COUNT(*) AS destroyed\r\nFROM (\r\n    SELECT DISTINCT ON (id)\r\n        id,\r\n        destroyed_at\r\n    FROM vm_lifecycle\r\n    WHERE datacenter = '$dc1'\r\n    ORDER BY id, created_at DESC\r\n) t\r\nWHERE destroyed_at >= EXTRACT(EPOCH FROM (NOW() - INTERVAL '30 days')) * 1000;",
                         "sql": {
                           "columns": [
                             {
@@ -980,6 +1105,44 @@
                       }
                     },
                     "refId": "A",
+                    "hidden": false
+                  }
+                },
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
+                      "datasource": {
+                        "name": "influxdb"
+                      },
+                      "spec": {
+                        "dataset": "iox",
+                        "editorMode": "code",
+                        "format": "table",
+                        "rawQuery": true,
+                        "rawSql": "SELECT COUNT(*) AS destroyed\r\nFROM (\r\n    SELECT DISTINCT ON (id)\r\n        id,\r\n        destroyed_at\r\n    FROM vm_lifecycle\r\n    WHERE datacenter = '$dc2'\r\n    ORDER BY id, created_at DESC\r\n) t\r\nWHERE destroyed_at >= EXTRACT(EPOCH FROM (NOW() - INTERVAL '30 days')) * 1000;",
+                        "sql": {
+                          "columns": [
+                            {
+                              "parameters": [],
+                              "type": "function"
+                            }
+                          ],
+                          "groupBy": [
+                            {
+                              "property": {
+                                "type": "string"
+                              },
+                              "type": "groupBy"
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    "refId": "B",
                     "hidden": false
                   }
                 }
@@ -1027,141 +1190,32 @@
                     "mode": "thresholds"
                   }
                 },
-                "overrides": []
-              }
-            }
-          }
-        }
-      },
-      "panel-5": {
-        "kind": "Panel",
-        "spec": {
-          "id": 5,
-          "title": "CPU & Memory Workload",
-          "description": "",
-          "links": [],
-          "data": {
-            "kind": "QueryGroup",
-            "spec": {
-              "queries": [
-                {
-                  "kind": "PanelQuery",
-                  "spec": {
-                    "query": {
-                      "kind": "DataQuery",
-                      "group": "influxdb",
-                      "version": "v0",
-                      "datasource": {
-                        "name": "influxdb"
-                      },
-                      "spec": {
-                        "dataset": "iox",
-                        "editorMode": "code",
-                        "format": "table",
-                        "rawQuery": true,
-                        "rawSql": "SELECT time, datacenter, cpu_workload, mem_workload FROM system_metrics WHERE time >= now() - INTERVAL '7 days' ORDER BY time",
-                        "sql": {
-                          "columns": [
-                            {
-                              "parameters": [],
-                              "type": "function"
-                            }
-                          ],
-                          "groupBy": [
-                            {
-                              "property": {
-                                "type": "string"
-                              },
-                              "type": "groupBy"
-                            }
-                          ]
-                        }
-                      }
+                "overrides": [
+                  {
+                    "matcher": {
+                      "id": "byFrameRefID",
+                      "options": "A"
                     },
-                    "refId": "A",
-                    "hidden": false
-                  }
-                }
-              ],
-              "transformations": [],
-              "queryOptions": {}
-            }
-          },
-          "vizConfig": {
-            "kind": "VizConfig",
-            "group": "timeseries",
-            "version": "13.1.1",
-            "spec": {
-              "options": {
-                "annotations": {
-                  "clustering": -1,
-                  "multiLane": false
-                },
-                "legend": {
-                  "calcs": [],
-                  "displayMode": "list",
-                  "enableFacetedFilter": false,
-                  "overflow": "ellipsis",
-                  "placement": "bottom",
-                  "showLegend": true
-                },
-                "tooltip": {
-                  "hideZeros": false,
-                  "mode": "single",
-                  "sort": "none"
-                }
-              },
-              "fieldConfig": {
-                "defaults": {
-                  "unit": "percent",
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
+                    "properties": [
                       {
-                        "value": 0,
-                        "color": "green"
+                        "id": "displayName",
+                        "value": "$dc1"
                       }
                     ]
                   },
-                  "color": {
-                    "mode": "palette-classic"
-                  },
-                  "custom": {
-                    "axisBorderShow": false,
-                    "axisCenteredZero": false,
-                    "axisColorMode": "text",
-                    "axisLabel": "",
-                    "axisPlacement": "auto",
-                    "barAlignment": 0,
-                    "barWidthFactor": 0.6,
-                    "drawStyle": "line",
-                    "fillOpacity": 10,
-                    "gradientMode": "none",
-                    "hideFrom": {
-                      "legend": false,
-                      "tooltip": false,
-                      "viz": false
+                  {
+                    "matcher": {
+                      "id": "byFrameRefID",
+                      "options": "B"
                     },
-                    "insertNulls": false,
-                    "lineInterpolation": "smooth",
-                    "lineWidth": 2,
-                    "pointSize": 5,
-                    "scaleDistribution": {
-                      "type": "linear"
-                    },
-                    "showPoints": "never",
-                    "showValues": false,
-                    "spanNulls": false,
-                    "stacking": {
-                      "group": "A",
-                      "mode": "none"
-                    },
-                    "thresholdsStyle": {
-                      "mode": "off"
-                    }
+                    "properties": [
+                      {
+                        "id": "displayName",
+                        "value": "$dc2"
+                      }
+                    ]
                   }
-                },
-                "overrides": []
+                ]
               }
             }
           }
@@ -1193,7 +1247,7 @@
                         "editorMode": "code",
                         "format": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT COUNT(DISTINCT datastore_data) as count FROM datastore_usage WHERE $__timeFilter(time)",
+                        "rawSql": "SELECT COUNT(DISTINCT datastore_data) as count \r\nFROM datastore_usage \r\nWHERE $__timeFilter(time)",
                         "sql": {
                           "columns": [
                             {
@@ -1292,7 +1346,7 @@
                         "editorMode": "code",
                         "format": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT SUM(total_capacity) * 1073741824 as total_bytes FROM datastore_usage WHERE $__timeFilter(time)",
+                        "rawSql": "SELECT SUM(total_capacity) * 1073741824 as total_bytes \r\nFROM datastore_usage \r\nWHERE $__timeFilter(time)",
                         "sql": {
                           "columns": [
                             {
@@ -1392,7 +1446,7 @@
                         "editorMode": "code",
                         "format": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT AVG(percent_use) as avg_percent FROM datastore_usage WHERE $__timeFilter(time)",
+                        "rawSql": "SELECT AVG(percent_use) as avg_percent \r\nFROM datastore_usage \r\nWHERE $__timeFilter(time)",
                         "sql": {
                           "columns": [
                             {
@@ -1505,50 +1559,37 @@
                       "spec": {
                         "x": 0,
                         "y": 0,
-                        "width": 6,
+                        "width": 8,
                         "height": 6,
                         "element": {
                           "kind": "ElementReference",
-                          "name": "panel-2"
+                          "name": "panel-17"
                         }
                       }
                     },
                     {
                       "kind": "GridLayoutItem",
                       "spec": {
-                        "x": 6,
+                        "x": 8,
                         "y": 0,
-                        "width": 6,
+                        "width": 8,
                         "height": 6,
                         "element": {
                           "kind": "ElementReference",
-                          "name": "panel-3"
+                          "name": "panel-18"
                         }
                       }
                     },
                     {
                       "kind": "GridLayoutItem",
                       "spec": {
-                        "x": 12,
+                        "x": 16,
                         "y": 0,
-                        "width": 6,
+                        "width": 8,
                         "height": 6,
                         "element": {
                           "kind": "ElementReference",
-                          "name": "panel-4"
-                        }
-                      }
-                    },
-                    {
-                      "kind": "GridLayoutItem",
-                      "spec": {
-                        "x": 18,
-                        "y": 0,
-                        "width": 6,
-                        "height": 6,
-                        "element": {
-                          "kind": "ElementReference",
-                          "name": "panel-5"
+                          "name": "panel-19"
                         }
                       }
                     }
@@ -1733,6 +1774,75 @@
       "fiscalYearStartMonth": 0
     },
     "title": "Infrastructure Overview",
-    "variables": []
+    "variables": [
+      {
+        "kind": "QueryVariable",
+        "spec": {
+          "name": "dc2",
+          "current": {
+            "text": "ANALAKELY",
+            "value": "ANALAKELY"
+          },
+          "hide": "hideVariable",
+          "refresh": "onDashboardLoad",
+          "skipUrlSync": false,
+          "query": {
+            "kind": "DataQuery",
+            "group": "influxdb",
+            "version": "v0",
+            "datasource": {
+              "name": "influxdb"
+            },
+            "spec": {
+              "query": "SELECT DISTINCT datacenter\nFROM vm_lifecycle\nORDER BY datacenter DESC \nLIMIT 1",
+              "refId": "InfluxVariableQueryEditor-VariableQuery"
+            }
+          },
+          "regex": "",
+          "regexApplyTo": "value",
+          "sort": "disabled",
+          "definition": "SELECT DISTINCT datacenter\nFROM vm_lifecycle\nORDER BY datacenter DESC \nLIMIT 1",
+          "options": [],
+          "multi": false,
+          "includeAll": false,
+          "allValue": "%",
+          "allowCustomValue": false
+        }
+      },
+      {
+        "kind": "QueryVariable",
+        "spec": {
+          "name": "dc1",
+          "current": {
+            "text": "ANALAKELY",
+            "value": "ANALAKELY"
+          },
+          "hide": "hideVariable",
+          "refresh": "onDashboardLoad",
+          "skipUrlSync": false,
+          "query": {
+            "kind": "DataQuery",
+            "group": "influxdb",
+            "version": "v0",
+            "datasource": {
+              "name": "influxdb"
+            },
+            "spec": {
+              "query": "SELECT DISTINCT datacenter\nFROM vm_lifecycle\nORDER BY datacenter ASC \nLIMIT 1",
+              "refId": "InfluxVariableQueryEditor-VariableQuery"
+            }
+          },
+          "regex": "",
+          "regexApplyTo": "value",
+          "sort": "alphabeticalAsc",
+          "definition": "SELECT DISTINCT datacenter\nFROM vm_lifecycle\nORDER BY datacenter ASC \nLIMIT 1",
+          "options": [],
+          "multi": false,
+          "includeAll": false,
+          "allValue": "%",
+          "allowCustomValue": false
+        }
+      }
+    ]
   }
 }
