@@ -103,7 +103,7 @@ cp secrets/two.txt.example secrets/two.txt
 make run
 ```
 
-Grafana est accessible sur `http://localhost:3000` avec les identifiants définis dans `.env`.
+Grafana est accessible sur `http://localhost:3000` ou l'ip de la machine distant suivie de `:3000` (ex. `http://192.168.1.10:3000`) avec les identifiants définis dans `.env`.
 
 ## Commandes disponibles
 
@@ -131,3 +131,12 @@ Quatre dashboards sont provisionnés automatiquement :
 2. **VMware vSphere - Datastores** — Utilisation et capacité des datastores
 3. **Dell Storage Systems** — Métriques Unity et PowerStore
 4. **VMware Aria Operations** — Métriques clusters et cycle de vie des VMs
+
+Pour utiliser Grafana (export CSV, alerting, troubleshooting) : [Guide utilisateur Grafana](docs/GRAFANA.md).
+
+## Documentation
+
+- [Index de la documentation](docs/README.md) — porte d'entrée vers tous les documents
+- [Documentation technique](docs/DOCUMENTATION_TECHNIQUE.md) — architecture, services Docker, modèle de données InfluxDB, sécurité
+- [Guide utilisateur Grafana](docs/GRAFANA.md) — dashboards, export de données et dépannage
+- [Détails des collecteurs](docs/collector/) — `aria.py`, `vsphere.py`, `powerstore.py`, `unity.py`, `influx_writer.py`, `utils.py`, `main.py`
