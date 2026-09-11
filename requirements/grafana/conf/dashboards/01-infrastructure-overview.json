@@ -4,12 +4,12 @@
   "metadata": {
     "name": "infrastructure-overview",
     "namespace": "default",
-    "uid": "4e00646f-67a1-4727-8ef4-47c94b3b2dec",
-    "resourceVersion": "1789023897274012",
-    "generation": 12,
-    "creationTimestamp": "2026-09-10T06:56:28Z",
+    "uid": "827a6958-56be-4870-a710-cd48c77a7233",
+    "resourceVersion": "1789113702206017",
+    "generation": 2,
+    "creationTimestamp": "2026-09-11T07:50:12Z",
     "labels": {
-      "grafana.app/deprecatedInternalID": "3768439419244544"
+      "grafana.app/deprecatedInternalID": "4144348597276672"
     },
     "annotations": {
       "grafana.app/createdBy": "access-policy:service",
@@ -18,11 +18,11 @@
       "grafana.app/managerAllowsEdits": "true",
       "grafana.app/managerId": "Default",
       "grafana.app/saved-from-ui": "Grafana v13.1.1 (a9cee6e172)",
-      "grafana.app/sourceChecksum": "17a19864a8cf7ff053241cfdc4bd872a",
+      "grafana.app/sourceChecksum": "436e6413b095280eed6646b61f93f36a",
       "grafana.app/sourcePath": "/etc/grafana/provisioning/dashboards/01-infrastructure-overview.json",
-      "grafana.app/sourceTimestamp": "1789023305000",
-      "grafana.app/updatedBy": "user:ffxt6gnafyznkf",
-      "grafana.app/updatedTimestamp": "2026-09-10T07:04:57Z"
+      "grafana.app/sourceTimestamp": "1789109242000",
+      "grafana.app/updatedBy": "user:bfxwvplxive9sa",
+      "grafana.app/updatedTimestamp": "2026-09-11T08:01:42Z"
     }
   },
   "spec": {
@@ -1613,7 +1613,7 @@
                         "x": 0,
                         "y": 0,
                         "width": 4,
-                        "height": 4,
+                        "height": 8,
                         "element": {
                           "kind": "ElementReference",
                           "name": "panel-7"
@@ -1626,7 +1626,7 @@
                         "x": 4,
                         "y": 0,
                         "width": 4,
-                        "height": 4,
+                        "height": 8,
                         "element": {
                           "kind": "ElementReference",
                           "name": "panel-8"
@@ -1639,7 +1639,7 @@
                         "x": 8,
                         "y": 0,
                         "width": 4,
-                        "height": 4,
+                        "height": 8,
                         "element": {
                           "kind": "ElementReference",
                           "name": "panel-9"
@@ -1663,9 +1663,9 @@
                       "kind": "GridLayoutItem",
                       "spec": {
                         "x": 0,
-                        "y": 4,
-                        "width": 12,
-                        "height": 4,
+                        "y": 8,
+                        "width": 24,
+                        "height": 7,
                         "element": {
                           "kind": "ElementReference",
                           "name": "panel-11"

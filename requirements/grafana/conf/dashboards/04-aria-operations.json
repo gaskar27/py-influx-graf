@@ -4,25 +4,22 @@
   "metadata": {
     "name": "aria-operations",
     "namespace": "default",
-    "uid": "2df40ff1-15cb-4410-9c46-643ef61e29a6",
-    "resourceVersion": "1789106999071987",
-    "generation": 22,
-    "creationTimestamp": "2026-09-11T05:32:20Z",
+    "uid": "c82c23b7-ae5a-4d23-919d-eb3626ebec2c",
+    "resourceVersion": "1789113012495012",
+    "generation": 1,
+    "creationTimestamp": "2026-09-11T07:50:12Z",
     "labels": {
-      "grafana.app/deprecatedInternalID": "4109652296220672"
+      "grafana.app/deprecatedInternalID": "4144348488224768"
     },
     "annotations": {
       "grafana.app/createdBy": "access-policy:service",
-      "grafana.app/folder": "",
       "grafana.app/managedBy": "classic-file-provisioning",
       "grafana.app/managerAllowsEdits": "true",
       "grafana.app/managerId": "Default",
-      "grafana.app/saved-from-ui": "Grafana v13.1.1 (a9cee6e172)",
-      "grafana.app/sourceChecksum": "d61ce555f1d5ba344d48a43b30562a1f",
+      "grafana.app/sourceChecksum": "6a56dabfa3d184824f7a7f212dac226b",
       "grafana.app/sourcePath": "/etc/grafana/provisioning/dashboards/04-aria-operations.json",
-      "grafana.app/sourceTimestamp": "1789023305000",
-      "grafana.app/updatedBy": "user:cfxwjeud2q1hcb",
-      "grafana.app/updatedTimestamp": "2026-09-11T06:09:59Z"
+      "grafana.app/sourceTimestamp": "1789109242000",
+      "grafana.app/folder": ""
     }
   },
   "spec": {

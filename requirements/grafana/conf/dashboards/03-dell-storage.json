@@ -4,12 +4,12 @@
   "metadata": {
     "name": "dell-storage",
     "namespace": "default",
-    "uid": "f865fbe1-6511-4713-9736-2d22837bfb89",
-    "resourceVersion": "1788769866685000",
-    "generation": 40,
-    "creationTimestamp": "2026-09-07T05:42:10Z",
+    "uid": "5699c8e6-b7c3-49b0-a1f9-1daee1122f9f",
+    "resourceVersion": "1789117698160001",
+    "generation": 16,
+    "creationTimestamp": "2026-09-11T07:50:12Z",
     "labels": {
-      "grafana.app/deprecatedInternalID": "2662575828758528"
+      "grafana.app/deprecatedInternalID": "4144348383367168"
     },
     "annotations": {
       "grafana.app/createdBy": "access-policy:service",
@@ -18,11 +18,11 @@
       "grafana.app/managerAllowsEdits": "true",
       "grafana.app/managerId": "Default",
       "grafana.app/saved-from-ui": "Grafana v13.1.1 (a9cee6e172)",
-      "grafana.app/sourceChecksum": "061f99e0be6a842afa82d74972dae714",
+      "grafana.app/sourceChecksum": "4b7b695974d21c5bf1c76c93d5276701",
       "grafana.app/sourcePath": "/etc/grafana/provisioning/dashboards/03-dell-storage.json",
-      "grafana.app/sourceTimestamp": "1788501265000",
-      "grafana.app/updatedBy": "user:dfxiagso0e800a",
-      "grafana.app/updatedTimestamp": "2026-09-07T08:31:06Z"
+      "grafana.app/sourceTimestamp": "1789109242000",
+      "grafana.app/updatedBy": "user:bfxwvplxive9sa",
+      "grafana.app/updatedTimestamp": "2026-09-11T09:08:18Z"
     }
   },
   "spec": {
@@ -1507,7 +1507,7 @@
                         "editorMode": "code",
                         "format": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT * \r\nFROM powerstore_performance \r\nWHERE entity = '$entity' AND $__timeFilter(time) ORDER BY time",
+                        "rawSql": "SELECT * \r\nFROM powerstore_performance \r\nWHERE entity = '$entity' \r\n  AND datacenter = '$datacenter' \r\n  AND $__timeFilter(time) \r\nORDER BY time",
                         "sql": {
                           "columns": [
                             {
@@ -1613,7 +1613,48 @@
                     }
                   }
                 },
-                "overrides": []
+                "overrides": [
+                  {
+                    "matcher": {
+                      "id": "byValue",
+                      "options": {
+                        "op": "gte",
+                        "reducer": "allIsZero",
+                        "value": 0
+                      }
+                    },
+                    "properties": [
+                      {
+                        "id": "custom.hideFrom",
+                        "value": {
+                          "legend": true,
+                          "tooltip": false,
+                          "viz": true
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byValue",
+                      "options": {
+                        "op": "gte",
+                        "reducer": "allIsNull",
+                        "value": 0
+                      }
+                    },
+                    "properties": [
+                      {
+                        "id": "custom.hideFrom",
+                        "value": {
+                          "legend": true,
+                          "tooltip": false,
+                          "viz": true
+                        }
+                      }
+                    ]
+                  }
+                ]
               }
             }
           }
@@ -1776,7 +1817,7 @@
                       "spec": {
                         "x": 0,
                         "y": 14,
-                        "width": 13,
+                        "width": 24,
                         "height": 8,
                         "element": {
                           "kind": "ElementReference",

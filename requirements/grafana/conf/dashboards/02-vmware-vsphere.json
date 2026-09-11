@@ -4,12 +4,12 @@
   "metadata": {
     "name": "vmware-vsphere",
     "namespace": "default",
-    "uid": "197d14f6-8286-488d-8972-d5be64d703db",
-    "resourceVersion": "1788770114742998",
+    "uid": "b7c869f2-0bc5-43ea-843f-88b3ff6b8ca9",
+    "resourceVersion": "1789114784218011",
     "generation": 6,
-    "creationTimestamp": "2026-09-07T05:42:10Z",
+    "creationTimestamp": "2026-09-11T07:50:12Z",
     "labels": {
-      "grafana.app/deprecatedInternalID": "2662575723900928"
+      "grafana.app/deprecatedInternalID": "4144348039434240"
     },
     "annotations": {
       "grafana.app/createdBy": "access-policy:service",
@@ -18,11 +18,11 @@
       "grafana.app/managerAllowsEdits": "true",
       "grafana.app/managerId": "Default",
       "grafana.app/saved-from-ui": "Grafana v13.1.1 (a9cee6e172)",
-      "grafana.app/sourceChecksum": "3c24764fcbbe7ac2cdd1787ec67f1102",
+      "grafana.app/sourceChecksum": "b8a9c0479510fa431645fdeab4a5501f",
       "grafana.app/sourcePath": "/etc/grafana/provisioning/dashboards/02-vmware-vsphere.json",
-      "grafana.app/sourceTimestamp": "1788501265000",
-      "grafana.app/updatedBy": "user:dfxiagso0e800a",
-      "grafana.app/updatedTimestamp": "2026-09-07T08:35:14Z"
+      "grafana.app/sourceTimestamp": "1789109242000",
+      "grafana.app/updatedBy": "user:bfxwvplxive9sa",
+      "grafana.app/updatedTimestamp": "2026-09-11T08:19:44Z"
     }
   },
   "spec": {
@@ -553,7 +553,7 @@
                     "lastNotNull"
                   ],
                   "fields": "",
-                  "values": false
+                  "values": true
                 },
                 "showUnfilled": true,
                 "sizing": "auto",
@@ -648,51 +648,71 @@
           },
           "vizConfig": {
             "kind": "VizConfig",
-            "group": "piechart",
+            "group": "barchart",
             "version": "13.1.1",
             "spec": {
               "options": {
-                "displayLabels": [
-                  "name",
-                  "percent"
-                ],
+                "barRadius": 0,
+                "barWidth": 0.97,
+                "fullHighlight": false,
+                "groupWidth": 0.7,
                 "legend": {
-                  "displayMode": "table",
+                  "calcs": [],
+                  "displayMode": "list",
                   "overflow": "ellipsis",
                   "placement": "right",
-                  "showLegend": true,
-                  "values": [
-                    "value"
-                  ]
+                  "showLegend": true
                 },
-                "pieType": "pie",
-                "reduceOptions": {
-                  "calcs": [
-                    "lastNotNull"
-                  ],
-                  "fields": "",
-                  "values": false
-                },
-                "sort": "desc",
+                "orientation": "horizontal",
+                "showValue": "never",
+                "stacking": "none",
                 "tooltip": {
                   "hideZeros": false,
                   "mode": "single",
                   "sort": "none"
-                }
+                },
+                "xTickLabelRotation": 0,
+                "xTickLabelSpacing": 0
               },
               "fieldConfig": {
                 "defaults": {
                   "unit": "decgbytes",
                   "decimals": 2,
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": 0,
+                        "color": "green"
+                      },
+                      {
+                        "value": 80,
+                        "color": "red"
+                      }
+                    ]
+                  },
                   "color": {
-                    "mode": "palette-classic",
-                    "fixedColor": "#73BF69"
+                    "mode": "palette-classic"
                   },
                   "custom": {
+                    "axisBorderShow": false,
+                    "axisCenteredZero": false,
+                    "axisColorMode": "text",
+                    "axisLabel": "",
+                    "axisPlacement": "auto",
+                    "fillOpacity": 80,
+                    "gradientMode": "none",
                     "hideFrom": {
                       "legend": false,
                       "tooltip": false,
                       "viz": false
+                    },
+                    "lineWidth": 1,
+                    "scaleDistribution": {
+                      "type": "linear"
+                    },
+                    "thresholdsStyle": {
+                      "mode": "off"
                     }
                   }
                 },
@@ -884,6 +904,32 @@
                       "spec": {
                         "x": 0,
                         "y": 0,
+                        "width": 12,
+                        "height": 12,
+                        "element": {
+                          "kind": "ElementReference",
+                          "name": "panel-3"
+                        }
+                      }
+                    },
+                    {
+                      "kind": "GridLayoutItem",
+                      "spec": {
+                        "x": 12,
+                        "y": 0,
+                        "width": 12,
+                        "height": 12,
+                        "element": {
+                          "kind": "ElementReference",
+                          "name": "panel-4"
+                        }
+                      }
+                    },
+                    {
+                      "kind": "GridLayoutItem",
+                      "spec": {
+                        "x": 0,
+                        "y": 12,
                         "width": 24,
                         "height": 10,
                         "element": {
@@ -896,38 +942,12 @@
                       "kind": "GridLayoutItem",
                       "spec": {
                         "x": 0,
-                        "y": 10,
+                        "y": 22,
                         "width": 24,
                         "height": 8,
                         "element": {
                           "kind": "ElementReference",
                           "name": "panel-2"
-                        }
-                      }
-                    },
-                    {
-                      "kind": "GridLayoutItem",
-                      "spec": {
-                        "x": 0,
-                        "y": 18,
-                        "width": 12,
-                        "height": 8,
-                        "element": {
-                          "kind": "ElementReference",
-                          "name": "panel-3"
-                        }
-                      }
-                    },
-                    {
-                      "kind": "GridLayoutItem",
-                      "spec": {
-                        "x": 12,
-                        "y": 18,
-                        "width": 12,
-                        "height": 8,
-                        "element": {
-                          "kind": "ElementReference",
-                          "name": "panel-4"
                         }
                       }
                     }
@@ -1026,7 +1046,7 @@
           "definition": "SELECT DISTINCT datacenter\nFROM datastore_usage\nORDER BY datacenter",
           "options": [],
           "multi": false,
-          "includeAll": true,
+          "includeAll": false,
           "allValue": "%",
           "allowCustomValue": false
         }
