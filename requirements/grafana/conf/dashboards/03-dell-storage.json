@@ -4,12 +4,12 @@
   "metadata": {
     "name": "dell-storage",
     "namespace": "default",
-    "uid": "5699c8e6-b7c3-49b0-a1f9-1daee1122f9f",
-    "resourceVersion": "1789117698160001",
-    "generation": 16,
-    "creationTimestamp": "2026-09-11T07:50:12Z",
+    "uid": "96b4b816-1178-4780-9552-f5cebae04cb6",
+    "resourceVersion": "1789369199060985",
+    "generation": 11,
+    "creationTimestamp": "2026-09-14T06:17:49Z",
     "labels": {
-      "grafana.app/deprecatedInternalID": "4144348383367168"
+      "grafana.app/deprecatedInternalID": "704661488685056"
     },
     "annotations": {
       "grafana.app/createdBy": "access-policy:service",
@@ -18,11 +18,11 @@
       "grafana.app/managerAllowsEdits": "true",
       "grafana.app/managerId": "Default",
       "grafana.app/saved-from-ui": "Grafana v13.1.1 (a9cee6e172)",
-      "grafana.app/sourceChecksum": "4b7b695974d21c5bf1c76c93d5276701",
+      "grafana.app/sourceChecksum": "4ef8adbb7492fe6310270471ade62411",
       "grafana.app/sourcePath": "/etc/grafana/provisioning/dashboards/03-dell-storage.json",
-      "grafana.app/sourceTimestamp": "1789109242000",
-      "grafana.app/updatedBy": "user:bfxwvplxive9sa",
-      "grafana.app/updatedTimestamp": "2026-09-11T09:08:18Z"
+      "grafana.app/sourceTimestamp": "1789366623000",
+      "grafana.app/updatedBy": "user:efy7cu3smkidcd",
+      "grafana.app/updatedTimestamp": "2026-09-14T06:59:59Z"
     }
   },
   "spec": {
@@ -613,7 +613,9 @@
                   "enableFacetedFilter": false,
                   "overflow": "ellipsis",
                   "placement": "bottom",
-                  "showLegend": true
+                  "showLegend": true,
+                  "sortBy": "Name",
+                  "sortDesc": true
                 },
                 "tooltip": {
                   "hideZeros": false,
@@ -729,7 +731,7 @@
                         "editorMode": "code",
                         "format": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT datacenter, name, \"sizeTotal\", \"sizeUsed\", \"sizeSubscribed\", (\"sizeUsed\" / \"sizeTotal\" * 100) as percent_used \r\nFROM unity_metrics \r\nWHERE datacenter LIKE '$datacenter' AND $__timeFilter(time) AND \"sizeTotal\" IS NOT NULL \r\nORDER BY percent_used DESC",
+                        "rawSql": "SELECT datacenter, name, \"sizeTotal\", \"sizeUsed\", \"sizeSubscribed\", percent_used \r\nFROM (\r\n    SELECT DISTINCT ON (datacenter, name) \r\n        datacenter, \r\n        name, \r\n        \"sizeTotal\", \r\n        \"sizeUsed\", \r\n        \"sizeSubscribed\", \r\n        (\"sizeUsed\" / \"sizeTotal\" * 100) as percent_used,\r\n        time\r\n    FROM unity_metrics \r\n    WHERE datacenter LIKE '$datacenter' \r\n      AND $__timeFilter(time) \r\n      AND \"sizeTotal\" IS NOT NULL \r\n    ORDER BY datacenter, name, time DESC\r\n) latest_metrics\r\nORDER BY percent_used DESC;",
                         "sql": {
                           "columns": [
                             {
@@ -880,7 +882,7 @@
                     "properties": [
                       {
                         "id": "displayName",
-                        "value": "Pool Name"
+                        "value": "Name"
                       }
                     ]
                   }
@@ -916,7 +918,7 @@
                         "editorMode": "code",
                         "format": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT name, ((\"sizeTotal\") - (\"sizeUsed\")) as free \r\nFROM unity_metrics \r\nWHERE datacenter = '$datacenter' AND $__timeFilter(time) AND \"sizeTotal\" IS NOT NULL AND name ~ '^Pool'",
+                        "rawSql": "SELECT DISTINCT ON (name) name, ((\"sizeTotal\") - (\"sizeUsed\")) as free, time \r\nFROM unity_metrics \r\nWHERE datacenter = '$datacenter' AND $__timeFilter(time) AND \"sizeTotal\" IS NOT NULL AND name ~ '^Pool' \r\nORDER BY name, time DESC;",
                         "sql": {
                           "columns": [
                             {
@@ -1059,7 +1061,7 @@
                         "editorMode": "code",
                         "format": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT \"sizeUsed\", \"sizeTotal\", \"sizeSubscribed\", (\"sizeTotal\" - \"sizeUsed\") as free \r\nFROM unity_metrics \r\nWHERE datacenter = '$datacenter' AND $__timeFilter(time) AND \"sizeTotal\" IS NOT NULL AND name ~ '^Pool'",
+                        "rawSql": "SELECT DISTINCT ON (name) \r\n    name, \r\n    \"sizeUsed\", \r\n    \"sizeTotal\", \r\n    \"sizeSubscribed\", \r\n    (\"sizeTotal\" - \"sizeUsed\") as free,\r\n    time\r\nFROM unity_metrics \r\nWHERE datacenter = '$datacenter' \r\n  AND $__timeFilter(time) \r\n  AND \"sizeTotal\" IS NOT NULL \r\n  AND name ~ '^Pool'\r\nORDER BY name, time DESC;",
                         "sql": {
                           "columns": [
                             {
@@ -1225,7 +1227,7 @@
                         "editorMode": "code",
                         "format": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT datacenter, name, \"sizeAllocated\", \"sizeTotal\" \r\nFROM unity_metrics \r\nWHERE datacenter LIKE '$datacenter' AND $__timeFilter(time) AND \"sizeAllocated\" IS NOT NULL \r\nORDER BY \"sizeAllocated\" DESC LIMIT 20",
+                        "rawSql": "SELECT datacenter, name, \"sizeAllocated\", \"sizeTotal\" \r\nFROM (\r\n    SELECT DISTINCT ON (datacenter, name) \r\n        datacenter, \r\n        name, \r\n        \"sizeAllocated\", \r\n        \"sizeTotal\",\r\n        time\r\n    FROM unity_metrics \r\n    WHERE datacenter LIKE '$datacenter' \r\n      AND $__timeFilter(time) \r\n      AND \"sizeAllocated\" IS NOT NULL \r\n    ORDER BY datacenter, name, time DESC\r\n) latest_metrics\r\nORDER BY \"sizeAllocated\" DESC \r\nLIMIT 20;",
                         "sql": {
                           "columns": [
                             {
@@ -1366,7 +1368,7 @@
                         "editorMode": "code",
                         "format": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT datacenter, name, \"sizeAllocated\", \"sizeTotal\" \r\nFROM unity_metrics \r\nWHERE datacenter LIKE '$datacenter' AND $__timeFilter(time) AND \"sizeAllocated\" IS NOT NULL \r\nORDER BY \"sizeAllocated\" DESC LIMIT 20",
+                        "rawSql": "SELECT datacenter, name, \"sizeAllocated\", \"sizeTotal\" \r\nFROM (\r\n    SELECT DISTINCT ON (datacenter, name) \r\n        datacenter, \r\n        name, \r\n        \"sizeAllocated\", \r\n        \"sizeTotal\",\r\n        time\r\n    FROM unity_metrics \r\n    WHERE datacenter LIKE '$datacenter' \r\n      AND $__timeFilter(time) \r\n      AND \"sizeAllocated\" IS NOT NULL \r\n    ORDER BY datacenter, name, time DESC\r\n) latest_metrics\r\nORDER BY \"sizeAllocated\" DESC \r\nLIMIT 20;",
                         "sql": {
                           "columns": [
                             {
