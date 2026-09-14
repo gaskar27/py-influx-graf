@@ -134,6 +134,46 @@ Quatre dashboards sont provisionnés automatiquement :
 
 Pour utiliser Grafana (export CSV, alerting, troubleshooting) : [Guide utilisateur Grafana](docs/GRAFANA.md).
 
+## Automatisation avec cron
+
+Configurer `cron` sur la **machine hôte** pour exécuter les collectes à des fréquences différentes selon la source.
+
+### 1) Éditer la crontab
+```bash
+crontab -e
+```
+
+### 2) Ajouter ces entrées cron
+
+> Remplace `/opt/py-influx-graf` par le chemin réel du repo sur ton hôte.
+
+```cron
+# Utiliser bash et un PATH explicite
+SHELL=/bin/bash
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+
+# 1) ARIA : tous les jours à 02:00
+0 2 * * * cd /opt/py-influx-graf && make aria
+
+# 2) vSphere (objets + timeseries) : tous les jours à 02:10
+10 2 * * * cd /opt/py-influx-graf && make o_vsphere
+10 2 * * * cd /opt/py-influx-graf && make t_vsphere
+
+# 3) PowerStore (objets + timeseries) : toutes les 1 heure
+0 * * * * cd /opt/py-influx-graf && make o_powerstore
+0 * * * * cd /opt/py-influx-graf && make t_powerstore
+
+# 4) Unity (objets + timeseries) : toutes les 5 minutes
+*/5 * * * * cd /opt/py-influx-graf && make o_unity
+*/5 * * * * cd /opt/py-influx-graf && make t_unity
+```
+
+### 3) Vérifier que la crontab est bien chargée
+```bash
+crontab -l
+```
+
 ## Documentation
 
 - [Index de la documentation](docs/README.md) — porte d'entrée vers tous les documents
