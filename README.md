@@ -29,7 +29,7 @@ Modifier `.env` :
 
 | Variable | Description |
 |---|---|
-| `INFLUXDB_TOKEN` | Token d'authentification InfluxDB (générer un token via `influxctl` ou la CLI) |
+| `INFLUXDB_TOKEN` | Token d'authentification InfluxDB ([générer un token via la CLI ou HTTP API](https://docs.influxdata.com/influxdb3/core/admin/tokens/admin/)) |
 | `INFLUXDB_BUCKET` | Nom de la base de données (défaut : `local_system`) |
 | `ADMIN` | Utilisateur admin Grafana |
 | `PASSW` | Mot de passe admin Grafana |
