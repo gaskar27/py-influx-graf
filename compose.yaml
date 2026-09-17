@@ -16,8 +16,7 @@ services:
     volumes:
       - influxdb_data:/var/lib/influxdb3
     secrets:
-      - source: admin_token
-        target: admin-token
+      - admin_token
     healthcheck:
       test:
         [
