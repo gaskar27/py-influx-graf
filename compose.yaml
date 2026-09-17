@@ -12,14 +12,19 @@ services:
       - --node-id=${INFLUXDB_NODE_ID}
       - --object-store=file
       - --data-dir=/var/lib/influxdb3
-      - --without-auth
+      - --admin-token-file=/run/secrets/admin_token
     volumes:
       - influxdb_data:/var/lib/influxdb3
+    secrets:
+      - source: admin_token
+        target: admin-token
     healthcheck:
       test:
         [
           "CMD-SHELL",
-          "curl -f -H 'Authorization: Bearer ${INFLUXDB_TOKEN}' http://localhost:8181/health || exit 1",
+          "TOKEN=$(grep -o '\"token\": *\"[^\"]*' /run/secrets/admin-token |
+          cut -d'\"' -f4) && curl -f -H \"Authorization: Bearer $$TOKEN\" http://localhost:8181/ping ||
+          exit 1",
         ]
       interval: 30s
       timeout: 10s
@@ -105,3 +110,5 @@ secrets:
     file: ./secrets/one.txt
   two_s:
     file: ./secrets/two.txt
+  admin_token:
+    file: ./secrets/admin_token.json

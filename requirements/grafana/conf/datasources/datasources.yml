@@ -11,5 +11,7 @@ datasources:
       dbName: ${INFLUXDB_BUCKET}
       httpMode: POST
       insecureGrpc: true
+    secureJsonData:
+      token: ${INFLUXDB_TOKEN}
     isDefault: true
     editable: true

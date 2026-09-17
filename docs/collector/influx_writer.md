@@ -22,7 +22,7 @@ from influx_writer import writer as db
 
 | Variable | Defaut | Description |
 |---|---|---|
-| `INFLUXDB_TOKEN` | `""` | Token d'authentification InfluxDB. Si absent, un warning est logge. |
+| `INFLUXDB_TOKEN` | `""` | Named admin token InfluxDB (obligatoire, l'authentification est activee - voir [INFLUXDB_TOKEN.md](../INFLUXDB_TOKEN.md)). |
 | `INFLUXDB_BUCKET` | `"local_system"` | Nom de la base de donnees InfluxDB. |
 | `INFLUXDB_HOST` | `"influxdb3"` | Hostname du serveur InfluxDB. |
 | `INFLUXDB_PORT` | `"8181"` | Port du serveur InfluxDB. |

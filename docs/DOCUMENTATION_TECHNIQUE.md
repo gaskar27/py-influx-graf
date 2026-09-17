@@ -1,6 +1,6 @@
 # Documentation Technique - py-influx-graf
 
-> **Navigation :** [README](../README.md) · [Index de la documentation](README.md) · [Guide utilisateur Grafana](GRAFANA.md) · [Détails des collecteurs](collector/)
+> **Navigation :** [README](../README.md) · [Index de la documentation](README.md) · [Gestion des tokens](INFLUXDB_TOKEN.md) · [Guide utilisateur Grafana](GRAFANA.md) · [Détails des collecteurs](collector/)
 
 ## Table des matières
 
@@ -73,7 +73,7 @@
 │  └─────────────┘  └──────────────┘  └──────────────────────┘   │
 │                                                                │
 │  Volumes : influxdb_data, grafana_data                         │
-│  Secrets : aria_s, one_s, two_s                                │
+│  Secrets : aria_s, one_s, two_s, admin_token                   │
 └────────────────────────────────────────────────────────────────┘
 ```
 
@@ -142,13 +142,21 @@ cp secrets/two.txt.example secrets/two.txt
 
 Remplir chaque fichier avec les identifiants réels (voir [Section 10](#10-gestion-des-secrets)).
 
-### 4.4 Démarrer le stack
+### 4.4 Générer le token InfluxDB
+
+L'authentification étant activée, générer le fichier secret `secrets/admin_token.json` à partir de l'image InfluxDB, puis créer un named admin token à renseigner dans `INFLUXDB_TOKEN` (procédure complète : [Gestion des tokens InfluxDB](INFLUXDB_TOKEN.md)).
+
+```bash
+make influx
+```
+
+### 4.5 Démarrer le stack
 
 ```bash
 make start
 ```
 
-### 4.5 Lancer la collecte
+### 4.6 Lancer la collecte
 
 ```bash
 make collector    # Tous les collecteurs
@@ -171,6 +179,7 @@ py-influx-graf/
 ├── docs/
 │   ├── README.md                   # Index de la documentation
 │   ├── DOCUMENTATION_TECHNIQUE.md  # Ce document
+│   ├── INFLUXDB_TOKEN.md           # Gestion des tokens InfluxDB
 │   ├── GRAFANA.md                  # Guide utilisateur Grafana
 │   ├── collector/                  # Détails des modules de collecte
 │   │   ├── aria.md                 # Collecteur Aria Operations
@@ -217,6 +226,7 @@ py-influx-graf/
     ├── aria.txt.example            # Template credentials Aria
     ├── one.txt.example             # Template credentials collector1
     ├── two.txt.example             # Template credentials collector2
+    ├── admin_token.json.example    # Template du fichier operator token InfluxDB
     └── not_a_secret.txt            # Placeholder vide
 ```
 
@@ -230,11 +240,12 @@ py-influx-graf/
 |-----------|--------|
 | Image | `influxdb:3.9.3-core` |
 | Port | 8181 |
-| Authentification | Désactivée (`--without-auth`) |
+| Authentification | Activée : operator token lu depuis `/run/secrets/admin-token` (`--admin-token-file`) |
 | Stockage | Object-store fichier, répertoire `/var/lib/influxdb3` |
 | Volume persistant | `influxdb_data` |
 | Rétention | 90 jours (configurée au premier write) |
-| Healthcheck | `curl http://localhost:8181/health` |
+| Healthcheck | `curl` de `/ping` avec le token extrait du secret |
+| Token | Généré via la procédure [INFLUXDB_TOKEN.md](INFLUXDB_TOKEN.md) |
 
 ### 6.2 grafana
 
@@ -509,6 +520,7 @@ Collecté par : `unity.py` (Dell Unity)
 - URL : `http://influxdb3:8181`
 - Version : SQL
 - Base de données : `${INFLUXDB_BUCKET}` ( interpolation d'environnement)
+- Token (secret Grafana) : `${INFLUXDB_TOKEN}`
 - Default : Oui
 
 ### 9.2 Dashboards
@@ -549,6 +561,14 @@ Les credentials sont gérés via **Docker Secrets** et montés dans les conteneu
 | `aria_s` | `./secrets/aria.txt` | `/run/secrets/aria_s` | `NAME=aria_s` (aria_collector) |
 | `one_s` | `./secrets/one.txt` | `/run/secrets/one_s` | `NAME=one_s` (collector1) |
 | `two_s` | `./secrets/two.txt` | `/run/secrets/two_s` | `NAME=two_s` (collector2) |
+| `admin_token` | `./secrets/admin_token.json` | `/run/secrets/admin-token` | `--admin-token-file` (influxdb3) |
+
+### Operator token InfluxDB
+
+Le secret `admin_token` contient l'**operator token** InfluxDB au format JSON :
+`{"name": "admin", "token": "apiv3_...", "permissions": "operator"}`.
+
+Sa génération et la création des **named admin tokens** (utilisés par les applications via `INFLUXDB_TOKEN`) sont décrites dans [Gestion des tokens InfluxDB](INFLUXDB_TOKEN.md).
 
 ### Format des fichiers
 
@@ -590,7 +610,7 @@ secrets = get_secrets(os.getenv("NAME"))
 |----------|-------------|---------|
 | `INFLUXDB_HTTP_PORT` | Port HTTP InfluxDB | `8181` |
 | `INFLUXDB_HOST` | Hostname InfluxDB (interne Docker) | `influxdb3` |
-| `INFLUXDB_TOKEN` | Token API InfluxDB | `apiv3_...` |
+| `INFLUXDB_TOKEN` | Named admin token InfluxDB (voir [INFLUXDB_TOKEN.md](INFLUXDB_TOKEN.md)) | `apiv3_...` |
 | `INFLUXDB_BUCKET` | Nom de la base de données | `infra` |
 | `INFLUXDB_ORG` | Organisation InfluxDB | `local_org` |
 | `INFLUXDB_NODE_ID` | ID du nœud InfluxDB | `node0` |
@@ -612,6 +632,7 @@ secrets = get_secrets(os.getenv("NAME"))
 | Commande | Description | Détail |
 |----------|-------------|--------|
 | `make start` / `make s` | Démarrer le stack | `docker compose up -d` |
+| `make influx` | Démarrer uniquement `influxdb3` | `docker compose up -d influxdb3` |
 | `make stop` / `make st` | Arrêter le stack | `docker compose down` |
 | `make clean` | Nettoyer (volumes inclus) | `down` + suppression `influxdb_data`, `grafana_data` |
 | `make aria` | Exécuter Aria sur `aria_collector` | `docker exec aria_collector aria` |
@@ -696,8 +717,9 @@ Les cibles de collecte (vCenter, Aria, PowerStore, Unity) utilisent fréquemment
 
 ### 15.2 InfluxDB
 
-- L'authentification est désactivée (`--without-auth`)
-- Recommandation : activer l'authentification pour les environnements de production
+- L'authentification est activée via un **operator token** monté en secret (`--admin-token-file=/run/secrets/admin-token`)
+- Les applications utilisent des **named admin tokens** révocables (variable `INFLUXDB_TOKEN`)
+- Procédure de génération et renouvellement : [Gestion des tokens InfluxDB](INFLUXDB_TOKEN.md)
 
 ### 15.3 SSL/TLS
 

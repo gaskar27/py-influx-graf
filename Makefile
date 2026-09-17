@@ -1,6 +1,9 @@
-.PHONY: start s run stop st clean help
+.PHONY: influx start s run stop st clean help
 
 .DEFAULT_GOAL := help
+
+influx:
+	docker compose up -d influxdb3
 
 start s:
 	docker compose up -d
@@ -50,5 +53,5 @@ help:
 	@echo "  start, s   : Démarrer l'application"
 	@echo "  run        : Démarrer l'application et exécuter le collecteur"
 	@echo "  stop, st   : Arrêter l'application"
-	@echo "  clean      : Supprimer les données"
+	@echo "  clean      : Arrêter l'application et supprimer les données"
 	@echo "  help       : Afficher ce message d'aide"

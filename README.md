@@ -29,7 +29,7 @@ Modifier `.env` :
 
 | Variable | Description |
 |---|---|
-| `INFLUXDB_TOKEN` | Token d'authentification InfluxDB ([générer un token via la CLI ou HTTP API](https://docs.influxdata.com/influxdb3/core/admin/tokens/admin/)) |
+| `INFLUXDB_TOKEN` | Token d'authentification InfluxDB (voir [Gestion des tokens InfluxDB](docs/INFLUXDB_TOKEN.md)) |
 | `INFLUXDB_BUCKET` | Nom de la base de données (défaut : `local_system`) |
 | `ADMIN` | Utilisateur admin Grafana |
 | `PASSW` | Mot de passe admin Grafana |
@@ -75,7 +75,17 @@ POWERSTORE_USER=utilisateur
 POWERSTORE_PASSWD=motdepasse
 ```
 
-### 4. Lancer le stack
+### 4. Générer le token InfluxDB
+
+InfluxDB 3 requiert un token admin pour accepter les écritures. Générer le fichier `secrets/admin_token.json` puis créer un named admin token à renseigner dans `INFLUXDB_TOKEN` :
+
+```bash
+make influx
+```
+
+Suivre les étapes détaillées dans [Gestion des tokens InfluxDB](docs/INFLUXDB_TOKEN.md).
+
+### 5. Lancer le stack
 
 ```bash
 make start
@@ -90,16 +100,43 @@ make run
 ## Quickstart
 
 ```bash
-# 1. Préparer la config
+# 1. Préparer la configuration
 cp .env.example .env
 cp secrets/aria.txt.example secrets/aria.txt
 cp secrets/one.txt.example secrets/one.txt
 cp secrets/two.txt.example secrets/two.txt
 ```
-```bash
-# 2. Éditer les fichiers .env et secrets/ avec vos identifiants
 
-# 3. Démarrer et collecter
+> Éditer ensuite `.env` et les fichiers `secrets/*.txt` avec vos identifiants réels.
+
+```bash
+# 2. Générer l'operator token offline (crée secrets/admin_token.json)
+docker run --rm -v $(pwd)/secrets:/tokens \
+  influxdb:3.9.3-core \
+  influxdb3 create token --admin \
+    --name admin \
+    --offline \
+    --output-file /tokens/admin_token.json
+chmod 600 secrets/admin_token.json
+```
+
+```bash
+# 3. Démarrer InfluxDB (requis pour créer un named token)
+make influx
+```
+
+```bash
+# 4. Créer un named admin token et le renseigner dans INFLUXDB_TOKEN (.env)
+docker exec -it influxdb3 influxdb3 create token --admin \
+  --token <OPERATOR_TOKEN> \
+  --name mon-token-app \
+  --expiry 90d
+```
+
+> `<OPERATOR_TOKEN>` = valeur du champ `"token"` du fichier `secrets/admin_token.json`. Plus de détails : [Gestion des tokens InfluxDB](docs/INFLUXDB_TOKEN.md).
+
+```bash
+# 5. Démarrer tout le stack et lancer la collecte
 make run
 ```
 
@@ -110,6 +147,7 @@ Grafana est accessible sur `http://localhost:3000` ou l'ip de la machine distant
 | Commande | Description |
 |---|---|
 | `make start` / `make s` | Démarrer le stack |
+| `make influx` | Démarrer le service InfluxDB seul (création de token) |
 | `make run` | Démarrer + exécuter tous les collecteurs |
 | `make stop` / `make st` | Arrêter le stack |
 | `make clean` | Arrêter et supprimer les volumes de données |
@@ -178,5 +216,6 @@ crontab -l
 
 - [Index de la documentation](docs/README.md) — porte d'entrée vers tous les documents
 - [Documentation technique](docs/DOCUMENTATION_TECHNIQUE.md) — architecture, services Docker, modèle de données InfluxDB, sécurité
+- [Gestion des tokens InfluxDB](docs/INFLUXDB_TOKEN.md) — génération et renouvellement des tokens admin
 - [Guide utilisateur Grafana](docs/GRAFANA.md) — dashboards, export de données et dépannage
 - [Détails des collecteurs](docs/collector/) — `aria.py`, `vsphere.py`, `powerstore.py`, `unity.py`, `influx_writer.py`, `utils.py`, `main.py`

@@ -8,6 +8,7 @@ Index de la documentation du projet. Pour démarrer rapidement, voir le [README]
 |---|---|
 | [README](../README.md) | Installation, configuration, démarrage rapide et commandes Make |
 | [Documentation technique](DOCUMENTATION_TECHNIQUE.md) | Architecture, services Docker, collecteurs, modèle de données, sécurité |
+| [Gestion des tokens InfluxDB](INFLUXDB_TOKEN.md) | Génération et renouvellement des operator / named admin tokens |
 | [Guide utilisateur Grafana](GRAFANA.md) | Dashboards, export CSV, troubleshooting et cas d'usage |
 
 ## Collecteurs (détails par module)
