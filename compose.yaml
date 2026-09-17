@@ -21,7 +21,7 @@ services:
       test:
         [
           "CMD-SHELL",
-          "TOKEN=$(grep -o '\"token\": *\"[^\"]*' /run/secrets/admin-token |
+          "TOKEN=$(grep -o '\"token\": *\"[^\"]*' /run/secrets/admin_token |
           cut -d'\"' -f4) && curl -f -H \"Authorization: Bearer $$TOKEN\" http://localhost:8181/ping ||
           exit 1",
         ]
