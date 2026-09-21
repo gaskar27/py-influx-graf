@@ -110,14 +110,19 @@ cp secrets/two.txt.example secrets/two.txt
 > Éditer ensuite `.env` et les fichiers `secrets/*.txt` avec vos identifiants réels.
 
 ```bash
-# 2. Générer l'operator token offline (crée secrets/admin_token.json)
-docker run --rm -v $(pwd)/secrets:/tokens \
+# 2. Générer l'operator token offline (crée tokens/admin_token.json)
+mkdir -p tokens
+chmod 777 tokens
+
+docker run --rm -v $(pwd)/tokens:/tokens \
   influxdb:3.9.3-core \
   influxdb3 create token --admin \
     --name admin \
     --offline \
     --output-file /tokens/admin_token.json
-chmod 600 secrets/admin_token.json
+
+mv tokens/admin_token.json secrets/admin_token.json
+rm -rf tokens
 ```
 
 ```bash
@@ -129,7 +134,7 @@ make influx
 # 4. Créer un named admin token et le renseigner dans INFLUXDB_TOKEN (.env)
 docker exec -it influxdb3 influxdb3 create token --admin \
   --token <OPERATOR_TOKEN> \
-  --name mon-token-app \
+  --name token-app \
   --expiry 90d
 ```
 
