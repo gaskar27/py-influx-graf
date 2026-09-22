@@ -107,8 +107,8 @@ class UnityCollector:
 
     def get_luns_metrics(self):
         fields = "name,sizeAllocated,sizeTotal"
-        response = self.get_metrics("luns", fields)
-        self.__influx_point(response,"luns")
+        response = self.get_metrics("lun", fields)
+        self.__influx_point(response,"lun")
 
     def get_filesystem_metrics(self):
         fields = "name,sizeUsed,sizeAllocated,sizeTotal"
@@ -117,7 +117,6 @@ class UnityCollector:
 
     def get_all_metrics(self):
         self.get_storage_processor_metrics()
-        # self.get_system_info()
         self.get_pool_metrics()
         self.get_luns_metrics()
         self.get_filesystem_metrics()

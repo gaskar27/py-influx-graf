@@ -10,7 +10,7 @@ Collecteur de metriques Dell Unity.
 
 ## Vue d'ensemble
 
-Ce module se connecte a l'API REST d'un Dell Unity et collecte les metriques systeme, de stockage (pools, LUNs, filesystems, disques) et des processeurs de stockage (SP). Les donnees sont ecrites dans la mesure InfluxDB **`unity_metrics`**.
+Ce module se connecte a l'API REST d'un Dell Unity et collecte les metriques de stockage (pools, LUNs, filesystems) et des processeurs de stockage (SP). Les donnees sont ecrites dans la mesure InfluxDB **`unity_metrics`**.
 
 ## Variables d'environnement
 
@@ -68,16 +68,17 @@ Ce module se connecte a l'API REST d'un Dell Unity et collecte les metriques sys
 | Methode | Type Unity | Champs recuperes |
 |---|---|---|
 | `get_storage_processor_metrics()` | `metricValue` | Metriques CPU des SP (filtre : `sp.*.cpu.summary.utilization`) |
-| `get_system_metrics()` | `system` | `name`, `model`, `serialNumber` |
+| `get_system_info()` | `system` | `name`, `model`, `serialNumber` |
 | `get_pool_metrics()` | `pool` | `name`, `sizeTotal`, `sizeUsed`, `sizeSubscribed` |
-| `get_luns_metrics()` | `luns` | `name`, `sizeAllocated`, `sizeTotal`, `pool` |
-| `get_filesystem_metrics()` | `filesystem` | `name`, `sizeAllocated`, `sizeTotal` |
-| `get_disk_metrics()` | `disk` | `name`, `sizeAllocated`, `sizeTotal` |
+| `get_luns_metrics()` | `lun` | `name`, `sizeAllocated`, `sizeTotal` |
+| `get_filesystem_metrics()` | `filesystem` | `name`, `sizeUsed`, `sizeAllocated`, `sizeTotal` |
+
+> Note : `get_system_info()` n'est pas appelee dans `get_all_metrics()`. L'ancienne methode `get_disk_metrics()` (type `disk`) a ete supprimee.
 
 ### `get_all_metrics(self)`
 
 - Point d'entree principal.
-- Appelle toutes les methodes de collecte dans l'ordre : SP, system, pools, LUNs, filesystems, disques.
+- Appelle les methodes de collecte dans l'ordre : SP, pools, LUNs, filesystems.
 
 ## Execution
 
@@ -110,9 +111,8 @@ if __name__ == "__main__":
 |---|---|
 | **System** | `model`, `serialNumber` |
 | **Pool** | `sizeTotal`, `sizeUsed`, `sizeSubscribed` |
-| **LUNs** | `sizeAllocated`, `sizeTotal`, `pool` |
-| **Filesystem** | `sizeAllocated`, `sizeTotal` |
-| **Disk** | `sizeAllocated`, `sizeTotal` |
+| **LUN** | `sizeAllocated`, `sizeTotal` |
+| **Filesystem** | `sizeUsed`, `sizeAllocated`, `sizeTotal` |
 | **Storage Processor** | Metriques CPU dynamiques (ex: `avg_utilization`, etc.) |
 
 ## Voir aussi
