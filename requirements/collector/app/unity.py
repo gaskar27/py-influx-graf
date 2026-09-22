@@ -49,7 +49,7 @@ class UnityCollector:
             return data.get("entries", []) if response.json() else None
         return None
 
-    def __influx_point(self, response):
+    def __influx_point(self, response, resource_type:str):
         if not response:
             return
         for item in response:
@@ -59,13 +59,14 @@ class UnityCollector:
             point = (Point("unity_metrics").time(item["updated"])
                      .tag("name", name)
                      .tag("id", id_val)
-                     .tag("datacenter", DC_NAME))
+                     .tag("datacenter", DC_NAME)
+                     .tag("resource_type", resource_type))
             for k, v in content.items():
                 if k not in ["name", "id"]:
                     point.field(k, v)
             self.points.append(point)
 
-    def __influx_point_sp(self, response):
+    def __influx_point_sp(self, response, resource_type:str):
         if not response:
             return
         for item in response:
@@ -75,7 +76,8 @@ class UnityCollector:
             point = (Point("unity_metrics").time(item["updated"])
                      .tag("name", name)
                      .tag("id", id_val)
-                     .tag("datacenter", DC_NAME))
+                     .tag("datacenter", DC_NAME)
+                     .tag("resource_type", resource_type))
             for k, v in content.items():
                 if k == "values":
                     for ke, va in content[k].items():
@@ -91,40 +93,34 @@ class UnityCollector:
     def get_storage_processor_metrics(self):
         params = "path eq \"sp.*.cpu.summary.utilization\""
         response = self.get_metrics("metricValue", filter=params)
-        self.__influx_point_sp(response)
+        self.__influx_point_sp(response, "sp")
 
-    def get_system_metrics(self):
+    def get_system_info(self):
         fields = "name,model,serialNumber"
         response = self.get_metrics("system", fields)
-        self.__influx_point(response)
+        self.__influx_point(response, "system")
 
     def get_pool_metrics(self):
         fields = "name,sizeTotal,sizeUsed,sizeSubscribed"
         response = self.get_metrics("pool", fields)
-        self.__influx_point(response)
+        self.__influx_point(response, "pool")
 
     def get_luns_metrics(self):
-        fields = "name,sizeAllocated,sizeTotal,pool"
+        fields = "name,sizeAllocated,sizeTotal"
         response = self.get_metrics("luns", fields)
-        self.__influx_point(response)
+        self.__influx_point(response,"luns")
 
     def get_filesystem_metrics(self):
-        fields = "name,sizeAllocated,sizeTotal"
+        fields = "name,sizeUsed,sizeAllocated,sizeTotal"
         response = self.get_metrics("filesystem", fields)
-        self.__influx_point(response)
-
-    def get_disk_metrics(self):
-        fields = "name,sizeAllocated,sizeTotal"
-        response = self.get_metrics("disk", fields)
-        self.__influx_point(response)
+        self.__influx_point(response, "filesystem")
 
     def get_all_metrics(self):
         self.get_storage_processor_metrics()
-        self.get_system_metrics()
+        # self.get_system_info()
         self.get_pool_metrics()
         self.get_luns_metrics()
         self.get_filesystem_metrics()
-        self.get_disk_metrics()
 
 if __name__ == "__main__":
     s = get_secrets(NAME)

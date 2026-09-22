@@ -31,7 +31,7 @@ class InfluxDBWriter:
         if not self.token:
             logger.warning("INFLUXDB_TOKEN is not set. Writes may fail if authentication is required.")
 
-        self._create_database_if_not_exists()
+        self._create_database_if_not_exists(self.database)
         self.write_options = WriteOptions(batch_size=500,
                              flush_interval=10_000,
                              jitter_interval=2_000,
@@ -48,15 +48,15 @@ class InfluxDBWriter:
                                       token=self.token,
                                       write_client_options=self.wco)
 
-    def _create_database_if_not_exists(self):
+    def _create_database_if_not_exists(self, database: str, retention: str = "90d"):
         url = f"{self.base_url}/api/v3/configure/database"
         headers = {
             "Content-Type": "application/json",
             "Authorization": f"Bearer {self.token}"
         }
         data = {
-            "db": self.database,
-            "retention_period": "90d"
+            "db": database,
+            "retention_period": retention
         }
         try:
             response = requests.post(url=url, headers=headers, json=data, timeout=5)
