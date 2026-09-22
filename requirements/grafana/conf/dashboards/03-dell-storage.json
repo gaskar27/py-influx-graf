@@ -4,12 +4,12 @@
   "metadata": {
     "name": "dell-storage",
     "namespace": "default",
-    "uid": "96b4b816-1178-4780-9552-f5cebae04cb6",
-    "resourceVersion": "1789369199060985",
-    "generation": 11,
-    "creationTimestamp": "2026-09-14T06:17:49Z",
+    "uid": "1790427e-1656-471b-a58c-d97c5a9aaa02",
+    "resourceVersion": "1790066875910988",
+    "generation": 34,
+    "creationTimestamp": "2026-09-22T07:53:26Z",
     "labels": {
-      "grafana.app/deprecatedInternalID": "704661488685056"
+      "grafana.app/deprecatedInternalID": "3627827620048896"
     },
     "annotations": {
       "grafana.app/createdBy": "access-policy:service",
@@ -18,11 +18,11 @@
       "grafana.app/managerAllowsEdits": "true",
       "grafana.app/managerId": "Default",
       "grafana.app/saved-from-ui": "Grafana v13.1.1 (a9cee6e172)",
-      "grafana.app/sourceChecksum": "4ef8adbb7492fe6310270471ade62411",
+      "grafana.app/sourceChecksum": "9754f1e32d0ba07e1cdd331493072a6d",
       "grafana.app/sourcePath": "/etc/grafana/provisioning/dashboards/03-dell-storage.json",
-      "grafana.app/sourceTimestamp": "1789366623000",
-      "grafana.app/updatedBy": "user:efy7cu3smkidcd",
-      "grafana.app/updatedTimestamp": "2026-09-14T06:59:59Z"
+      "grafana.app/sourceTimestamp": "1789972055000",
+      "grafana.app/updatedBy": "user:cfz050ghp454wb",
+      "grafana.app/updatedTimestamp": "2026-09-22T08:47:55Z"
     }
   },
   "spec": {
@@ -705,193 +705,6 @@
           }
         }
       },
-      "panel-2": {
-        "kind": "Panel",
-        "spec": {
-          "id": 2,
-          "title": "Unity Storage Pools",
-          "description": "",
-          "links": [],
-          "data": {
-            "kind": "QueryGroup",
-            "spec": {
-              "queries": [
-                {
-                  "kind": "PanelQuery",
-                  "spec": {
-                    "query": {
-                      "kind": "DataQuery",
-                      "group": "influxdb",
-                      "version": "v0",
-                      "datasource": {
-                        "name": "influxdb"
-                      },
-                      "spec": {
-                        "dataset": "iox",
-                        "editorMode": "code",
-                        "format": "table",
-                        "rawQuery": true,
-                        "rawSql": "SELECT datacenter, name, \"sizeTotal\", \"sizeUsed\", \"sizeSubscribed\", percent_used \r\nFROM (\r\n    SELECT DISTINCT ON (datacenter, name) \r\n        datacenter, \r\n        name, \r\n        \"sizeTotal\", \r\n        \"sizeUsed\", \r\n        \"sizeSubscribed\", \r\n        (\"sizeUsed\" / \"sizeTotal\" * 100) as percent_used,\r\n        time\r\n    FROM unity_metrics \r\n    WHERE datacenter LIKE '$datacenter' \r\n      AND $__timeFilter(time) \r\n      AND \"sizeTotal\" IS NOT NULL \r\n    ORDER BY datacenter, name, time DESC\r\n) latest_metrics\r\nORDER BY percent_used DESC;",
-                        "sql": {
-                          "columns": [
-                            {
-                              "parameters": [],
-                              "type": "function"
-                            }
-                          ],
-                          "groupBy": [
-                            {
-                              "property": {
-                                "type": "string"
-                              },
-                              "type": "groupBy"
-                            }
-                          ]
-                        }
-                      }
-                    },
-                    "refId": "A",
-                    "hidden": false
-                  }
-                }
-              ],
-              "transformations": [],
-              "queryOptions": {}
-            }
-          },
-          "vizConfig": {
-            "kind": "VizConfig",
-            "group": "table",
-            "version": "13.1.1",
-            "spec": {
-              "options": {
-                "cellHeight": "sm",
-                "showHeader": true
-              },
-              "fieldConfig": {
-                "defaults": {
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "value": 0,
-                        "color": "green"
-                      },
-                      {
-                        "value": 70,
-                        "color": "yellow"
-                      },
-                      {
-                        "value": 85,
-                        "color": "red"
-                      }
-                    ]
-                  },
-                  "color": {
-                    "mode": "thresholds"
-                  },
-                  "custom": {
-                    "align": "auto",
-                    "cellOptions": {
-                      "type": "auto"
-                    },
-                    "footer": {
-                      "reducers": [
-                        "sum"
-                      ]
-                    },
-                    "inspect": false
-                  }
-                },
-                "overrides": [
-                  {
-                    "matcher": {
-                      "id": "byName",
-                      "options": "sizeTotal"
-                    },
-                    "properties": [
-                      {
-                        "id": "unit",
-                        "value": "bytes"
-                      },
-                      {
-                        "id": "displayName",
-                        "value": "Total Size"
-                      }
-                    ]
-                  },
-                  {
-                    "matcher": {
-                      "id": "byName",
-                      "options": "sizeUsed"
-                    },
-                    "properties": [
-                      {
-                        "id": "unit",
-                        "value": "bytes"
-                      },
-                      {
-                        "id": "displayName",
-                        "value": "Used"
-                      }
-                    ]
-                  },
-                  {
-                    "matcher": {
-                      "id": "byName",
-                      "options": "sizeSubscribed"
-                    },
-                    "properties": [
-                      {
-                        "id": "unit",
-                        "value": "bytes"
-                      },
-                      {
-                        "id": "displayName",
-                        "value": "Subscribed"
-                      }
-                    ]
-                  },
-                  {
-                    "matcher": {
-                      "id": "byName",
-                      "options": "percent_used"
-                    },
-                    "properties": [
-                      {
-                        "id": "unit",
-                        "value": "percent"
-                      },
-                      {
-                        "id": "custom.cellOptions",
-                        "value": {
-                          "type": "color-background"
-                        }
-                      },
-                      {
-                        "id": "displayName",
-                        "value": "Usage %"
-                      }
-                    ]
-                  },
-                  {
-                    "matcher": {
-                      "id": "byName",
-                      "options": "name"
-                    },
-                    "properties": [
-                      {
-                        "id": "displayName",
-                        "value": "Name"
-                      }
-                    ]
-                  }
-                ]
-              }
-            }
-          }
-        }
-      },
       "panel-20": {
         "kind": "Panel",
         "spec": {
@@ -1201,11 +1014,11 @@
           }
         }
       },
-      "panel-4": {
+      "panel-23": {
         "kind": "Panel",
         "spec": {
-          "id": 4,
-          "title": "Unity LUNs - Top 20",
+          "id": 23,
+          "title": "Unity Filesystems",
           "description": "",
           "links": [],
           "data": {
@@ -1227,148 +1040,7 @@
                         "editorMode": "code",
                         "format": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT datacenter, name, \"sizeAllocated\", \"sizeTotal\" \r\nFROM (\r\n    SELECT DISTINCT ON (datacenter, name) \r\n        datacenter, \r\n        name, \r\n        \"sizeAllocated\", \r\n        \"sizeTotal\",\r\n        time\r\n    FROM unity_metrics \r\n    WHERE datacenter LIKE '$datacenter' \r\n      AND $__timeFilter(time) \r\n      AND \"sizeAllocated\" IS NOT NULL \r\n    ORDER BY datacenter, name, time DESC\r\n) latest_metrics\r\nORDER BY \"sizeAllocated\" DESC \r\nLIMIT 20;",
-                        "sql": {
-                          "columns": [
-                            {
-                              "parameters": [],
-                              "type": "function"
-                            }
-                          ],
-                          "groupBy": [
-                            {
-                              "property": {
-                                "type": "string"
-                              },
-                              "type": "groupBy"
-                            }
-                          ]
-                        }
-                      }
-                    },
-                    "refId": "A",
-                    "hidden": false
-                  }
-                }
-              ],
-              "transformations": [],
-              "queryOptions": {}
-            }
-          },
-          "vizConfig": {
-            "kind": "VizConfig",
-            "group": "table",
-            "version": "13.1.1",
-            "spec": {
-              "options": {
-                "cellHeight": "sm",
-                "showHeader": true
-              },
-              "fieldConfig": {
-                "defaults": {
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "value": 0,
-                        "color": "green"
-                      }
-                    ]
-                  },
-                  "color": {
-                    "mode": "thresholds"
-                  },
-                  "custom": {
-                    "align": "auto",
-                    "cellOptions": {
-                      "type": "auto"
-                    },
-                    "footer": {
-                      "reducers": [
-                        "sum"
-                      ]
-                    },
-                    "inspect": false
-                  }
-                },
-                "overrides": [
-                  {
-                    "matcher": {
-                      "id": "byName",
-                      "options": "sizeTotal"
-                    },
-                    "properties": [
-                      {
-                        "id": "unit",
-                        "value": "decbytes"
-                      },
-                      {
-                        "id": "displayName",
-                        "value": "Total Size"
-                      }
-                    ]
-                  },
-                  {
-                    "matcher": {
-                      "id": "byName",
-                      "options": "sizeAllocated"
-                    },
-                    "properties": [
-                      {
-                        "id": "unit",
-                        "value": "decbytes"
-                      },
-                      {
-                        "id": "displayName",
-                        "value": "Allocated"
-                      }
-                    ]
-                  },
-                  {
-                    "matcher": {
-                      "id": "byName",
-                      "options": "name"
-                    },
-                    "properties": [
-                      {
-                        "id": "displayName",
-                        "value": "LUN Name"
-                      }
-                    ]
-                  }
-                ]
-              }
-            }
-          }
-        }
-      },
-      "panel-5": {
-        "kind": "Panel",
-        "spec": {
-          "id": 5,
-          "title": "Unity Filesystems - Top 20",
-          "description": "",
-          "links": [],
-          "data": {
-            "kind": "QueryGroup",
-            "spec": {
-              "queries": [
-                {
-                  "kind": "PanelQuery",
-                  "spec": {
-                    "query": {
-                      "kind": "DataQuery",
-                      "group": "influxdb",
-                      "version": "v0",
-                      "datasource": {
-                        "name": "influxdb"
-                      },
-                      "spec": {
-                        "dataset": "iox",
-                        "editorMode": "code",
-                        "format": "table",
-                        "rawQuery": true,
-                        "rawSql": "SELECT datacenter, name, \"sizeAllocated\", \"sizeTotal\" \r\nFROM (\r\n    SELECT DISTINCT ON (datacenter, name) \r\n        datacenter, \r\n        name, \r\n        \"sizeAllocated\", \r\n        \"sizeTotal\",\r\n        time\r\n    FROM unity_metrics \r\n    WHERE datacenter LIKE '$datacenter' \r\n      AND $__timeFilter(time) \r\n      AND \"sizeAllocated\" IS NOT NULL \r\n    ORDER BY datacenter, name, time DESC\r\n) latest_metrics\r\nORDER BY \"sizeAllocated\" DESC \r\nLIMIT 20;",
+                        "rawSql": "SELECT datacenter, name,\"sizeUsed\", \"sizeAllocated\", \"sizeTotal\" \r\nFROM (\r\n    SELECT DISTINCT ON (datacenter, name) \r\n        datacenter, \r\n        name, \r\n        \"sizeUsed\", \r\n        \"sizeAllocated\", \r\n        \"sizeTotal\",\r\n        time\r\n    FROM unity_metrics \r\n    WHERE datacenter LIKE '$datacenter' \r\n      AND $__timeFilter(time) \r\n      AND resource_type = 'filesystem' \r\n    ORDER BY datacenter, name, time DESC\r\n) latest_metrics\r\nORDER BY \"sizeUsed\" DESC",
                         "sql": {
                           "columns": [
                             {
@@ -1474,6 +1146,408 @@
                       {
                         "id": "displayName",
                         "value": "Filesystem"
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "scope": "series",
+                      "options": "sizeUsed"
+                    },
+                    "properties": [
+                      {
+                        "id": "displayName",
+                        "value": "Used"
+                      },
+                      {
+                        "id": "unit",
+                        "value": "decbytes"
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "scope": "series",
+                      "options": "datacenter"
+                    },
+                    "properties": [
+                      {
+                        "id": "custom.hideFrom.viz",
+                        "value": true
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "panel-24": {
+        "kind": "Panel",
+        "spec": {
+          "id": 24,
+          "title": "Unity Storage Pools",
+          "description": "",
+          "links": [],
+          "data": {
+            "kind": "QueryGroup",
+            "spec": {
+              "queries": [
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
+                      "datasource": {
+                        "name": "influxdb"
+                      },
+                      "spec": {
+                        "dataset": "iox",
+                        "editorMode": "code",
+                        "format": "table",
+                        "rawQuery": true,
+                        "rawSql": "SELECT datacenter, name, \"sizeTotal\", \"sizeUsed\", \"sizeSubscribed\", free, percent_used \r\nFROM (\r\n    SELECT DISTINCT ON (datacenter, name) \r\n        datacenter, \r\n        name, \r\n        \"sizeTotal\", \r\n        \"sizeUsed\", \r\n        \"sizeSubscribed\", \r\n        ((\"sizeUsed\" * 100) / \"sizeTotal\") as percent_used, \r\n        (\"sizeTotal\" - \"sizeUsed\") as free, \r\n        time\r\n    FROM unity_metrics \r\n    WHERE datacenter LIKE '$datacenter' \r\n      AND $__timeFilter(time) \r\n      AND resource_type = 'pool' \r\n    ORDER BY datacenter, name, time DESC\r\n) latest_metrics\r\nORDER BY percent_used DESC;",
+                        "sql": {
+                          "columns": [
+                            {
+                              "parameters": [],
+                              "type": "function"
+                            }
+                          ],
+                          "groupBy": [
+                            {
+                              "property": {
+                                "type": "string"
+                              },
+                              "type": "groupBy"
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    "refId": "A",
+                    "hidden": false
+                  }
+                }
+              ],
+              "transformations": [],
+              "queryOptions": {}
+            }
+          },
+          "vizConfig": {
+            "kind": "VizConfig",
+            "group": "table",
+            "version": "13.1.1",
+            "spec": {
+              "options": {
+                "cellHeight": "sm",
+                "showHeader": true
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": 0,
+                        "color": "green"
+                      },
+                      {
+                        "value": 70,
+                        "color": "yellow"
+                      },
+                      {
+                        "value": 85,
+                        "color": "red"
+                      }
+                    ]
+                  },
+                  "color": {
+                    "mode": "thresholds"
+                  },
+                  "custom": {
+                    "align": "auto",
+                    "cellOptions": {
+                      "type": "auto"
+                    },
+                    "footer": {
+                      "reducers": [
+                        "sum"
+                      ]
+                    },
+                    "inspect": false
+                  }
+                },
+                "overrides": [
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "sizeTotal"
+                    },
+                    "properties": [
+                      {
+                        "id": "unit",
+                        "value": "bytes"
+                      },
+                      {
+                        "id": "displayName",
+                        "value": "Total Size"
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "sizeUsed"
+                    },
+                    "properties": [
+                      {
+                        "id": "unit",
+                        "value": "bytes"
+                      },
+                      {
+                        "id": "displayName",
+                        "value": "Used"
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "sizeSubscribed"
+                    },
+                    "properties": [
+                      {
+                        "id": "unit",
+                        "value": "bytes"
+                      },
+                      {
+                        "id": "displayName",
+                        "value": "Subscribed"
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "percent_used"
+                    },
+                    "properties": [
+                      {
+                        "id": "unit",
+                        "value": "percent"
+                      },
+                      {
+                        "id": "custom.cellOptions",
+                        "value": {
+                          "type": "color-background"
+                        }
+                      },
+                      {
+                        "id": "displayName",
+                        "value": "Usage %"
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "name"
+                    },
+                    "properties": [
+                      {
+                        "id": "displayName",
+                        "value": "Name"
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "scope": "series",
+                      "options": "free"
+                    },
+                    "properties": [
+                      {
+                        "id": "displayName",
+                        "value": "Free space"
+                      },
+                      {
+                        "id": "unit",
+                        "value": "decbytes"
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "scope": "series",
+                      "options": "datacenter"
+                    },
+                    "properties": [
+                      {
+                        "id": "custom.hideFrom.viz",
+                        "value": true
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "panel-4": {
+        "kind": "Panel",
+        "spec": {
+          "id": 4,
+          "title": "Unity LUNs",
+          "description": "",
+          "links": [],
+          "data": {
+            "kind": "QueryGroup",
+            "spec": {
+              "queries": [
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
+                      "datasource": {
+                        "name": "influxdb"
+                      },
+                      "spec": {
+                        "dataset": "iox",
+                        "editorMode": "code",
+                        "format": "table",
+                        "rawQuery": true,
+                        "rawSql": "SELECT datacenter, name, \"sizeAllocated\", \"sizeTotal\" \r\nFROM (\r\n    SELECT DISTINCT ON (datacenter, name) \r\n        datacenter, \r\n        name, \r\n        \"sizeAllocated\", \r\n        \"sizeTotal\",\r\n        time\r\n    FROM unity_metrics \r\n    WHERE datacenter LIKE '$datacenter' \r\n      AND $__timeFilter(time) \r\n      AND resource_type = 'lun' \r\n    ORDER BY datacenter, name, time DESC\r\n) latest_metrics\r\nORDER BY \"sizeAllocated\" DESC",
+                        "sql": {
+                          "columns": [
+                            {
+                              "parameters": [],
+                              "type": "function"
+                            }
+                          ],
+                          "groupBy": [
+                            {
+                              "property": {
+                                "type": "string"
+                              },
+                              "type": "groupBy"
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    "refId": "A",
+                    "hidden": false
+                  }
+                }
+              ],
+              "transformations": [],
+              "queryOptions": {}
+            }
+          },
+          "vizConfig": {
+            "kind": "VizConfig",
+            "group": "table",
+            "version": "13.1.1",
+            "spec": {
+              "options": {
+                "cellHeight": "sm",
+                "showHeader": true
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": 0,
+                        "color": "green"
+                      }
+                    ]
+                  },
+                  "color": {
+                    "mode": "thresholds"
+                  },
+                  "custom": {
+                    "align": "auto",
+                    "cellOptions": {
+                      "type": "auto"
+                    },
+                    "footer": {
+                      "reducers": [
+                        "sum"
+                      ]
+                    },
+                    "inspect": false,
+                    "wrapText": true
+                  }
+                },
+                "overrides": [
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "sizeTotal"
+                    },
+                    "properties": [
+                      {
+                        "id": "unit",
+                        "value": "decbytes"
+                      },
+                      {
+                        "id": "displayName",
+                        "value": "Total Size"
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "sizeAllocated"
+                    },
+                    "properties": [
+                      {
+                        "id": "unit",
+                        "value": "decbytes"
+                      },
+                      {
+                        "id": "displayName",
+                        "value": "Allocated"
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "name"
+                    },
+                    "properties": [
+                      {
+                        "id": "displayName",
+                        "value": "LUN Name"
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "scope": "series",
+                      "options": "datacenter"
+                    },
+                    "properties": [
+                      {
+                        "id": "custom.hideFrom.viz",
+                        "value": true
                       }
                     ]
                   }
@@ -1820,10 +1894,10 @@
                         "x": 0,
                         "y": 14,
                         "width": 24,
-                        "height": 8,
+                        "height": 6,
                         "element": {
                           "kind": "ElementReference",
-                          "name": "panel-2"
+                          "name": "panel-24"
                         }
                       }
                     },
@@ -1831,7 +1905,7 @@
                       "kind": "GridLayoutItem",
                       "spec": {
                         "x": 0,
-                        "y": 22,
+                        "y": 20,
                         "width": 12,
                         "height": 7,
                         "element": {
@@ -1844,12 +1918,12 @@
                       "kind": "GridLayoutItem",
                       "spec": {
                         "x": 12,
-                        "y": 22,
+                        "y": 20,
                         "width": 12,
                         "height": 7,
                         "element": {
                           "kind": "ElementReference",
-                          "name": "panel-5"
+                          "name": "panel-23"
                         }
                       }
                     }
