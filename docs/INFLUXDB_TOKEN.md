@@ -10,7 +10,7 @@ Ce guide détaille la génération et la gestion de ce token, adapté au setup D
 
 ## Étape 1 : Générer le fichier token offline depuis l'image
 
-Générer un **operator token** (token admin de secours) en mode offline, directement sur la machine hôte :
+Générer un **operator token** (token admin de secours) en mode offline, directement sur la machine hôte. La génération passe par un dossier temporaire `tokens/` auquel le conteneur doit pouvoir écrire :
 
 ```bash
 # Pull l'image si elle n'est pas encore présente
@@ -18,26 +18,26 @@ docker pull influxdb:3.9.3-core
 ```
 
 ```bash
+mkdir -p tokens
+chmod 777 tokens
+
 docker run --rm \
-  -v $(pwd)/secrets:/tokens \
+  -v $(pwd)/tokens:/tokens \
   influxdb:3.9.3-core \
   influxdb3 create token --admin \
     --name admin \
     --offline \
     --output-file /tokens/admin_token.json
+
+mv tokens/admin_token.json secrets/admin_token.json
+rm -rf tokens
 ```
 
-> Cette commande crée le fichier `./secrets/admin_token.json` contenant l'operator token. C'est ce fichier que les services Docker attendent : il est monté en secret sur `/run/secrets/admin-token` ([Générer un token offline](https://docs.influxdata.com/influxdb3/core/reference/cli/influxdb3/create/token/admin/#generate-an-offline-admin-token)).
-
-## Étape 2 : Sécuriser le fichier
-
-```bash
-chmod 600 $(pwd)/secrets/admin_token.json
-```
+> Cette commande crée le fichier `./secrets/admin_token.json` contenant l'operator token. C'est ce fichier que les services Docker attendent : il est monté en secret sur `/run/secrets/admin_token` ([Générer un token offline](https://docs.influxdata.com/influxdb3/core/reference/cli/influxdb3/create/token/admin/#generate-an-offline-admin-token)).
 
 Le fichier étant référencé dans `.gitignore`, il ne sera jamais commité.
 
-## Étape 3 : Démarrer le service
+## Étape 2 : Démarrer le service
 
 ```bash
 make influx
@@ -45,14 +45,14 @@ make influx
 
 Le healthcheck du conteneur lit l'operator token depuis le secret pour vérifier l'état du service.
 
-## Étape 4 : Créer un named admin token pour usage quotidien
+## Étape 3 : Créer un named admin token pour usage quotidien
 
 Une fois le serveur démarré, utilisez l'**operator token** (contenu dans `admin_token.json`) pour créer un **named admin token** :
 
 ```bash
 docker exec -it influxdb3 influxdb3 create token --admin \
   --token OPERATOR_TOKEN \
-  --name mon-token-app \
+  --name token-app \
   --expiry 90d
 ```
 
@@ -62,18 +62,18 @@ Note: `--expiry` n'est pas obligatoire. S'il n'est pas spécifié, le token n'ex
 
 > L'idée est de **ne jamais utiliser directement l'operator token** dans vos applications — réservez-le uniquement pour créer/renouveler des named admin tokens ([Manage admin tokens](https://docs.influxdata.com/influxdb3/core/admin/tokens/admin/)).
 
-## Étape 5 : Gérer le renouvellement des named tokens expirés
+## Étape 4 : Gérer le renouvellement des named tokens expirés
 
 Quand un named admin token expire (erreur `401 Unauthorized`), recréez-en un nouveau avec l'operator token :
 
 ```bash
 # Supprimer l'ancien token expiré
-docker exec -it influxdb3 influxdb3 delete token --token-name "mon-token-app"
+docker exec -it influxdb3 influxdb3 delete token --token-name "token-app"
 
 # Créer un nouveau token
 docker exec -it influxdb3 influxdb3 create token --admin \
   --token OPERATOR_TOKEN \
-  --name mon-token-app \
+  --name token-app \
   --expiry 90d
 ```
 

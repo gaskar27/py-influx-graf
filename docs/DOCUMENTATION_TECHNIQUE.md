@@ -240,7 +240,7 @@ py-influx-graf/
 |-----------|--------|
 | Image | `influxdb:3.9.3-core` |
 | Port | 8181 |
-| Authentification | Activée : operator token lu depuis `/run/secrets/admin-token` (`--admin-token-file`) |
+| Authentification | Activée : operator token lu depuis `/run/secrets/admin_token` (`--admin-token-file`) |
 | Stockage | Object-store fichier, répertoire `/var/lib/influxdb3` |
 | Volume persistant | `influxdb_data` |
 | Rétention | 90 jours (configurée au premier write) |
@@ -561,7 +561,7 @@ Les credentials sont gérés via **Docker Secrets** et montés dans les conteneu
 | `aria_s` | `./secrets/aria.txt` | `/run/secrets/aria_s` | `NAME=aria_s` (aria_collector) |
 | `one_s` | `./secrets/one.txt` | `/run/secrets/one_s` | `NAME=one_s` (collector1) |
 | `two_s` | `./secrets/two.txt` | `/run/secrets/two_s` | `NAME=two_s` (collector2) |
-| `admin_token` | `./secrets/admin_token.json` | `/run/secrets/admin-token` | `--admin-token-file` (influxdb3) |
+| `admin_token` | `./secrets/admin_token.json` | `/run/secrets/admin_token` | `--admin-token-file` (influxdb3) |
 
 ### Operator token InfluxDB
 
@@ -717,7 +717,7 @@ Les cibles de collecte (vCenter, Aria, PowerStore, Unity) utilisent fréquemment
 
 ### 15.2 InfluxDB
 
-- L'authentification est activée via un **operator token** monté en secret (`--admin-token-file=/run/secrets/admin-token`)
+- L'authentification est activée via un **operator token** monté en secret (`--admin-token-file=/run/secrets/admin_token`)
 - Les applications utilisent des **named admin tokens** révocables (variable `INFLUXDB_TOKEN`)
 - Procédure de génération et renouvellement : [Gestion des tokens InfluxDB](INFLUXDB_TOKEN.md)
 
