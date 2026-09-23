@@ -53,7 +53,7 @@ Ce module se connecte a l'API REST d'un Dell Unity et collecte les metriques de 
 ### `__influx_point(self, response)`
 
 - Convertit les reponses API en objets `Point("unity_metrics")` pour les ressources standard.
-- Tags : `name`, `id`, `datacenter`.
+- Tags : `name`, `id`, `datacenter`, `resource_type`. 
 - Fields : toutes les cles du `content` sauf `name` et `id`.
 - Utilise le timestamp `item["updated"]`.
 
@@ -62,6 +62,7 @@ Ce module se connecte a l'API REST d'un Dell Unity et collecte les metriques de 
 - Methode specifique pour les processeurs de stockage (SP).
 - Gere la structure imbriquee du champ `values` : chaque cle/valeur du sous-objet `values` est ajoutee comme field.
 - Gere egalement un champ `timestamp` imbrique pour le timestamp du point.
+- Tag `resource_type` : `sp`.
 
 ### Methodes de collecte
 
@@ -103,6 +104,7 @@ if __name__ == "__main__":
 | Tag `name` | Nom de la ressource Unity |
 | Tag `id` | Identifiant Unity de la ressource |
 | Tag `datacenter` | Valeur de `DC_NAME` |
+| Tag `resource_type` | Type de ressource : `sp`, `system`, `pool`, `lun`, `filesystem` |
 | Fields | Dynamiques selon le type de ressource |
 
 ### Details des fields par type de ressource

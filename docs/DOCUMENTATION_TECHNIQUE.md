@@ -411,13 +411,11 @@ host = secrets.get("VCENTER_HOST")
 | Ressource | Métriques | Filtre |
 |-----------|-----------|--------|
 | Storage Processor | CPU utilization | `path eq "sp.*.cpu.summary.utilization"` |
-| System | model, serialNumber | - |
 | Pool | sizeTotal, sizeUsed, sizeSubscribed | - |
-| LUN | sizeAllocated, sizeTotal, pool | - |
-| Filesystem | sizeAllocated, sizeTotal | - |
-| Disk | sizeAllocated, sizeTotal | - |
+| LUN | sizeAllocated, sizeTotal | - |
+| Filesystem | sizeUsed, sizeAllocated, sizeTotal | - |
 
-**Écriture :** Mesure `unity_metrics` avec tags `name`, `id`, `datacenter`
+**Écriture :** Mesure `unity_metrics` avec tags `name`, `id`, `datacenter`, `resource_type` (`sp`/`pool`/`lun`/`filesystem`)
 
 ### 7.7 main.py - Orchestrateur
 
@@ -503,9 +501,10 @@ Collecté par : `unity.py` (Dell Unity)
 | Tag | `datacenter` | Nom du datacenter (DC_NAME) |
 | Tag | `name` | Nom de la ressource |
 | Tag | `id` | ID Unity de la ressource |
-| Field | `model` | Modèle (system uniquement) |
-| Field | `serialNumber` | Numéro de série (system uniquement) |
-| Fields | Dynamiques | Métriques spécifiques par type de ressource |
+| Tag | `resource_type` | Type de ressource (`sp`/`system`/`pool`/`lun`/`filesystem`) |
+| Field | `sizeTotal`, `sizeUsed`, `sizeAllocated`, `sizeSubscribed` | Capacités selon le type de ressource (pool/lun/filesystem) |
+| Field | `model`, `serialNumber` | Modèle et n° de série (ressource `system` uniquement, non collectée actuellement) |
+| Fields | Dynamiques | Métriques CPU des SP (type `sp`), autres selon la ressource |
 
 ---
 
@@ -526,23 +525,19 @@ Collecté par : `unity.py` (Dell Unity)
 ### 9.2 Dashboards
 
 #### Dashboard 01 - Infrastructure Overview
-- **UID :** `4e00646f-67a1-4727-8ef4-47c94b3b2dec`
 - **Variables :** `$dc1`, `$dc2` (cachés, datacenters tirés de `vm_lifecycle`)
-- **Panels :** Top 10 Datastores, Datastore Details, Unity pools, PowerStore clusters/nodes/appliances, Total VMs (par datacenter), VMs Created (30d), VMs Destroyed (30d), Datastores, Total Capacity, Avg Utilization
+- **Sections/panels :** Top 10 Datastores by Usage, Datastore Details, Total VMs (par datacenter), VMs Created (30d), VMs Destroyed (30d), Datastores, Total Capacity, Avg Utilization
 - **Requêtes VM :** basées sur `vm_lifecycle` (les mesures `vm_inventory` et `system_metrics` ont été remplacées)
 
 #### Dashboard 02 - VMware vSphere - Datastores
-- **UID :** `197d43f6-8286-488d-8972-d5be64d703db`
-- **Variables :** `$datacenter`, `$type`
+- **Variables :** `$datacenter`, `$datastore`, `$type`
 - **Panels :** Datastore Inventory (tableau), Usage Over Time (timeseries), Current Usage (bargauge), Capacity Distribution (piechart), Datastores > 80% Full (alerte)
 
 #### Dashboard 03 - Dell Storage Systems
-- **UID :** `f865fbe1-6511-4713-9736-2d22837bfb89`
-- **Variables :** `$datacenter`, `$entity` (type d'entité PowerStore)
-- **Sections :** Dell Unity Storage (SP utilisation, pools, LUNs, filesystems) et Dell PowerStore (capacité physique, métriques de performance)
+- **Variables :** `$datacenter`, `$cluster`, `$appliance`, `$node` (IDs PowerStore)
+- **Sections :** Dell Unity Storage (SPs Utilization, Unity Pool, Unity Storage Pools, Unity Filesystems, Unity LUNs) et Dell PowerStore (PowerStore Nodes/Appliances/Clusters, Physical Capacity, Space/Performance metrics)
 
 #### Dashboard 04 - VMware Aria Operations
-- **UID :** `fba67df3-e282-48ec-8c45-b0b7e6579bec`
 - **Variables :** `$datacenter`, `$name` (nom du cluster)
 - **Panels :** VMs totales, VMs créées/détruites, VM lifecycle (tableau avec window function), VM Operations Timeline, CPU/Memory usage
 

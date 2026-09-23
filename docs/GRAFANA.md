@@ -65,7 +65,7 @@ Chaque collecteur remonte des métriques dans InfluxDB sous forme de `measuremen
 | **Aria** | `cluster_metrics` | `cpu_capacity_usagepct_average`, `mem_host_usagePct`, `summary_total_number_vms` |
 | **Aria** | `vm_lifecycle` | `is_deleted`, `created_at`, `destroyed_at` (cycle de vie des VMs) |
 | **vSphere** | `datastore_usage` | `total_capacity`, `free_space`, `space_use`, `percent_use` |
-| **Unity** | `unity_metrics` | Fields dynamiques (system, pools, LUNs, filesystems, disques, SP) |
+| **Unity** | `unity_metrics` | Fields dynamiques par type de ressource (`resource_type` : `sp`, `pool`, `lun`, `filesystem`) |
 | **PowerStore** | `powerstore_performance` | Fields dynamiques (espace cluster, performance noeuds/appliances) |
 
 Pour requêter directement les données : l'API HTTP d'InfluxDB 3 est exposée sur le port 8181 (interface `http://localhost:8181`). Il n'y a pas de console web — utilisez l'API SQL (curl) ou les dashboards Grafana.
