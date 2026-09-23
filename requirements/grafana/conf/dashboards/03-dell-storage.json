@@ -4,12 +4,12 @@
   "metadata": {
     "name": "dell-storage",
     "namespace": "default",
-    "uid": "1790427e-1656-471b-a58c-d97c5a9aaa02",
-    "resourceVersion": "1790066875910988",
-    "generation": 34,
-    "creationTimestamp": "2026-09-22T07:53:26Z",
+    "uid": "ec2a47b7-229f-40ae-887c-a438c3f63890",
+    "resourceVersion": "1790152580242020",
+    "generation": 75,
+    "creationTimestamp": "2026-09-23T05:54:31Z",
     "labels": {
-      "grafana.app/deprecatedInternalID": "3627827620048896"
+      "grafana.app/deprecatedInternalID": "3960291888128000"
     },
     "annotations": {
       "grafana.app/createdBy": "access-policy:service",
@@ -18,11 +18,11 @@
       "grafana.app/managerAllowsEdits": "true",
       "grafana.app/managerId": "Default",
       "grafana.app/saved-from-ui": "Grafana v13.1.1 (a9cee6e172)",
-      "grafana.app/sourceChecksum": "9754f1e32d0ba07e1cdd331493072a6d",
+      "grafana.app/sourceChecksum": "93c6fb2ff5ff55414f5b569c361bfd14",
       "grafana.app/sourcePath": "/etc/grafana/provisioning/dashboards/03-dell-storage.json",
-      "grafana.app/sourceTimestamp": "1789972055000",
-      "grafana.app/updatedBy": "user:cfz050ghp454wb",
-      "grafana.app/updatedTimestamp": "2026-09-22T08:47:55Z"
+      "grafana.app/sourceTimestamp": "1790142757000",
+      "grafana.app/updatedBy": "user:efz3ev0gzaozkd",
+      "grafana.app/updatedTimestamp": "2026-09-23T08:36:20Z"
     }
   },
   "spec": {
@@ -838,173 +838,7 @@
                     "properties": [
                       {
                         "id": "unit",
-                        "value": "bytes"
-                      }
-                    ]
-                  }
-                ]
-              }
-            }
-          }
-        }
-      },
-      "panel-21": {
-        "kind": "Panel",
-        "spec": {
-          "id": 21,
-          "title": "Unity Pool Capacity Distribution",
-          "description": "",
-          "links": [],
-          "data": {
-            "kind": "QueryGroup",
-            "spec": {
-              "queries": [
-                {
-                  "kind": "PanelQuery",
-                  "spec": {
-                    "query": {
-                      "kind": "DataQuery",
-                      "group": "influxdb",
-                      "version": "v0",
-                      "datasource": {
-                        "name": "influxdb"
-                      },
-                      "spec": {
-                        "dataset": "iox",
-                        "editorMode": "code",
-                        "format": "table",
-                        "rawQuery": true,
-                        "rawSql": "SELECT DISTINCT ON (name) \r\n    name, \r\n    \"sizeUsed\", \r\n    \"sizeTotal\", \r\n    \"sizeSubscribed\", \r\n    (\"sizeTotal\" - \"sizeUsed\") as free,\r\n    time\r\nFROM unity_metrics \r\nWHERE datacenter = '$datacenter' \r\n  AND $__timeFilter(time) \r\n  AND \"sizeTotal\" IS NOT NULL \r\n  AND name ~ '^Pool'\r\nORDER BY name, time DESC;",
-                        "sql": {
-                          "columns": [
-                            {
-                              "parameters": [],
-                              "type": "function"
-                            }
-                          ],
-                          "groupBy": [
-                            {
-                              "property": {
-                                "type": "string"
-                              },
-                              "type": "groupBy"
-                            }
-                          ]
-                        }
-                      }
-                    },
-                    "refId": "A",
-                    "hidden": false
-                  }
-                }
-              ],
-              "transformations": [],
-              "queryOptions": {}
-            }
-          },
-          "vizConfig": {
-            "kind": "VizConfig",
-            "group": "gauge",
-            "version": "13.1.1",
-            "spec": {
-              "options": {
-                "barShape": "flat",
-                "barWidthFactor": 0.5,
-                "effects": {
-                  "barGlow": false,
-                  "centerGlow": false,
-                  "gradient": true
-                },
-                "endpointMarker": "point",
-                "minVizHeight": 75,
-                "minVizWidth": 75,
-                "orientation": "auto",
-                "reduceOptions": {
-                  "calcs": [
-                    "sum"
-                  ],
-                  "fields": "",
-                  "values": false
-                },
-                "segmentCount": 1,
-                "segmentSpacing": 0.3,
-                "shape": "circle",
-                "showThresholdLabels": false,
-                "showThresholdMarkers": true,
-                "sizing": "auto",
-                "sparkline": true,
-                "textMode": "auto"
-              },
-              "fieldConfig": {
-                "defaults": {
-                  "unit": "decbytes",
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "value": 0,
-                        "color": "green"
-                      },
-                      {
-                        "value": 80,
-                        "color": "red"
-                      }
-                    ]
-                  },
-                  "color": {
-                    "mode": "thresholds"
-                  }
-                },
-                "overrides": [
-                  {
-                    "matcher": {
-                      "id": "byName",
-                      "scope": "series",
-                      "options": "sizeTotal"
-                    },
-                    "properties": [
-                      {
-                        "id": "unit",
-                        "value": "bytes"
-                      }
-                    ]
-                  },
-                  {
-                    "matcher": {
-                      "id": "byName",
-                      "scope": "series",
-                      "options": "sizeUsed"
-                    },
-                    "properties": [
-                      {
-                        "id": "unit",
-                        "value": "bytes"
-                      }
-                    ]
-                  },
-                  {
-                    "matcher": {
-                      "id": "byName",
-                      "scope": "series",
-                      "options": "free"
-                    },
-                    "properties": [
-                      {
-                        "id": "unit",
-                        "value": "bytes"
-                      }
-                    ]
-                  },
-                  {
-                    "matcher": {
-                      "id": "byName",
-                      "scope": "series",
-                      "options": "sizeSubscribed"
-                    },
-                    "properties": [
-                      {
-                        "id": "unit",
-                        "value": "bytes"
+                        "value": "decbytes"
                       }
                     ]
                   }
@@ -1292,7 +1126,7 @@
                     "properties": [
                       {
                         "id": "unit",
-                        "value": "bytes"
+                        "value": "decbytes"
                       },
                       {
                         "id": "displayName",
@@ -1308,7 +1142,7 @@
                     "properties": [
                       {
                         "id": "unit",
-                        "value": "bytes"
+                        "value": "decbytes"
                       },
                       {
                         "id": "displayName",
@@ -1324,7 +1158,7 @@
                     "properties": [
                       {
                         "id": "unit",
-                        "value": "bytes"
+                        "value": "decbytes"
                       },
                       {
                         "id": "displayName",
@@ -1393,6 +1227,814 @@
                       {
                         "id": "custom.hideFrom.viz",
                         "value": true
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "panel-27": {
+        "kind": "Panel",
+        "spec": {
+          "id": 27,
+          "title": "Space metrics by cluster",
+          "description": "",
+          "links": [],
+          "data": {
+            "kind": "QueryGroup",
+            "spec": {
+              "queries": [
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
+                      "datasource": {
+                        "name": "influxdb"
+                      },
+                      "spec": {
+                        "dataset": "iox",
+                        "editorMode": "code",
+                        "format": "table",
+                        "rawQuery": true,
+                        "rawSql": "SELECT time, last_logical_provisioned, last_logical_used, last_physical_total, \r\n  last_physical_used, last_data_physical_used, last_system_free_space, \r\n  last_unreducible_data \r\nFROM powerstore_performance \r\nWHERE entity = 'space_metrics_by_cluster' \r\n  AND datacenter = '$datacenter' \r\n  AND cluster_id = '$cluster'\r\n  AND $__timeFilter(time) \r\nORDER BY time",
+                        "sql": {
+                          "columns": [
+                            {
+                              "parameters": [],
+                              "type": "function"
+                            }
+                          ],
+                          "groupBy": [
+                            {
+                              "property": {
+                                "type": "string"
+                              },
+                              "type": "groupBy"
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    "refId": "A",
+                    "hidden": false
+                  }
+                }
+              ],
+              "transformations": [],
+              "queryOptions": {}
+            }
+          },
+          "vizConfig": {
+            "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "13.1.1",
+            "spec": {
+              "options": {
+                "annotations": {
+                  "clustering": -1,
+                  "multiLane": false
+                },
+                "legend": {
+                  "calcs": [],
+                  "displayMode": "table",
+                  "enableFacetedFilter": true,
+                  "overflow": "ellipsis",
+                  "placement": "right",
+                  "showLegend": true
+                },
+                "tooltip": {
+                  "hideZeros": false,
+                  "mode": "multi",
+                  "sort": "desc"
+                }
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "unit": "decbytes",
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": 0,
+                        "color": "green"
+                      }
+                    ]
+                  },
+                  "color": {
+                    "mode": "palette-classic"
+                  },
+                  "custom": {
+                    "axisBorderShow": false,
+                    "axisCenteredZero": false,
+                    "axisColorMode": "text",
+                    "axisLabel": "",
+                    "axisPlacement": "auto",
+                    "barAlignment": 0,
+                    "barWidthFactor": 0.6,
+                    "drawStyle": "line",
+                    "fillOpacity": 10,
+                    "gradientMode": "none",
+                    "hideFrom": {
+                      "legend": false,
+                      "tooltip": false,
+                      "viz": false
+                    },
+                    "insertNulls": false,
+                    "lineInterpolation": "smooth",
+                    "lineWidth": 2,
+                    "pointSize": 5,
+                    "scaleDistribution": {
+                      "type": "linear"
+                    },
+                    "showPoints": "never",
+                    "showValues": false,
+                    "spanNulls": false,
+                    "stacking": {
+                      "group": "A",
+                      "mode": "none"
+                    },
+                    "thresholdsStyle": {
+                      "mode": "off"
+                    }
+                  }
+                },
+                "overrides": [
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "scope": "series",
+                      "options": "last_logical_provisioned"
+                    },
+                    "properties": [
+                      {
+                        "id": "displayName",
+                        "value": "Logical provisioned"
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "scope": "series",
+                      "options": "last_logical_used"
+                    },
+                    "properties": [
+                      {
+                        "id": "displayName",
+                        "value": "Logical used"
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "scope": "series",
+                      "options": "last_physical_total"
+                    },
+                    "properties": [
+                      {
+                        "id": "displayName",
+                        "value": "Physical total"
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "scope": "series",
+                      "options": "last_physical_used"
+                    },
+                    "properties": [
+                      {
+                        "id": "displayName",
+                        "value": "Physical used"
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "scope": "series",
+                      "options": "last_data_physical_used"
+                    },
+                    "properties": [
+                      {
+                        "id": "displayName",
+                        "value": "Data physical used"
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "scope": "series",
+                      "options": "last_system_free_space"
+                    },
+                    "properties": [
+                      {
+                        "id": "displayName",
+                        "value": "System free space"
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "scope": "series",
+                      "options": "last_unreducible_data"
+                    },
+                    "properties": [
+                      {
+                        "id": "displayName",
+                        "value": "Unreducible data"
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "panel-28": {
+        "kind": "Panel",
+        "spec": {
+          "id": 28,
+          "title": "Performance metrics by appliance",
+          "description": "",
+          "links": [],
+          "data": {
+            "kind": "QueryGroup",
+            "spec": {
+              "queries": [
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
+                      "datasource": {
+                        "name": "influxdb"
+                      },
+                      "spec": {
+                        "dataset": "iox",
+                        "editorMode": "code",
+                        "format": "table",
+                        "rawQuery": true,
+                        "rawSql": "SELECT time, avg_read_latency, avg_write_latency, avg_latency, \r\n  avg_read_iops, avg_write_iops, avg_total_iops, \r\n  avg_read_bandwidth, avg_write_bandwidth, avg_total_bandwidth \r\nFROM powerstore_performance \r\nWHERE entity = 'performance_metrics_by_appliance' \r\n  AND datacenter = '$datacenter' \r\n  AND appliance_id = '$appliance' \r\n  AND $__timeFilter(time) \r\nORDER BY time",
+                        "sql": {
+                          "columns": [
+                            {
+                              "parameters": [],
+                              "type": "function"
+                            }
+                          ],
+                          "groupBy": [
+                            {
+                              "property": {
+                                "type": "string"
+                              },
+                              "type": "groupBy"
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    "refId": "A",
+                    "hidden": false
+                  }
+                }
+              ],
+              "transformations": [],
+              "queryOptions": {}
+            }
+          },
+          "vizConfig": {
+            "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "13.1.1",
+            "spec": {
+              "options": {
+                "annotations": {
+                  "clustering": -1,
+                  "multiLane": false
+                },
+                "legend": {
+                  "calcs": [],
+                  "displayMode": "table",
+                  "enableFacetedFilter": true,
+                  "overflow": "wrap",
+                  "placement": "right",
+                  "showLegend": true
+                },
+                "tooltip": {
+                  "hideZeros": false,
+                  "mode": "multi",
+                  "sort": "desc"
+                }
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": 0,
+                        "color": "green"
+                      }
+                    ]
+                  },
+                  "color": {
+                    "mode": "palette-classic"
+                  },
+                  "custom": {
+                    "axisBorderShow": false,
+                    "axisCenteredZero": false,
+                    "axisColorMode": "text",
+                    "axisLabel": "",
+                    "axisPlacement": "auto",
+                    "barAlignment": 0,
+                    "barWidthFactor": 0.6,
+                    "drawStyle": "line",
+                    "fillOpacity": 10,
+                    "gradientMode": "none",
+                    "hideFrom": {
+                      "legend": false,
+                      "tooltip": false,
+                      "viz": false
+                    },
+                    "insertNulls": false,
+                    "lineInterpolation": "smooth",
+                    "lineWidth": 2,
+                    "pointSize": 5,
+                    "scaleDistribution": {
+                      "type": "linear"
+                    },
+                    "showPoints": "never",
+                    "showValues": false,
+                    "spanNulls": false,
+                    "stacking": {
+                      "group": "A",
+                      "mode": "none"
+                    },
+                    "thresholdsStyle": {
+                      "mode": "off"
+                    }
+                  }
+                },
+                "overrides": [
+                  {
+                    "matcher": {
+                      "id": "byValue",
+                      "options": {
+                        "op": "gte",
+                        "reducer": "allIsZero",
+                        "value": 0
+                      }
+                    },
+                    "properties": [
+                      {
+                        "id": "custom.hideFrom",
+                        "value": {
+                          "legend": true,
+                          "tooltip": false,
+                          "viz": true
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byValue",
+                      "options": {
+                        "op": "gte",
+                        "reducer": "allIsNull",
+                        "value": 0
+                      }
+                    },
+                    "properties": [
+                      {
+                        "id": "custom.hideFrom",
+                        "value": {
+                          "legend": true,
+                          "tooltip": false,
+                          "viz": true
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "scope": "series",
+                      "options": "avg_read_latency"
+                    },
+                    "properties": [
+                      {
+                        "id": "unit",
+                        "value": "탎"
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "scope": "series",
+                      "options": "avg_write_latency"
+                    },
+                    "properties": [
+                      {
+                        "id": "unit",
+                        "value": "탎"
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "scope": "series",
+                      "options": "avg_latency"
+                    },
+                    "properties": [
+                      {
+                        "id": "unit",
+                        "value": "탎"
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "scope": "series",
+                      "options": "avg_read_iops"
+                    },
+                    "properties": [
+                      {
+                        "id": "unit",
+                        "value": "iops"
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "scope": "series",
+                      "options": "avg_write_iops"
+                    },
+                    "properties": [
+                      {
+                        "id": "unit",
+                        "value": "iops"
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "scope": "series",
+                      "options": "avg_total_iops"
+                    },
+                    "properties": [
+                      {
+                        "id": "unit",
+                        "value": "iops"
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "scope": "series",
+                      "options": "avg_read_bandwidth"
+                    },
+                    "properties": [
+                      {
+                        "id": "unit",
+                        "value": "Bps"
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "scope": "series",
+                      "options": "avg_write_bandwidth"
+                    },
+                    "properties": [
+                      {
+                        "id": "unit",
+                        "value": "Bps"
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "scope": "series",
+                      "options": "avg_total_bandwidth"
+                    },
+                    "properties": [
+                      {
+                        "id": "unit",
+                        "value": "Bps"
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "panel-30": {
+        "kind": "Panel",
+        "spec": {
+          "id": 30,
+          "title": "Performance metrics by node",
+          "description": "",
+          "links": [],
+          "data": {
+            "kind": "QueryGroup",
+            "spec": {
+              "queries": [
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
+                      "datasource": {
+                        "name": "influxdb"
+                      },
+                      "spec": {
+                        "dataset": "iox",
+                        "editorMode": "code",
+                        "format": "table",
+                        "rawQuery": true,
+                        "rawSql": "SELECT time, avg_read_latency, avg_write_latency, avg_latency, \r\n  avg_read_iops, avg_write_iops, avg_total_iops, \r\n  avg_read_bandwidth, avg_write_bandwidth, avg_total_bandwidth \r\nFROM powerstore_performance \r\nWHERE entity = 'performance_metrics_by_node' \r\n  AND datacenter = '$datacenter' \r\n  AND node_id = '$node' \r\n  AND $__timeFilter(time) \r\nORDER BY time",
+                        "sql": {
+                          "columns": [
+                            {
+                              "parameters": [],
+                              "type": "function"
+                            }
+                          ],
+                          "groupBy": [
+                            {
+                              "property": {
+                                "type": "string"
+                              },
+                              "type": "groupBy"
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    "refId": "A",
+                    "hidden": false
+                  }
+                }
+              ],
+              "transformations": [],
+              "queryOptions": {}
+            }
+          },
+          "vizConfig": {
+            "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "13.1.1",
+            "spec": {
+              "options": {
+                "annotations": {
+                  "clustering": -1,
+                  "multiLane": false
+                },
+                "legend": {
+                  "calcs": [],
+                  "displayMode": "table",
+                  "enableFacetedFilter": true,
+                  "overflow": "wrap",
+                  "placement": "right",
+                  "showLegend": true
+                },
+                "tooltip": {
+                  "hideZeros": false,
+                  "mode": "multi",
+                  "sort": "desc"
+                }
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": 0,
+                        "color": "green"
+                      }
+                    ]
+                  },
+                  "color": {
+                    "mode": "palette-classic"
+                  },
+                  "custom": {
+                    "axisBorderShow": false,
+                    "axisCenteredZero": false,
+                    "axisColorMode": "text",
+                    "axisLabel": "",
+                    "axisPlacement": "auto",
+                    "barAlignment": 0,
+                    "barWidthFactor": 0.6,
+                    "drawStyle": "line",
+                    "fillOpacity": 10,
+                    "gradientMode": "none",
+                    "hideFrom": {
+                      "legend": false,
+                      "tooltip": false,
+                      "viz": false
+                    },
+                    "insertNulls": false,
+                    "lineInterpolation": "smooth",
+                    "lineWidth": 2,
+                    "pointSize": 5,
+                    "scaleDistribution": {
+                      "type": "linear"
+                    },
+                    "showPoints": "never",
+                    "showValues": false,
+                    "spanNulls": false,
+                    "stacking": {
+                      "group": "A",
+                      "mode": "none"
+                    },
+                    "thresholdsStyle": {
+                      "mode": "off"
+                    }
+                  }
+                },
+                "overrides": [
+                  {
+                    "matcher": {
+                      "id": "byValue",
+                      "options": {
+                        "op": "gte",
+                        "reducer": "allIsZero",
+                        "value": 0
+                      }
+                    },
+                    "properties": [
+                      {
+                        "id": "custom.hideFrom",
+                        "value": {
+                          "legend": true,
+                          "tooltip": false,
+                          "viz": true
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byValue",
+                      "options": {
+                        "op": "gte",
+                        "reducer": "allIsNull",
+                        "value": 0
+                      }
+                    },
+                    "properties": [
+                      {
+                        "id": "custom.hideFrom",
+                        "value": {
+                          "legend": true,
+                          "tooltip": false,
+                          "viz": true
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "scope": "series",
+                      "options": "avg_read_latency"
+                    },
+                    "properties": [
+                      {
+                        "id": "unit",
+                        "value": "탎"
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "scope": "series",
+                      "options": "avg_write_latency"
+                    },
+                    "properties": [
+                      {
+                        "id": "unit",
+                        "value": "탎"
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "scope": "series",
+                      "options": "avg_latency"
+                    },
+                    "properties": [
+                      {
+                        "id": "unit",
+                        "value": "탎"
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "scope": "series",
+                      "options": "avg_read_iops"
+                    },
+                    "properties": [
+                      {
+                        "id": "unit",
+                        "value": "iops"
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "scope": "series",
+                      "options": "avg_write_iops"
+                    },
+                    "properties": [
+                      {
+                        "id": "unit",
+                        "value": "iops"
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "scope": "series",
+                      "options": "avg_total_iops"
+                    },
+                    "properties": [
+                      {
+                        "id": "unit",
+                        "value": "iops"
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "scope": "series",
+                      "options": "avg_read_bandwidth"
+                    },
+                    "properties": [
+                      {
+                        "id": "unit",
+                        "value": "Bps"
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "scope": "series",
+                      "options": "avg_write_bandwidth"
+                    },
+                    "properties": [
+                      {
+                        "id": "unit",
+                        "value": "Bps"
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "scope": "series",
+                      "options": "avg_total_bandwidth"
+                    },
+                    "properties": [
+                      {
+                        "id": "unit",
+                        "value": "Bps"
                       }
                     ]
                   }
@@ -1557,185 +2199,6 @@
           }
         }
       },
-      "panel-7": {
-        "kind": "Panel",
-        "spec": {
-          "id": 7,
-          "title": "PowerStore Metrics",
-          "description": "",
-          "links": [],
-          "data": {
-            "kind": "QueryGroup",
-            "spec": {
-              "queries": [
-                {
-                  "kind": "PanelQuery",
-                  "spec": {
-                    "query": {
-                      "kind": "DataQuery",
-                      "group": "influxdb",
-                      "version": "v0",
-                      "datasource": {
-                        "name": "influxdb"
-                      },
-                      "spec": {
-                        "dataset": "iox",
-                        "editorMode": "code",
-                        "format": "table",
-                        "rawQuery": true,
-                        "rawSql": "SELECT * \r\nFROM powerstore_performance \r\nWHERE entity = '$entity' \r\n  AND datacenter = '$datacenter' \r\n  AND $__timeFilter(time) \r\nORDER BY time",
-                        "sql": {
-                          "columns": [
-                            {
-                              "parameters": [],
-                              "type": "function"
-                            }
-                          ],
-                          "groupBy": [
-                            {
-                              "property": {
-                                "type": "string"
-                              },
-                              "type": "groupBy"
-                            }
-                          ]
-                        }
-                      }
-                    },
-                    "refId": "A",
-                    "hidden": false
-                  }
-                }
-              ],
-              "transformations": [],
-              "queryOptions": {}
-            }
-          },
-          "vizConfig": {
-            "kind": "VizConfig",
-            "group": "timeseries",
-            "version": "13.1.1",
-            "spec": {
-              "options": {
-                "annotations": {
-                  "clustering": -1,
-                  "multiLane": false
-                },
-                "legend": {
-                  "calcs": [
-                    "min",
-                    "max",
-                    "mean",
-                    "last"
-                  ],
-                  "displayMode": "table",
-                  "enableFacetedFilter": false,
-                  "overflow": "ellipsis",
-                  "placement": "bottom",
-                  "showLegend": true
-                },
-                "tooltip": {
-                  "hideZeros": false,
-                  "mode": "multi",
-                  "sort": "desc"
-                }
-              },
-              "fieldConfig": {
-                "defaults": {
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "value": 0,
-                        "color": "green"
-                      }
-                    ]
-                  },
-                  "color": {
-                    "mode": "palette-classic"
-                  },
-                  "custom": {
-                    "axisBorderShow": false,
-                    "axisCenteredZero": false,
-                    "axisColorMode": "text",
-                    "axisLabel": "",
-                    "axisPlacement": "auto",
-                    "barAlignment": 0,
-                    "barWidthFactor": 0.6,
-                    "drawStyle": "line",
-                    "fillOpacity": 10,
-                    "gradientMode": "none",
-                    "hideFrom": {
-                      "legend": false,
-                      "tooltip": false,
-                      "viz": false
-                    },
-                    "insertNulls": false,
-                    "lineInterpolation": "smooth",
-                    "lineWidth": 2,
-                    "pointSize": 5,
-                    "scaleDistribution": {
-                      "type": "linear"
-                    },
-                    "showPoints": "never",
-                    "showValues": false,
-                    "spanNulls": false,
-                    "stacking": {
-                      "group": "A",
-                      "mode": "none"
-                    },
-                    "thresholdsStyle": {
-                      "mode": "off"
-                    }
-                  }
-                },
-                "overrides": [
-                  {
-                    "matcher": {
-                      "id": "byValue",
-                      "options": {
-                        "op": "gte",
-                        "reducer": "allIsZero",
-                        "value": 0
-                      }
-                    },
-                    "properties": [
-                      {
-                        "id": "custom.hideFrom",
-                        "value": {
-                          "legend": true,
-                          "tooltip": false,
-                          "viz": true
-                        }
-                      }
-                    ]
-                  },
-                  {
-                    "matcher": {
-                      "id": "byValue",
-                      "options": {
-                        "op": "gte",
-                        "reducer": "allIsNull",
-                        "value": 0
-                      }
-                    },
-                    "properties": [
-                      {
-                        "id": "custom.hideFrom",
-                        "value": {
-                          "legend": true,
-                          "tooltip": false,
-                          "viz": true
-                        }
-                      }
-                    ]
-                  }
-                ]
-              }
-            }
-          }
-        }
-      },
       "panel-9": {
         "kind": "Panel",
         "spec": {
@@ -1881,19 +2344,6 @@
                         "x": 0,
                         "y": 7,
                         "width": 24,
-                        "height": 7,
-                        "element": {
-                          "kind": "ElementReference",
-                          "name": "panel-21"
-                        }
-                      }
-                    },
-                    {
-                      "kind": "GridLayoutItem",
-                      "spec": {
-                        "x": 0,
-                        "y": 14,
-                        "width": 24,
                         "height": 6,
                         "element": {
                           "kind": "ElementReference",
@@ -1905,7 +2355,7 @@
                       "kind": "GridLayoutItem",
                       "spec": {
                         "x": 0,
-                        "y": 20,
+                        "y": 13,
                         "width": 12,
                         "height": 7,
                         "element": {
@@ -1918,7 +2368,7 @@
                       "kind": "GridLayoutItem",
                       "spec": {
                         "x": 12,
-                        "y": 20,
+                        "y": 13,
                         "width": 12,
                         "height": 7,
                         "element": {
@@ -1976,7 +2426,7 @@
                         "height": 8,
                         "element": {
                           "kind": "ElementReference",
-                          "name": "panel-7"
+                          "name": "panel-27"
                         }
                       }
                     },
@@ -1985,6 +2435,32 @@
                       "spec": {
                         "x": 0,
                         "y": 16,
+                        "width": 24,
+                        "height": 8,
+                        "element": {
+                          "kind": "ElementReference",
+                          "name": "panel-28"
+                        }
+                      }
+                    },
+                    {
+                      "kind": "GridLayoutItem",
+                      "spec": {
+                        "x": 0,
+                        "y": 24,
+                        "width": 24,
+                        "height": 8,
+                        "element": {
+                          "kind": "ElementReference",
+                          "name": "panel-30"
+                        }
+                      }
+                    },
+                    {
+                      "kind": "GridLayoutItem",
+                      "spec": {
+                        "x": 0,
+                        "y": 32,
                         "width": 8,
                         "height": 4,
                         "element": {
@@ -1997,12 +2473,12 @@
                       "kind": "GridLayoutItem",
                       "spec": {
                         "x": 8,
-                        "y": 16,
+                        "y": 32,
                         "width": 8,
                         "height": 4,
                         "element": {
                           "kind": "ElementReference",
-                          "name": "panel-10"
+                          "name": "panel-11"
                         }
                       }
                     },
@@ -2010,12 +2486,12 @@
                       "kind": "GridLayoutItem",
                       "spec": {
                         "x": 16,
-                        "y": 16,
+                        "y": 32,
                         "width": 8,
                         "height": 4,
                         "element": {
                           "kind": "ElementReference",
-                          "name": "panel-11"
+                          "name": "panel-10"
                         }
                       }
                     }
@@ -2096,12 +2572,12 @@
       {
         "kind": "QueryVariable",
         "spec": {
-          "name": "entity",
+          "name": "cluster",
           "current": {
-            "text": "space_metrics_by_cluster",
-            "value": "space_metrics_by_cluster"
+            "text": "",
+            "value": ""
           },
-          "label": "PowerStore Entity Type",
+          "label": "Cluster ID",
           "hide": "dontHide",
           "refresh": "onDashboardLoad",
           "skipUrlSync": false,
@@ -2113,14 +2589,82 @@
               "name": "influxdb"
             },
             "spec": {
-              "query": "SELECT DISTINCT entity\nFROM powerstore_performance\nORDER BY entity",
+              "query": "SELECT DISTINCT cluster_id\nFROM powerstore_performance \nWHERE entity = 'space_metrics_by_cluster' \nORDER BY cluster_id",
               "refId": "InfluxVariableQueryEditor-VariableQuery"
             }
           },
           "regex": "",
           "regexApplyTo": "value",
-          "sort": "alphabeticalAsc",
-          "definition": "SELECT DISTINCT entity\nFROM powerstore_performance\nORDER BY entity",
+          "sort": "disabled",
+          "definition": "SELECT DISTINCT cluster_id\nFROM powerstore_performance \nWHERE entity = 'space_metrics_by_cluster' \nORDER BY cluster_id",
+          "options": [],
+          "multi": false,
+          "includeAll": false,
+          "allowCustomValue": false
+        }
+      },
+      {
+        "kind": "QueryVariable",
+        "spec": {
+          "name": "appliance",
+          "current": {
+            "text": "",
+            "value": ""
+          },
+          "label": "Appliance ID",
+          "hide": "dontHide",
+          "refresh": "onDashboardLoad",
+          "skipUrlSync": false,
+          "query": {
+            "kind": "DataQuery",
+            "group": "influxdb",
+            "version": "v0",
+            "datasource": {
+              "name": "influxdb"
+            },
+            "spec": {
+              "query": "SELECT DISTINCT appliance_id\nFROM powerstore_performance \nWHERE entity = 'performance_metrics_by_appliance' \nORDER BY appliance_id",
+              "refId": "InfluxVariableQueryEditor-VariableQuery"
+            }
+          },
+          "regex": "",
+          "regexApplyTo": "value",
+          "sort": "disabled",
+          "definition": "SELECT DISTINCT appliance_id\nFROM powerstore_performance \nWHERE entity = 'performance_metrics_by_appliance' \nORDER BY appliance_id",
+          "options": [],
+          "multi": false,
+          "includeAll": false,
+          "allowCustomValue": false
+        }
+      },
+      {
+        "kind": "QueryVariable",
+        "spec": {
+          "name": "node",
+          "current": {
+            "text": "",
+            "value": ""
+          },
+          "label": "Node ID",
+          "hide": "dontHide",
+          "refresh": "onDashboardLoad",
+          "skipUrlSync": false,
+          "query": {
+            "kind": "DataQuery",
+            "group": "influxdb",
+            "version": "v0",
+            "datasource": {
+              "name": "influxdb"
+            },
+            "spec": {
+              "query": "SELECT DISTINCT node_id\nFROM powerstore_performance \nWHERE entity = 'performance_metrics_by_node' \nORDER BY node_id",
+              "refId": "InfluxVariableQueryEditor-VariableQuery"
+            }
+          },
+          "regex": "",
+          "regexApplyTo": "value",
+          "sort": "disabled",
+          "definition": "SELECT DISTINCT node_id\nFROM powerstore_performance \nWHERE entity = 'performance_metrics_by_node' \nORDER BY node_id",
           "options": [],
           "multi": false,
           "includeAll": false,

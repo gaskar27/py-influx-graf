@@ -4,22 +4,25 @@
   "metadata": {
     "name": "aria-operations",
     "namespace": "default",
-    "uid": "c82c23b7-ae5a-4d23-919d-eb3626ebec2c",
-    "resourceVersion": "1789113012495012",
-    "generation": 1,
-    "creationTimestamp": "2026-09-11T07:50:12Z",
+    "uid": "fa58e5b7-adbc-4885-ac65-a4f436856191",
+    "resourceVersion": "1790166139694000",
+    "generation": 3,
+    "creationTimestamp": "2026-09-23T05:54:31Z",
     "labels": {
-      "grafana.app/deprecatedInternalID": "4144348488224768"
+      "grafana.app/deprecatedInternalID": "3960292190117888"
     },
     "annotations": {
       "grafana.app/createdBy": "access-policy:service",
+      "grafana.app/folder": "",
       "grafana.app/managedBy": "classic-file-provisioning",
       "grafana.app/managerAllowsEdits": "true",
       "grafana.app/managerId": "Default",
-      "grafana.app/sourceChecksum": "6a56dabfa3d184824f7a7f212dac226b",
+      "grafana.app/saved-from-ui": "Grafana v13.1.1 (a9cee6e172)",
+      "grafana.app/sourceChecksum": "85520d3b154c0f9210a72f2ad647a135",
       "grafana.app/sourcePath": "/etc/grafana/provisioning/dashboards/04-aria-operations.json",
-      "grafana.app/sourceTimestamp": "1789109242000",
-      "grafana.app/folder": ""
+      "grafana.app/sourceTimestamp": "1790142757000",
+      "grafana.app/updatedBy": "user:efz3ev0gzaozkd",
+      "grafana.app/updatedTimestamp": "2026-09-23T12:22:19Z"
     }
   },
   "spec": {
@@ -496,7 +499,7 @@
         "kind": "Panel",
         "spec": {
           "id": 21,
-          "title": "VM Operations Timeline (30 days)",
+          "title": "VM Operations Timeline by cluster (30 days)",
           "description": "",
           "links": [],
           "data": {
@@ -1433,7 +1436,7 @@
           {
             "kind": "RowsLayoutRow",
             "spec": {
-              "title": "System Workload Metrics",
+              "title": "System Workload Metrics by Cluster",
               "collapse": false,
               "layout": {
                 "kind": "GridLayout",

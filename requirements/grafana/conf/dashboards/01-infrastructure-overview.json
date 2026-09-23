@@ -4,12 +4,12 @@
   "metadata": {
     "name": "infrastructure-overview",
     "namespace": "default",
-    "uid": "827a6958-56be-4870-a710-cd48c77a7233",
-    "resourceVersion": "1789113702206017",
-    "generation": 2,
-    "creationTimestamp": "2026-09-11T07:50:12Z",
+    "uid": "2708b7e2-7137-4d2b-a833-9d603ffbf3ac",
+    "resourceVersion": "1790166004349009",
+    "generation": 7,
+    "creationTimestamp": "2026-09-23T05:54:31Z",
     "labels": {
-      "grafana.app/deprecatedInternalID": "4144348597276672"
+      "grafana.app/deprecatedInternalID": "3960292328529920"
     },
     "annotations": {
       "grafana.app/createdBy": "access-policy:service",
@@ -18,11 +18,11 @@
       "grafana.app/managerAllowsEdits": "true",
       "grafana.app/managerId": "Default",
       "grafana.app/saved-from-ui": "Grafana v13.1.1 (a9cee6e172)",
-      "grafana.app/sourceChecksum": "436e6413b095280eed6646b61f93f36a",
+      "grafana.app/sourceChecksum": "f2bb2f941f3ea3dcb32f43f13684c288",
       "grafana.app/sourcePath": "/etc/grafana/provisioning/dashboards/01-infrastructure-overview.json",
-      "grafana.app/sourceTimestamp": "1789109242000",
-      "grafana.app/updatedBy": "user:bfxwvplxive9sa",
-      "grafana.app/updatedTimestamp": "2026-09-11T08:01:42Z"
+      "grafana.app/sourceTimestamp": "1790142757000",
+      "grafana.app/updatedBy": "user:efz3ev0gzaozkd",
+      "grafana.app/updatedTimestamp": "2026-09-23T12:20:04Z"
     }
   },
   "spec": {
@@ -76,7 +76,7 @@
                         "editorMode": "code",
                         "format": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT datastore_data, percent_use \r\nFROM datastore_usage \r\nWHERE $__timeFilter(time) \r\nORDER BY percent_use DESC LIMIT 10",
+                        "rawSql": "WITH ranked_datastores AS (\r\n    SELECT datastore_data, percent_use, time,\r\n           ROW_NUMBER() OVER (PARTITION BY datastore_data ORDER BY time DESC) as rn\r\n    FROM datastore_usage\r\n    WHERE $__timeFilter(time)\r\n)\r\nSELECT datastore_data, percent_use\r\nFROM ranked_datastores\r\nWHERE rn = 1\r\nORDER BY percent_use DESC\r\nLIMIT 10;",
                         "sql": {
                           "columns": [
                             {
@@ -209,7 +209,7 @@
                         "editorMode": "code",
                         "format": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT datastore_data, type, total_capacity, space_use, free_space, percent_use \r\nFROM datastore_usage \r\nWHERE $__timeFilter(time) \r\nORDER BY percent_use DESC",
+                        "rawSql": "WITH ranked_datastores AS (\r\n    SELECT datastore_data, type, total_capacity, space_use, free_space, percent_use, time,\r\n           ROW_NUMBER() OVER (PARTITION BY datastore_data ORDER BY time DESC) as rn\r\n    FROM datastore_usage\r\n    WHERE $__timeFilter(time)\r\n)\r\nSELECT datastore_data, type, total_capacity, space_use, free_space, percent_use\r\nFROM ranked_datastores\r\nWHERE rn = 1\r\nORDER BY percent_use DESC;",
                         "sql": {
                           "columns": [
                             {
@@ -244,6 +244,7 @@
             "spec": {
               "options": {
                 "cellHeight": "sm",
+                "enablePagination": false,
                 "showHeader": true
               },
               "fieldConfig": {
@@ -335,402 +336,6 @@
                     ]
                   }
                 ]
-              }
-            }
-          }
-        }
-      },
-      "panel-13": {
-        "kind": "Panel",
-        "spec": {
-          "id": 13,
-          "title": "Unity Pools",
-          "description": "",
-          "links": [],
-          "data": {
-            "kind": "QueryGroup",
-            "spec": {
-              "queries": [
-                {
-                  "kind": "PanelQuery",
-                  "spec": {
-                    "query": {
-                      "kind": "DataQuery",
-                      "group": "influxdb",
-                      "version": "v0",
-                      "datasource": {
-                        "name": "influxdb"
-                      },
-                      "spec": {
-                        "dataset": "iox",
-                        "editorMode": "code",
-                        "format": "table",
-                        "rawQuery": true,
-                        "rawSql": "SELECT COUNT(DISTINCT name) as count \r\nFROM unity_metrics \r\nWHERE $__timeFilter(time) AND unity_metrics.\"sizeTotal\" IS NOT NULL",
-                        "sql": {
-                          "columns": [
-                            {
-                              "parameters": [],
-                              "type": "function"
-                            }
-                          ],
-                          "groupBy": [
-                            {
-                              "property": {
-                                "type": "string"
-                              },
-                              "type": "groupBy"
-                            }
-                          ]
-                        }
-                      }
-                    },
-                    "refId": "A",
-                    "hidden": false
-                  }
-                }
-              ],
-              "transformations": [],
-              "queryOptions": {}
-            }
-          },
-          "vizConfig": {
-            "kind": "VizConfig",
-            "group": "stat",
-            "version": "13.1.1",
-            "spec": {
-              "options": {
-                "colorMode": "value",
-                "graphMode": "none",
-                "justifyMode": "auto",
-                "orientation": "auto",
-                "percentChangeColorMode": "standard",
-                "reduceOptions": {
-                  "calcs": [
-                    "lastNotNull"
-                  ],
-                  "fields": "",
-                  "values": false
-                },
-                "showPercentChange": false,
-                "text": {},
-                "textMode": "auto",
-                "wideLayout": true
-              },
-              "fieldConfig": {
-                "defaults": {
-                  "unit": "short",
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "value": 0,
-                        "color": "green"
-                      }
-                    ]
-                  },
-                  "color": {
-                    "mode": "thresholds"
-                  }
-                },
-                "overrides": []
-              }
-            }
-          }
-        }
-      },
-      "panel-14": {
-        "kind": "Panel",
-        "spec": {
-          "id": 14,
-          "title": "PowerStore Clusters",
-          "description": "",
-          "links": [],
-          "data": {
-            "kind": "QueryGroup",
-            "spec": {
-              "queries": [
-                {
-                  "kind": "PanelQuery",
-                  "spec": {
-                    "query": {
-                      "kind": "DataQuery",
-                      "group": "influxdb",
-                      "version": "v0",
-                      "datasource": {
-                        "name": "influxdb"
-                      },
-                      "spec": {
-                        "dataset": "iox",
-                        "editorMode": "code",
-                        "format": "table",
-                        "rawQuery": true,
-                        "rawSql": "SELECT COUNT(DISTINCT cluster_id) as count \r\nFROM powerstore_performance \r\nWHERE $__timeFilter(time) AND entity = 'space_metrics_by_cluster'",
-                        "sql": {
-                          "columns": [
-                            {
-                              "parameters": [],
-                              "type": "function"
-                            }
-                          ],
-                          "groupBy": [
-                            {
-                              "property": {
-                                "type": "string"
-                              },
-                              "type": "groupBy"
-                            }
-                          ]
-                        }
-                      }
-                    },
-                    "refId": "A",
-                    "hidden": false
-                  }
-                }
-              ],
-              "transformations": [],
-              "queryOptions": {}
-            }
-          },
-          "vizConfig": {
-            "kind": "VizConfig",
-            "group": "stat",
-            "version": "13.1.1",
-            "spec": {
-              "options": {
-                "colorMode": "value",
-                "graphMode": "none",
-                "justifyMode": "auto",
-                "orientation": "auto",
-                "percentChangeColorMode": "standard",
-                "reduceOptions": {
-                  "calcs": [
-                    "lastNotNull"
-                  ],
-                  "fields": "",
-                  "values": false
-                },
-                "showPercentChange": false,
-                "text": {},
-                "textMode": "auto",
-                "wideLayout": true
-              },
-              "fieldConfig": {
-                "defaults": {
-                  "unit": "short",
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "value": 0,
-                        "color": "green"
-                      }
-                    ]
-                  },
-                  "color": {
-                    "mode": "thresholds"
-                  }
-                },
-                "overrides": []
-              }
-            }
-          }
-        }
-      },
-      "panel-15": {
-        "kind": "Panel",
-        "spec": {
-          "id": 15,
-          "title": "PowerStore Nodes",
-          "description": "",
-          "links": [],
-          "data": {
-            "kind": "QueryGroup",
-            "spec": {
-              "queries": [
-                {
-                  "kind": "PanelQuery",
-                  "spec": {
-                    "query": {
-                      "kind": "DataQuery",
-                      "group": "influxdb",
-                      "version": "v0",
-                      "datasource": {
-                        "name": "influxdb"
-                      },
-                      "spec": {
-                        "dataset": "iox",
-                        "editorMode": "code",
-                        "format": "table",
-                        "rawQuery": true,
-                        "rawSql": "SELECT COUNT(DISTINCT node_id) as count \r\nFROM powerstore_performance \r\nWHERE $__timeFilter(time) AND entity = 'performance_metrics_by_node'",
-                        "sql": {
-                          "columns": [
-                            {
-                              "parameters": [],
-                              "type": "function"
-                            }
-                          ],
-                          "groupBy": [
-                            {
-                              "property": {
-                                "type": "string"
-                              },
-                              "type": "groupBy"
-                            }
-                          ]
-                        }
-                      }
-                    },
-                    "refId": "A",
-                    "hidden": false
-                  }
-                }
-              ],
-              "transformations": [],
-              "queryOptions": {}
-            }
-          },
-          "vizConfig": {
-            "kind": "VizConfig",
-            "group": "stat",
-            "version": "13.1.1",
-            "spec": {
-              "options": {
-                "colorMode": "value",
-                "graphMode": "none",
-                "justifyMode": "auto",
-                "orientation": "auto",
-                "percentChangeColorMode": "standard",
-                "reduceOptions": {
-                  "calcs": [
-                    "lastNotNull"
-                  ],
-                  "fields": "",
-                  "values": false
-                },
-                "showPercentChange": false,
-                "text": {},
-                "textMode": "auto",
-                "wideLayout": true
-              },
-              "fieldConfig": {
-                "defaults": {
-                  "unit": "short",
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "value": 0,
-                        "color": "green"
-                      }
-                    ]
-                  },
-                  "color": {
-                    "mode": "thresholds"
-                  }
-                },
-                "overrides": []
-              }
-            }
-          }
-        }
-      },
-      "panel-16": {
-        "kind": "Panel",
-        "spec": {
-          "id": 16,
-          "title": "PowerStore Appliances",
-          "description": "",
-          "links": [],
-          "data": {
-            "kind": "QueryGroup",
-            "spec": {
-              "queries": [
-                {
-                  "kind": "PanelQuery",
-                  "spec": {
-                    "query": {
-                      "kind": "DataQuery",
-                      "group": "influxdb",
-                      "version": "v0",
-                      "datasource": {
-                        "name": "influxdb"
-                      },
-                      "spec": {
-                        "dataset": "iox",
-                        "editorMode": "code",
-                        "format": "table",
-                        "rawQuery": true,
-                        "rawSql": "SELECT COUNT(DISTINCT appliance_id) as count \r\nFROM powerstore_performance \r\nWHERE $__timeFilter(time) AND entity = 'performance_metrics_by_appliance'",
-                        "sql": {
-                          "columns": [
-                            {
-                              "parameters": [],
-                              "type": "function"
-                            }
-                          ],
-                          "groupBy": [
-                            {
-                              "property": {
-                                "type": "string"
-                              },
-                              "type": "groupBy"
-                            }
-                          ]
-                        }
-                      }
-                    },
-                    "refId": "A",
-                    "hidden": false
-                  }
-                }
-              ],
-              "transformations": [],
-              "queryOptions": {}
-            }
-          },
-          "vizConfig": {
-            "kind": "VizConfig",
-            "group": "stat",
-            "version": "13.1.1",
-            "spec": {
-              "options": {
-                "colorMode": "value",
-                "graphMode": "none",
-                "justifyMode": "auto",
-                "orientation": "auto",
-                "percentChangeColorMode": "standard",
-                "reduceOptions": {
-                  "calcs": [
-                    "lastNotNull"
-                  ],
-                  "fields": "",
-                  "values": false
-                },
-                "showPercentChange": false,
-                "text": {},
-                "textMode": "auto",
-                "wideLayout": true
-              },
-              "fieldConfig": {
-                "defaults": {
-                  "unit": "short",
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "value": 0,
-                        "color": "green"
-                      }
-                    ]
-                  },
-                  "color": {
-                    "mode": "thresholds"
-                  }
-                },
-                "overrides": []
               }
             }
           }
@@ -1665,76 +1270,10 @@
                         "x": 0,
                         "y": 8,
                         "width": 24,
-                        "height": 7,
+                        "height": 8,
                         "element": {
                           "kind": "ElementReference",
                           "name": "panel-11"
-                        }
-                      }
-                    }
-                  ]
-                }
-              }
-            }
-          },
-          {
-            "kind": "RowsLayoutRow",
-            "spec": {
-              "title": "Dell Storage Systems",
-              "collapse": false,
-              "layout": {
-                "kind": "GridLayout",
-                "spec": {
-                  "items": [
-                    {
-                      "kind": "GridLayoutItem",
-                      "spec": {
-                        "x": 0,
-                        "y": 0,
-                        "width": 6,
-                        "height": 4,
-                        "element": {
-                          "kind": "ElementReference",
-                          "name": "panel-13"
-                        }
-                      }
-                    },
-                    {
-                      "kind": "GridLayoutItem",
-                      "spec": {
-                        "x": 6,
-                        "y": 0,
-                        "width": 6,
-                        "height": 4,
-                        "element": {
-                          "kind": "ElementReference",
-                          "name": "panel-14"
-                        }
-                      }
-                    },
-                    {
-                      "kind": "GridLayoutItem",
-                      "spec": {
-                        "x": 12,
-                        "y": 0,
-                        "width": 6,
-                        "height": 4,
-                        "element": {
-                          "kind": "ElementReference",
-                          "name": "panel-15"
-                        }
-                      }
-                    },
-                    {
-                      "kind": "GridLayoutItem",
-                      "spec": {
-                        "x": 18,
-                        "y": 0,
-                        "width": 6,
-                        "height": 4,
-                        "element": {
-                          "kind": "ElementReference",
-                          "name": "panel-16"
                         }
                       }
                     }

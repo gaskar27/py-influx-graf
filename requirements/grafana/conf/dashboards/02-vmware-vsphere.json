@@ -4,12 +4,12 @@
   "metadata": {
     "name": "vmware-vsphere",
     "namespace": "default",
-    "uid": "b7c869f2-0bc5-43ea-843f-88b3ff6b8ca9",
-    "resourceVersion": "1789114784218011",
-    "generation": 6,
-    "creationTimestamp": "2026-09-11T07:50:12Z",
+    "uid": "3b08ffd2-e77a-47e3-957e-8eccf47379c6",
+    "resourceVersion": "1790165180592987",
+    "generation": 16,
+    "creationTimestamp": "2026-09-23T05:54:31Z",
     "labels": {
-      "grafana.app/deprecatedInternalID": "4144348039434240"
+      "grafana.app/deprecatedInternalID": "3960292429193216"
     },
     "annotations": {
       "grafana.app/createdBy": "access-policy:service",
@@ -18,11 +18,11 @@
       "grafana.app/managerAllowsEdits": "true",
       "grafana.app/managerId": "Default",
       "grafana.app/saved-from-ui": "Grafana v13.1.1 (a9cee6e172)",
-      "grafana.app/sourceChecksum": "b8a9c0479510fa431645fdeab4a5501f",
+      "grafana.app/sourceChecksum": "070ecc306d750e2b7d834968276ce833",
       "grafana.app/sourcePath": "/etc/grafana/provisioning/dashboards/02-vmware-vsphere.json",
-      "grafana.app/sourceTimestamp": "1789109242000",
-      "grafana.app/updatedBy": "user:bfxwvplxive9sa",
-      "grafana.app/updatedTimestamp": "2026-09-11T08:19:44Z"
+      "grafana.app/sourceTimestamp": "1790142757000",
+      "grafana.app/updatedBy": "user:efz3ev0gzaozkd",
+      "grafana.app/updatedTimestamp": "2026-09-23T12:06:20Z"
     }
   },
   "spec": {
@@ -50,10 +50,569 @@
     "cursorSync": "Off",
     "editable": true,
     "elements": {
-      "panel-1": {
+      "panel-2": {
         "kind": "Panel",
         "spec": {
-          "id": 1,
+          "id": 2,
+          "title": "Datastore Usage Over Time (by Datastore name)",
+          "description": "",
+          "links": [],
+          "data": {
+            "kind": "QueryGroup",
+            "spec": {
+              "queries": [
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
+                      "datasource": {
+                        "name": "influxdb"
+                      },
+                      "spec": {
+                        "dataset": "iox",
+                        "editorMode": "code",
+                        "format": "table",
+                        "rawQuery": true,
+                        "rawSql": "SELECT time, datastore_data, percent_use \r\nFROM datastore_usage \r\nWHERE datacenter = '$datacenter' \r\n  AND type LIKE '%$type%' \r\n  AND datastore_data = '$datastore'\r\n  AND $__timeFilter(time) \r\nORDER BY time",
+                        "sql": {
+                          "columns": [
+                            {
+                              "parameters": [],
+                              "type": "function"
+                            }
+                          ],
+                          "groupBy": [
+                            {
+                              "property": {
+                                "type": "string"
+                              },
+                              "type": "groupBy"
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    "refId": "A",
+                    "hidden": false
+                  }
+                }
+              ],
+              "transformations": [],
+              "queryOptions": {}
+            }
+          },
+          "vizConfig": {
+            "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "13.1.1",
+            "spec": {
+              "options": {
+                "annotations": {
+                  "clustering": -1,
+                  "multiLane": false
+                },
+                "legend": {
+                  "calcs": [
+                    "min",
+                    "max",
+                    "mean",
+                    "last"
+                  ],
+                  "displayMode": "table",
+                  "enableFacetedFilter": false,
+                  "overflow": "ellipsis",
+                  "placement": "right",
+                  "showLegend": true
+                },
+                "tooltip": {
+                  "hideZeros": false,
+                  "mode": "multi",
+                  "sort": "desc"
+                }
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "unit": "percent",
+                  "min": 0,
+                  "max": 100,
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": 0,
+                        "color": "green"
+                      },
+                      {
+                        "value": 70,
+                        "color": "yellow"
+                      },
+                      {
+                        "value": 85,
+                        "color": "red"
+                      }
+                    ]
+                  },
+                  "color": {
+                    "mode": "palette-classic"
+                  },
+                  "custom": {
+                    "axisBorderShow": false,
+                    "axisCenteredZero": false,
+                    "axisColorMode": "text",
+                    "axisLabel": "",
+                    "axisPlacement": "auto",
+                    "barAlignment": 0,
+                    "barWidthFactor": 0.6,
+                    "drawStyle": "line",
+                    "fillOpacity": 20,
+                    "gradientMode": "none",
+                    "hideFrom": {
+                      "legend": false,
+                      "tooltip": false,
+                      "viz": false
+                    },
+                    "insertNulls": false,
+                    "lineInterpolation": "smooth",
+                    "lineWidth": 2,
+                    "pointSize": 5,
+                    "scaleDistribution": {
+                      "type": "linear"
+                    },
+                    "showPoints": "never",
+                    "showValues": false,
+                    "spanNulls": false,
+                    "stacking": {
+                      "group": "A",
+                      "mode": "none"
+                    },
+                    "thresholdsStyle": {
+                      "mode": "line"
+                    }
+                  },
+                  "fieldMinMax": false
+                },
+                "overrides": []
+              }
+            }
+          }
+        }
+      },
+      "panel-3": {
+        "kind": "Panel",
+        "spec": {
+          "id": 3,
+          "title": "Current Usage by Datastore",
+          "description": "",
+          "links": [],
+          "data": {
+            "kind": "QueryGroup",
+            "spec": {
+              "queries": [
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
+                      "datasource": {
+                        "name": "influxdb"
+                      },
+                      "spec": {
+                        "dataset": "iox",
+                        "editorMode": "code",
+                        "format": "table",
+                        "rawQuery": true,
+                        "rawSql": "WITH ranked_datastores AS (\r\n    SELECT datastore_data, percent_use, time,\r\n           ROW_NUMBER() OVER (PARTITION BY datastore_data ORDER BY time DESC) as rn\r\n    FROM datastore_usage\r\n    WHERE $__timeFilter(time) \r\n      AND datacenter = '$datacenter' \r\n      AND type LIKE '%$type%'\r\n)\r\nSELECT datastore_data, percent_use\r\nFROM ranked_datastores\r\nWHERE rn = 1\r\nORDER BY datastore_data;",
+                        "sql": {
+                          "columns": [
+                            {
+                              "parameters": [],
+                              "type": "function"
+                            }
+                          ],
+                          "groupBy": [
+                            {
+                              "property": {
+                                "type": "string"
+                              },
+                              "type": "groupBy"
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    "refId": "A",
+                    "hidden": false
+                  }
+                }
+              ],
+              "transformations": [],
+              "queryOptions": {}
+            }
+          },
+          "vizConfig": {
+            "kind": "VizConfig",
+            "group": "bargauge",
+            "version": "13.1.1",
+            "spec": {
+              "options": {
+                "displayMode": "gradient",
+                "legend": {
+                  "calcs": [],
+                  "displayMode": "list",
+                  "overflow": "ellipsis",
+                  "placement": "bottom",
+                  "showLegend": false
+                },
+                "maxVizHeight": 300,
+                "minVizHeight": 10,
+                "minVizWidth": 0,
+                "namePlacement": "auto",
+                "orientation": "horizontal",
+                "reduceOptions": {
+                  "calcs": [
+                    "lastNotNull"
+                  ],
+                  "fields": "",
+                  "values": true
+                },
+                "showUnfilled": true,
+                "sizing": "auto",
+                "text": {},
+                "valueMode": "color"
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "unit": "percent",
+                  "min": 0,
+                  "max": 100,
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": 0,
+                        "color": "green"
+                      },
+                      {
+                        "value": 70,
+                        "color": "yellow"
+                      },
+                      {
+                        "value": 85,
+                        "color": "red"
+                      }
+                    ]
+                  },
+                  "color": {
+                    "mode": "thresholds"
+                  }
+                },
+                "overrides": []
+              }
+            }
+          }
+        }
+      },
+      "panel-4": {
+        "kind": "Panel",
+        "spec": {
+          "id": 4,
+          "title": "Capacity Distribution",
+          "description": "",
+          "links": [],
+          "data": {
+            "kind": "QueryGroup",
+            "spec": {
+              "queries": [
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
+                      "datasource": {
+                        "name": "influxdb"
+                      },
+                      "spec": {
+                        "dataset": "iox",
+                        "editorMode": "code",
+                        "format": "table",
+                        "rawQuery": true,
+                        "rawSql": "WITH ranked_datastores AS (\r\n    SELECT datastore_data, total_capacity, time,\r\n           ROW_NUMBER() OVER (PARTITION BY datastore_data ORDER BY time DESC) as rn\r\n    FROM datastore_usage\r\n    WHERE $__timeFilter(time) \r\n      AND datacenter = '$datacenter' \r\n      AND type LIKE '%$type%'\r\n)\r\nSELECT datastore_data, total_capacity\r\nFROM ranked_datastores\r\nWHERE rn = 1;",
+                        "sql": {
+                          "columns": [
+                            {
+                              "parameters": [],
+                              "type": "function"
+                            }
+                          ],
+                          "groupBy": [
+                            {
+                              "property": {
+                                "type": "string"
+                              },
+                              "type": "groupBy"
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    "refId": "A",
+                    "hidden": false
+                  }
+                }
+              ],
+              "transformations": [],
+              "queryOptions": {}
+            }
+          },
+          "vizConfig": {
+            "kind": "VizConfig",
+            "group": "barchart",
+            "version": "13.1.1",
+            "spec": {
+              "options": {
+                "barRadius": 0,
+                "barWidth": 0.97,
+                "fullHighlight": false,
+                "groupWidth": 0.7,
+                "legend": {
+                  "calcs": [],
+                  "displayMode": "list",
+                  "overflow": "ellipsis",
+                  "placement": "right",
+                  "showLegend": true
+                },
+                "orientation": "horizontal",
+                "showValue": "never",
+                "stacking": "none",
+                "tooltip": {
+                  "hideZeros": false,
+                  "mode": "single",
+                  "sort": "none"
+                },
+                "xTickLabelRotation": 0,
+                "xTickLabelSpacing": 0
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "unit": "decgbytes",
+                  "decimals": 2,
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": 0,
+                        "color": "green"
+                      },
+                      {
+                        "value": 80,
+                        "color": "red"
+                      }
+                    ]
+                  },
+                  "color": {
+                    "mode": "palette-classic"
+                  },
+                  "custom": {
+                    "axisBorderShow": false,
+                    "axisCenteredZero": false,
+                    "axisColorMode": "text",
+                    "axisLabel": "",
+                    "axisPlacement": "auto",
+                    "fillOpacity": 80,
+                    "gradientMode": "none",
+                    "hideFrom": {
+                      "legend": false,
+                      "tooltip": false,
+                      "viz": false
+                    },
+                    "lineWidth": 1,
+                    "scaleDistribution": {
+                      "type": "linear"
+                    },
+                    "thresholdsStyle": {
+                      "mode": "off"
+                    }
+                  }
+                },
+                "overrides": []
+              }
+            }
+          }
+        }
+      },
+      "panel-6": {
+        "kind": "Panel",
+        "spec": {
+          "id": 6,
+          "title": "Datastores > 80% Full (⚠️ Attention Required)",
+          "description": "",
+          "links": [],
+          "data": {
+            "kind": "QueryGroup",
+            "spec": {
+              "queries": [
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "query": {
+                      "kind": "DataQuery",
+                      "group": "influxdb",
+                      "version": "v0",
+                      "datasource": {
+                        "name": "influxdb"
+                      },
+                      "spec": {
+                        "dataset": "iox",
+                        "editorMode": "code",
+                        "format": "table",
+                        "rawQuery": true,
+                        "rawSql": "WITH ranked_datastores AS (\r\n    SELECT datacenter, datastore_data, type, percent_use, free_space, time,\r\n           ROW_NUMBER() OVER (PARTITION BY datastore_data ORDER BY time DESC) as rn\r\n    FROM datastore_usage\r\n    WHERE $__timeFilter(time)\r\n)\r\nSELECT datacenter, datastore_data, type, percent_use, free_space\r\nFROM ranked_datastores\r\nWHERE rn = 1 AND percent_use > 80\r\nORDER BY percent_use DESC;",
+                        "sql": {
+                          "columns": [
+                            {
+                              "parameters": [],
+                              "type": "function"
+                            }
+                          ],
+                          "groupBy": [
+                            {
+                              "property": {
+                                "type": "string"
+                              },
+                              "type": "groupBy"
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    "refId": "A",
+                    "hidden": false
+                  }
+                }
+              ],
+              "transformations": [],
+              "queryOptions": {}
+            }
+          },
+          "vizConfig": {
+            "kind": "VizConfig",
+            "group": "table",
+            "version": "13.1.1",
+            "spec": {
+              "options": {
+                "cellHeight": "sm",
+                "showHeader": true
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": 0,
+                        "color": "green"
+                      },
+                      {
+                        "value": 80,
+                        "color": "red"
+                      }
+                    ]
+                  },
+                  "color": {
+                    "mode": "thresholds"
+                  },
+                  "custom": {
+                    "align": "auto",
+                    "cellOptions": {
+                      "type": "auto"
+                    },
+                    "footer": {
+                      "reducers": []
+                    },
+                    "inspect": false
+                  }
+                },
+                "overrides": [
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "percent_use"
+                    },
+                    "properties": [
+                      {
+                        "id": "unit",
+                        "value": "percent"
+                      },
+                      {
+                        "id": "custom.cellOptions",
+                        "value": {
+                          "type": "color-background"
+                        }
+                      },
+                      {
+                        "id": "displayName",
+                        "value": "Usage %"
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "free_space"
+                    },
+                    "properties": [
+                      {
+                        "id": "unit",
+                        "value": "decgbytes"
+                      },
+                      {
+                        "id": "displayName",
+                        "value": "Free Space"
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "datastore_data"
+                    },
+                    "properties": [
+                      {
+                        "id": "displayName",
+                        "value": "Datastore"
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "scope": "series",
+                      "options": "datacenter"
+                    },
+                    "properties": [
+                      {
+                        "id": "custom.width",
+                        "value": 111
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "panel-7": {
+        "kind": "Panel",
+        "spec": {
+          "id": 7,
           "title": "Datastore Inventory",
           "description": "",
           "links": [],
@@ -76,7 +635,7 @@
                         "editorMode": "code",
                         "format": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT datacenter, datastore_data, type, datastore_folder, total_capacity, space_use, free_space, percent_use \r\nFROM datastore_usage \r\nWHERE $__timeFilter(time) AND datacenter LIKE '$datacenter' AND type LIKE '%$type%' \r\nORDER BY percent_use DESC",
+                        "rawSql": "WITH ranked_datastores AS (\r\n    SELECT datacenter, datastore_data, type, datastore_folder, \r\n           total_capacity, space_use, free_space, percent_use, time,\r\n           ROW_NUMBER() OVER (PARTITION BY datastore_data ORDER BY time DESC) as rn\r\n    FROM datastore_usage\r\n    WHERE $__timeFilter(time) \r\n      AND datacenter LIKE '$datacenter' \r\n      AND type LIKE '%$type%'\r\n)\r\nSELECT datacenter, datastore_data, type, datastore_folder, \r\n       total_capacity, space_use, free_space, percent_use\r\nFROM ranked_datastores\r\nWHERE rn = 1\r\nORDER BY percent_use DESC;",
                         "sql": {
                           "columns": [
                             {
@@ -327,562 +886,6 @@
             }
           }
         }
-      },
-      "panel-2": {
-        "kind": "Panel",
-        "spec": {
-          "id": 2,
-          "title": "Datastore Usage Over Time",
-          "description": "",
-          "links": [],
-          "data": {
-            "kind": "QueryGroup",
-            "spec": {
-              "queries": [
-                {
-                  "kind": "PanelQuery",
-                  "spec": {
-                    "query": {
-                      "kind": "DataQuery",
-                      "group": "influxdb",
-                      "version": "v0",
-                      "datasource": {
-                        "name": "influxdb"
-                      },
-                      "spec": {
-                        "dataset": "iox",
-                        "editorMode": "code",
-                        "format": "table",
-                        "rawQuery": true,
-                        "rawSql": "SELECT time, datastore_data, percent_use \r\nFROM datastore_usage \r\nWHERE datacenter = '$datacenter' AND type LIKE '%$type%' AND $__timeFilter(time) \r\nORDER BY time",
-                        "sql": {
-                          "columns": [
-                            {
-                              "parameters": [],
-                              "type": "function"
-                            }
-                          ],
-                          "groupBy": [
-                            {
-                              "property": {
-                                "type": "string"
-                              },
-                              "type": "groupBy"
-                            }
-                          ]
-                        }
-                      }
-                    },
-                    "refId": "A",
-                    "hidden": false
-                  }
-                }
-              ],
-              "transformations": [],
-              "queryOptions": {}
-            }
-          },
-          "vizConfig": {
-            "kind": "VizConfig",
-            "group": "timeseries",
-            "version": "13.1.1",
-            "spec": {
-              "options": {
-                "annotations": {
-                  "clustering": -1,
-                  "multiLane": false
-                },
-                "legend": {
-                  "calcs": [
-                    "min",
-                    "max",
-                    "mean",
-                    "last"
-                  ],
-                  "displayMode": "table",
-                  "enableFacetedFilter": false,
-                  "overflow": "ellipsis",
-                  "placement": "right",
-                  "showLegend": true
-                },
-                "tooltip": {
-                  "hideZeros": false,
-                  "mode": "multi",
-                  "sort": "desc"
-                }
-              },
-              "fieldConfig": {
-                "defaults": {
-                  "unit": "percent",
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "value": 0,
-                        "color": "green"
-                      },
-                      {
-                        "value": 70,
-                        "color": "yellow"
-                      },
-                      {
-                        "value": 85,
-                        "color": "red"
-                      }
-                    ]
-                  },
-                  "color": {
-                    "mode": "palette-classic"
-                  },
-                  "custom": {
-                    "axisBorderShow": false,
-                    "axisCenteredZero": false,
-                    "axisColorMode": "text",
-                    "axisLabel": "",
-                    "axisPlacement": "auto",
-                    "barAlignment": 0,
-                    "barWidthFactor": 0.6,
-                    "drawStyle": "line",
-                    "fillOpacity": 20,
-                    "gradientMode": "none",
-                    "hideFrom": {
-                      "legend": false,
-                      "tooltip": false,
-                      "viz": false
-                    },
-                    "insertNulls": false,
-                    "lineInterpolation": "smooth",
-                    "lineWidth": 2,
-                    "pointSize": 5,
-                    "scaleDistribution": {
-                      "type": "linear"
-                    },
-                    "showPoints": "never",
-                    "showValues": false,
-                    "spanNulls": false,
-                    "stacking": {
-                      "group": "A",
-                      "mode": "none"
-                    },
-                    "thresholdsStyle": {
-                      "mode": "line"
-                    }
-                  }
-                },
-                "overrides": []
-              }
-            }
-          }
-        }
-      },
-      "panel-3": {
-        "kind": "Panel",
-        "spec": {
-          "id": 3,
-          "title": "Current Usage by Datastore",
-          "description": "",
-          "links": [],
-          "data": {
-            "kind": "QueryGroup",
-            "spec": {
-              "queries": [
-                {
-                  "kind": "PanelQuery",
-                  "spec": {
-                    "query": {
-                      "kind": "DataQuery",
-                      "group": "influxdb",
-                      "version": "v0",
-                      "datasource": {
-                        "name": "influxdb"
-                      },
-                      "spec": {
-                        "dataset": "iox",
-                        "editorMode": "code",
-                        "format": "table",
-                        "rawQuery": true,
-                        "rawSql": "SELECT datastore_data, percent_use \r\nFROM datastore_usage \r\nWHERE $__timeFilter(time) AND datacenter = '$datacenter' AND type LIKE '%$type%' \r\nORDER BY datastore_data",
-                        "sql": {
-                          "columns": [
-                            {
-                              "parameters": [],
-                              "type": "function"
-                            }
-                          ],
-                          "groupBy": [
-                            {
-                              "property": {
-                                "type": "string"
-                              },
-                              "type": "groupBy"
-                            }
-                          ]
-                        }
-                      }
-                    },
-                    "refId": "A",
-                    "hidden": false
-                  }
-                }
-              ],
-              "transformations": [],
-              "queryOptions": {}
-            }
-          },
-          "vizConfig": {
-            "kind": "VizConfig",
-            "group": "bargauge",
-            "version": "13.1.1",
-            "spec": {
-              "options": {
-                "displayMode": "gradient",
-                "legend": {
-                  "calcs": [],
-                  "displayMode": "list",
-                  "overflow": "ellipsis",
-                  "placement": "bottom",
-                  "showLegend": false
-                },
-                "maxVizHeight": 300,
-                "minVizHeight": 10,
-                "minVizWidth": 0,
-                "namePlacement": "auto",
-                "orientation": "horizontal",
-                "reduceOptions": {
-                  "calcs": [
-                    "lastNotNull"
-                  ],
-                  "fields": "",
-                  "values": true
-                },
-                "showUnfilled": true,
-                "sizing": "auto",
-                "text": {},
-                "valueMode": "color"
-              },
-              "fieldConfig": {
-                "defaults": {
-                  "unit": "percent",
-                  "min": 0,
-                  "max": 100,
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "value": 0,
-                        "color": "green"
-                      },
-                      {
-                        "value": 70,
-                        "color": "yellow"
-                      },
-                      {
-                        "value": 85,
-                        "color": "red"
-                      }
-                    ]
-                  },
-                  "color": {
-                    "mode": "thresholds"
-                  }
-                },
-                "overrides": []
-              }
-            }
-          }
-        }
-      },
-      "panel-4": {
-        "kind": "Panel",
-        "spec": {
-          "id": 4,
-          "title": "Capacity Distribution",
-          "description": "",
-          "links": [],
-          "data": {
-            "kind": "QueryGroup",
-            "spec": {
-              "queries": [
-                {
-                  "kind": "PanelQuery",
-                  "spec": {
-                    "query": {
-                      "kind": "DataQuery",
-                      "group": "influxdb",
-                      "version": "v0",
-                      "datasource": {
-                        "name": "influxdb"
-                      },
-                      "spec": {
-                        "dataset": "iox",
-                        "editorMode": "code",
-                        "format": "table",
-                        "rawQuery": true,
-                        "rawSql": "SELECT datastore_data, total_capacity \r\nFROM datastore_usage \r\nWHERE $__timeFilter(time) AND datacenter = '$datacenter' AND type LIKE '%$type%'",
-                        "sql": {
-                          "columns": [
-                            {
-                              "parameters": [],
-                              "type": "function"
-                            }
-                          ],
-                          "groupBy": [
-                            {
-                              "property": {
-                                "type": "string"
-                              },
-                              "type": "groupBy"
-                            }
-                          ]
-                        }
-                      }
-                    },
-                    "refId": "A",
-                    "hidden": false
-                  }
-                }
-              ],
-              "transformations": [],
-              "queryOptions": {}
-            }
-          },
-          "vizConfig": {
-            "kind": "VizConfig",
-            "group": "barchart",
-            "version": "13.1.1",
-            "spec": {
-              "options": {
-                "barRadius": 0,
-                "barWidth": 0.97,
-                "fullHighlight": false,
-                "groupWidth": 0.7,
-                "legend": {
-                  "calcs": [],
-                  "displayMode": "list",
-                  "overflow": "ellipsis",
-                  "placement": "right",
-                  "showLegend": true
-                },
-                "orientation": "horizontal",
-                "showValue": "never",
-                "stacking": "none",
-                "tooltip": {
-                  "hideZeros": false,
-                  "mode": "single",
-                  "sort": "none"
-                },
-                "xTickLabelRotation": 0,
-                "xTickLabelSpacing": 0
-              },
-              "fieldConfig": {
-                "defaults": {
-                  "unit": "decgbytes",
-                  "decimals": 2,
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "value": 0,
-                        "color": "green"
-                      },
-                      {
-                        "value": 80,
-                        "color": "red"
-                      }
-                    ]
-                  },
-                  "color": {
-                    "mode": "palette-classic"
-                  },
-                  "custom": {
-                    "axisBorderShow": false,
-                    "axisCenteredZero": false,
-                    "axisColorMode": "text",
-                    "axisLabel": "",
-                    "axisPlacement": "auto",
-                    "fillOpacity": 80,
-                    "gradientMode": "none",
-                    "hideFrom": {
-                      "legend": false,
-                      "tooltip": false,
-                      "viz": false
-                    },
-                    "lineWidth": 1,
-                    "scaleDistribution": {
-                      "type": "linear"
-                    },
-                    "thresholdsStyle": {
-                      "mode": "off"
-                    }
-                  }
-                },
-                "overrides": []
-              }
-            }
-          }
-        }
-      },
-      "panel-6": {
-        "kind": "Panel",
-        "spec": {
-          "id": 6,
-          "title": "Datastores > 80% Full (⚠️ Attention Required)",
-          "description": "",
-          "links": [],
-          "data": {
-            "kind": "QueryGroup",
-            "spec": {
-              "queries": [
-                {
-                  "kind": "PanelQuery",
-                  "spec": {
-                    "query": {
-                      "kind": "DataQuery",
-                      "group": "influxdb",
-                      "version": "v0",
-                      "datasource": {
-                        "name": "influxdb"
-                      },
-                      "spec": {
-                        "dataset": "iox",
-                        "editorMode": "code",
-                        "format": "table",
-                        "rawQuery": true,
-                        "rawSql": "SELECT datacenter, datastore_data, type, percent_use, free_space \r\nFROM datastore_usage \r\nWHERE percent_use > 80 AND $__timeFilter(time) \r\nORDER BY percent_use DESC",
-                        "sql": {
-                          "columns": [
-                            {
-                              "parameters": [],
-                              "type": "function"
-                            }
-                          ],
-                          "groupBy": [
-                            {
-                              "property": {
-                                "type": "string"
-                              },
-                              "type": "groupBy"
-                            }
-                          ]
-                        }
-                      }
-                    },
-                    "refId": "A",
-                    "hidden": false
-                  }
-                }
-              ],
-              "transformations": [],
-              "queryOptions": {}
-            }
-          },
-          "vizConfig": {
-            "kind": "VizConfig",
-            "group": "table",
-            "version": "13.1.1",
-            "spec": {
-              "options": {
-                "cellHeight": "sm",
-                "showHeader": true
-              },
-              "fieldConfig": {
-                "defaults": {
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "value": 0,
-                        "color": "green"
-                      },
-                      {
-                        "value": 80,
-                        "color": "red"
-                      }
-                    ]
-                  },
-                  "color": {
-                    "mode": "thresholds"
-                  },
-                  "custom": {
-                    "align": "auto",
-                    "cellOptions": {
-                      "type": "auto"
-                    },
-                    "footer": {
-                      "reducers": []
-                    },
-                    "inspect": false
-                  }
-                },
-                "overrides": [
-                  {
-                    "matcher": {
-                      "id": "byName",
-                      "options": "percent_use"
-                    },
-                    "properties": [
-                      {
-                        "id": "unit",
-                        "value": "percent"
-                      },
-                      {
-                        "id": "custom.cellOptions",
-                        "value": {
-                          "type": "color-background"
-                        }
-                      },
-                      {
-                        "id": "displayName",
-                        "value": "Usage %"
-                      }
-                    ]
-                  },
-                  {
-                    "matcher": {
-                      "id": "byName",
-                      "options": "free_space"
-                    },
-                    "properties": [
-                      {
-                        "id": "unit",
-                        "value": "decgbytes"
-                      },
-                      {
-                        "id": "displayName",
-                        "value": "Free Space"
-                      }
-                    ]
-                  },
-                  {
-                    "matcher": {
-                      "id": "byName",
-                      "options": "datastore_data"
-                    },
-                    "properties": [
-                      {
-                        "id": "displayName",
-                        "value": "Datastore"
-                      }
-                    ]
-                  },
-                  {
-                    "matcher": {
-                      "id": "byName",
-                      "scope": "series",
-                      "options": "datacenter"
-                    },
-                    "properties": [
-                      {
-                        "id": "custom.width",
-                        "value": 111
-                      }
-                    ]
-                  }
-                ]
-              }
-            }
-          }
-        }
       }
     },
     "layout": {
@@ -934,7 +937,7 @@
                         "height": 10,
                         "element": {
                           "kind": "ElementReference",
-                          "name": "panel-1"
+                          "name": "panel-7"
                         }
                       }
                     },
@@ -1049,6 +1052,40 @@
           "includeAll": false,
           "allValue": "%",
           "allowCustomValue": false
+        }
+      },
+      {
+        "kind": "QueryVariable",
+        "spec": {
+          "name": "datastore",
+          "current": {
+            "text": "",
+            "value": ""
+          },
+          "label": "Datastore name",
+          "hide": "dontHide",
+          "refresh": "onDashboardLoad",
+          "skipUrlSync": false,
+          "query": {
+            "kind": "DataQuery",
+            "group": "influxdb",
+            "version": "v0",
+            "datasource": {
+              "name": "influxdb"
+            },
+            "spec": {
+              "query": "SELECT DISTINCT datastore_data\nFROM datastore_usage\nORDER BY datastore_data",
+              "refId": "InfluxVariableQueryEditor-VariableQuery"
+            }
+          },
+          "regex": "",
+          "regexApplyTo": "value",
+          "sort": "disabled",
+          "definition": "SELECT DISTINCT datastore_data\nFROM datastore_usage\nORDER BY datastore_data",
+          "options": [],
+          "multi": false,
+          "includeAll": false,
+          "allowCustomValue": true
         }
       },
       {
